@@ -221,7 +221,6 @@ const Dashboard = () => {
                       <Vault className="h-5 w-5 text-yellow-600" />
                       Cofre {item}
                     </CardTitle>
-                    <CardDescription>Status: Operacional</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-center">
