@@ -182,8 +182,8 @@ const Dashboard = () => {
   };
 
   const handleViewManual = (cofreModel) => {
-    // Abre o PDF na pasta arquivos
-    const pdfPath = '/src/components/arquivos/lista.pdf';
+    // Abre o PDF na pasta public
+    const pdfPath = '/lista.pdf';
     
     // Abre o PDF em uma nova aba
     window.open(pdfPath, '_blank');
