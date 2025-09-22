@@ -182,10 +182,15 @@ const Dashboard = () => {
   };
 
   const handleViewManual = (cofreModel) => {
-    setSelectedPDF(`manual_cofre_${cofreModel}.pdf`);
+    // Abre o PDF na pasta arquivos
+    const pdfPath = '/src/components/arquivos/lista.pdf';
+    
+    // Abre o PDF em uma nova aba
+    window.open(pdfPath, '_blank');
+    
     toast({
-      title: "Manual carregado",
-      description: `Exibindo manual do ${cofreModel}`,
+      title: "Manual aberto",
+      description: `Manual do ${cofreModel} aberto em nova aba`,
     });
   };
 
