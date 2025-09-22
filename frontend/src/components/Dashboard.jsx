@@ -431,6 +431,36 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:flex w-64 bg-white shadow-xl">
+        <div className="flex flex-col h-full w-full">
+          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-yellow-500 to-yellow-400">
+            <h2 className="text-xl font-bold text-black">Dashboard Prosegur</h2>
+            <p className="text-sm text-black opacity-80 mt-1">Sistema de Gestão</p>
+          </div>
+          
+          <nav className="flex-1 px-4 py-6 space-y-2">
+            {navigation.map((item) => {
+              const Icon = item.icon;
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-all duration-200 ${
+                    activeSection === item.id
+                      ? 'bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500'
+                      : 'text-gray-700 hover:bg-gray-100'
+                  }`}
+                >
+                  <Icon className="h-5 w-5" />
+                  <span className="font-medium">{item.name}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+      </div>
+
       {/* Mobile menu button */}
       <div className="lg:hidden fixed top-4 right-4 z-50">
         <Button
@@ -443,8 +473,10 @@ const Dashboard = () => {
         </Button>
       </div>
 
-      {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'translate-x-0' : 'translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 right-0 lg:right-auto lg:left-0 z-40 w-64 bg-white shadow-xl transition-transform duration-300 ease-in-out lg:translate-x-0`}>
+      {/* Mobile Sidebar */}
+      <div className={`lg:hidden fixed inset-y-0 right-0 z-40 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
+        sidebarOpen ? 'translate-x-0' : 'translate-x-full'
+      }`}>
         <div className="flex flex-col h-full">
           <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-yellow-500 to-yellow-400">
             <h2 className="text-xl font-bold text-black">Dashboard Prosegur</h2>
