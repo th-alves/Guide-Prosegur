@@ -178,7 +178,7 @@ const Dashboard = () => {
 
   const handleCopyManualInfo = () => {
     const textToCopy = `Nome: \nCNPJ: \nTelefone: \nMotivo: `;
-    handleCopyText(textToCopy, 'Informações do Manual');
+    handleCopyText(textToCopy, 'Template do Manual');
   };
 
   const handleViewManual = (cofreModel) => {
