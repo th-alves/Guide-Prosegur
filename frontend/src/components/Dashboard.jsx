@@ -161,6 +161,11 @@ const Dashboard = () => {
     });
   };
 
+  const handleCopyManualInfo = () => {
+    const textToCopy = `Nome: \nCNPJ: \nTelefone: \nMotivo: `;
+    handleCopyText(textToCopy, 'Informações do Manual');
+  };
+
   const handleViewManual = (cofreModel) => {
     setSelectedPDF(`manual_cofre_${cofreModel}.pdf`);
     toast({
