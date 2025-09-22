@@ -185,15 +185,12 @@ const Dashboard = () => {
     // Extrai o número do cofre do modelo (ex: "Cofre 1" -> "1")
     const cofreNumber = cofreModel.replace('Cofre ', '');
     
-    // Define o caminho para o PDF específico do cofre
-    const pdfPath = `/manual_cofre_${cofreNumber}.pdf`;
-    
-    // Abre o PDF em uma nova aba
-    window.open(pdfPath, '_blank');
+    // Define o PDF específico para o cofre
+    setSelectedPDF(`manual_cofre_${cofreNumber}.pdf`);
     
     toast({
-      title: "Manual aberto",
-      description: `Manual do ${cofreModel} aberto em nova aba`,
+      title: "Manual carregado",
+      description: `Exibindo manual do ${cofreModel}`,
     });
   };
 
