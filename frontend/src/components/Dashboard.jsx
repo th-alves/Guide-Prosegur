@@ -44,45 +44,45 @@ const Dashboard = () => {
   const mockManuals = [
     {
       id: 'Manual_25',
-      nome: 'João Silva Santos',
-      cnpj: '12.345.678/0001-90',
-      telefone: '(11) 98765-4321',
-      motivo: 'Instalação de cofre modelo X25 - Filial Centro'
+      nome: '',
+      cnpj: '',
+      telefone: '',
+      motivo: ''
     },
     {
       id: 'Manual_30',
-      nome: 'Maria Oliveira Lima',
-      cnpj: '98.765.432/0001-10',
-      telefone: '(21) 91234-5678',
-      motivo: 'Manutenção preventiva cofre Y30 - Shopping Norte'
+      nome: '',
+      cnpj: '',
+      telefone: '',
+      motivo: ''
     },
     {
       id: 'Manual_15',
-      nome: 'Carlos Eduardo Costa',
-      cnpj: '11.222.333/0001-44',
-      telefone: '(85) 97777-8888',
-      motivo: 'Troca de fechadura digital - Modelo Z15'
+      nome: '',
+      cnpj: '',
+      telefone: '',
+      motivo: ''
     },
     {
       id: 'Manual_40',
-      nome: 'Ana Paula Ferreira',
-      cnpj: '55.666.777/0001-22',
-      telefone: '(31) 96666-7777',
-      motivo: 'Instalação sistema biométrico - Cofre W40'
+      nome: '',
+      cnpj: '',
+      telefone: '',
+      motivo: ''
     },
     {
       id: 'Manual_12',
-      nome: 'Roberto Almeida',
-      cnpj: '22.333.444/0001-55',
-      telefone: '(41) 95555-4444',
-      motivo: 'Reparo sistema eletrônico - Modelo V12'
+      nome: '',
+      cnpj: '',
+      telefone: '',
+      motivo: ''
     },
     {
       id: 'Manual_35',
-      nome: 'Fernanda Santos',
-      cnpj: '77.888.999/0001-33',
-      telefone: '(51) 94444-3333',
-      motivo: 'Atualização firmware - Cofre U35'
+      nome: '',
+      cnpj: '',
+      telefone: '',
+      motivo: ''
     }
   ];
 
@@ -177,7 +177,7 @@ const Dashboard = () => {
   };
 
   const handleCopyManualInfo = () => {
-    const textToCopy = `Nome: \nCNPJ: \nTelefone: \nMotivo: `;
+    const textToCopy = `Nome: \nCNPJ:** \nTelefone: \nMotivo: `;
     handleCopyText(textToCopy, 'Template do Manual');
   };
 
@@ -200,7 +200,7 @@ const Dashboard = () => {
             </div>
             
             {selectedPDF && (
-              <Card className="border-l-4 border-l-yellow-500 bg-yellow-50">
+              <Card className="border-l-4 border-l-yellow bg-yellow-50">
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <span className="flex items-center gap-2">
@@ -233,17 +233,17 @@ const Dashboard = () => {
                 <Card key={item} className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-yellow-500">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <Vault className="h-5 w-5 text-yellow-600" />
+                      <Vault className="h-5 w-5 text-yellow-500" />
                       Cofre {item}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex justify-center">
-                      <Badge variant="outline" className="border-yellow-500 text-yellow-700">Modelo X{item}5</Badge>
+                      <Badge variant="outline" className="border-yellow-500 text-black">Modelo X{item}5</Badge>
                     </div>
                     <Button 
                       variant="outline" 
-                      className="w-full border-yellow-500 text-yellow-700 hover:bg-yellow-50"
+                      className="w-full border-yellow-500 text-black hover:bg-yellow-50"
                       onClick={() => handleViewManual(`Cofre ${item}`)}
                     >
                       <Eye className="h-4 w-4 mr-2" />
@@ -265,35 +265,35 @@ const Dashboard = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {mockManuals.map((manual, index) => (
-                <Card key={index} className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-yellow-500">
+                <Card key={index} className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-red-800">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <BookOpen className="h-5 w-5 text-yellow-600" />
+                      <BookOpen className="h-5 w-5 text-red-800" />
                       {manual.id}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
-                        <span className="text-gray-600 font-medium">Nome:</span>
-                        <span className="text-gray-900">{manual.nome}</span>
+                        <div className="text-gray-600 font-medium">Nome:</div>
+                        <div className="text-gray-900">{manual.nome}</div>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600 font-medium">CNPJ:</span>
-                        <span className="text-gray-900">{manual.cnpj}</span>
+                        <div className="text-gray-600 font-medium">CNPJ:**</div>
+                        <div className="text-gray-900">{manual.cnpj}</div>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600 font-medium">Telefone:</span>
-                        <span className="text-gray-900">{manual.telefone}</span>
+                        <div className="text-gray-600 font-medium">Telefone:</div>
+                        <div className="text-gray-900">{manual.telefone}</div>
                       </div>
                       <div className="mt-3">
-                        <span className="text-gray-600 font-medium">Motivo:</span>
+                        <div className="text-gray-600 font-medium">Motivo:</div>
                         <p className="text-sm text-gray-900 mt-1">{manual.motivo}</p>
                       </div>
                     </div>
                     <Button 
                       variant="outline" 
-                      className="w-full border-yellow-500 text-yellow-700 hover:bg-yellow-50"
+                      className="w-full border-red-600 text-red-800 hover:bg-yellow-50"
                       onClick={handleCopyManualInfo}
                     >
                       <Copy className="h-4 w-4 mr-2" />
@@ -315,22 +315,22 @@ const Dashboard = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {mockScripts.map((script, index) => (
-                <Card key={index} className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-yellow-500">
+                <Card key={index} className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-green-600">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
-                      <MessageCircle className="h-5 w-5 text-yellow-600" />
+                      <MessageCircle className="h-5 w-5 text-green-800" />
                       {script.title}
                     </CardTitle>
                     <CardDescription>Script padrão para {script.title.toLowerCase()}</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                    <div className="bg-yellow-50 p-4 rounded-lg border border-green-800">
                       <p className="text-sm text-gray-700 font-medium mb-2">Script:</p>
                       <p className="text-sm text-gray-800 leading-relaxed">{script.content}</p>
                     </div>
                     <Button 
                       variant="outline" 
-                      className="w-full border-yellow-500 text-yellow-700 hover:bg-yellow-50"
+                      className="w-full border-green-800 text-green-600 hover:bg-yellow-50"
                       onClick={() => handleCopyText(script.content, 'Script')}
                     >
                       <Copy className="h-4 w-4 mr-2" />
@@ -450,7 +450,7 @@ const Dashboard = () => {
       <div className="hidden lg:flex w-64 bg-white shadow-xl">
         <div className="flex flex-col h-full w-full">
           <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-yellow-500 to-yellow-400">
-            <h2 className="text-xl font-bold text-black">Dashboard Prosegur</h2>
+            <h2 className="text-xl font-bold text-black">Guide Prosegur</h2>
             <p className="text-sm text-black opacity-80 mt-1">Sistema de Gestão</p>
           </div>
           
@@ -494,7 +494,7 @@ const Dashboard = () => {
       }`}>
         <div className="flex flex-col h-full">
           <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-yellow-500 to-yellow-400">
-            <h2 className="text-xl font-bold text-black">Dashboard Prosegur</h2>
+            <h2 className="text-xl font-bold text-black">Guide Prosegur</h2>
             <p className="text-sm text-black opacity-80 mt-1">Sistema de Gestão</p>
           </div>
           
