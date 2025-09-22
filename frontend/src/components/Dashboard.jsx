@@ -432,7 +432,7 @@ const Dashboard = () => {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-4 left-4 z-50">
+      <div className="lg:hidden fixed top-4 right-4 z-50">
         <Button
           variant="outline"
           size="icon"
@@ -444,7 +444,7 @@ const Dashboard = () => {
       </div>
 
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 left-0 z-40 w-64 bg-white shadow-xl transition-transform duration-300 ease-in-out`}>
+      <div className={`${sidebarOpen ? 'translate-x-0' : 'translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 right-0 lg:right-auto lg:left-0 z-40 w-64 bg-white shadow-xl transition-transform duration-300 ease-in-out`}>
         <div className="flex flex-col h-full">
           <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-yellow-500 to-yellow-400">
             <h2 className="text-xl font-bold text-black">Dashboard Prosegur</h2>
