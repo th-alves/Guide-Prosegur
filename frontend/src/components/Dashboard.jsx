@@ -279,10 +279,7 @@ const Dashboard = () => {
                     <Button 
                       variant="outline" 
                       className="w-full border-yellow-500 text-yellow-700 hover:bg-yellow-50"
-                      onClick={() => {
-                        const textToCopy = `Manual: ${manual.id}\nNome: ${manual.nome}\nCNPJ: ${manual.cnpj}\nTelefone: ${manual.telefone}\nMotivo: ${manual.motivo}`;
-                        handleCopyText(textToCopy, 'Manual');
-                      }}
+                      onClick={handleCopyManualInfo}
                     >
                       <Copy className="h-4 w-4 mr-2" />
                       Copiar
