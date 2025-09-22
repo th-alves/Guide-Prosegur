@@ -146,19 +146,34 @@ const Dashboard = () => {
     }, 500);
   };
 
-  const handleCopyText = (text, type) => {
-    navigator.clipboard.writeText(text).then(() => {
+  const handleCopyText = async (text, type) => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        // Fallback for older browsers or insecure contexts
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        document.execCommand('copy');
+        textArea.remove();
+      }
       toast({
         title: "Copiado!",
         description: `${type} copiado para a área de transferência`,
       });
-    }).catch(() => {
+    } catch (err) {
       toast({
         title: "Erro",
         description: "Não foi possível copiar o texto",
         variant: "destructive"
       });
-    });
+    }
   };
 
   const handleCopyManualInfo = () => {
