@@ -444,7 +444,7 @@ const Dashboard = () => {
       </div>
 
       {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'translate-x-0' : 'translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 right-0 lg:right-auto lg:left-0 z-40 w-64 bg-white shadow-xl transition-transform duration-300 ease-in-out`}>
+      <div className={`${sidebarOpen ? 'translate-x-0' : 'translate-x-full'} lg:translate-x-0 fixed lg:static inset-y-0 right-0 lg:right-auto lg:left-0 z-40 w-64 bg-white shadow-xl transition-transform duration-300 ease-in-out lg:translate-x-0`}>
         <div className="flex flex-col h-full">
           <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-yellow-500 to-yellow-400">
             <h2 className="text-xl font-bold text-black">Dashboard Prosegur</h2>
