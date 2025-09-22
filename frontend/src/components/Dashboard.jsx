@@ -182,8 +182,11 @@ const Dashboard = () => {
   };
 
   const handleViewManual = (cofreModel) => {
-    // Abre o PDF na pasta public
-    const pdfPath = '/lista.pdf';
+    // Extrai o número do cofre do modelo (ex: "Cofre 1" -> "1")
+    const cofreNumber = cofreModel.replace('Cofre ', '');
+    
+    // Define o caminho para o PDF específico do cofre
+    const pdfPath = `/manual_cofre_${cofreNumber}.pdf`;
     
     // Abre o PDF em uma nova aba
     window.open(pdfPath, '_blank');
