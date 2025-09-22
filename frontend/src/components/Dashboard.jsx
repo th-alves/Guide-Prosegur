@@ -222,12 +222,13 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-white border rounded-lg p-4 min-h-96 flex items-center justify-center">
-                    <div className="text-center">
-                      <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600">Visualizador de PDF</p>
-                      <p className="text-sm text-gray-500 mt-2">Manual: {selectedPDF}</p>
-                    </div>
+                  <div className="bg-white border rounded-lg p-4 min-h-96">
+                    <iframe
+                      src={`/${selectedPDF}`}
+                      title={`Manual - ${selectedPDF}`}
+                      className="w-full h-96 border-0"
+                      style={{ minHeight: '400px' }}
+                    />
                   </div>
                 </CardContent>
               </Card>
