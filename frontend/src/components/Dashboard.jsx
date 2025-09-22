@@ -222,12 +222,29 @@ const Dashboard = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-white border rounded-lg p-4 min-h-96">
+                  <div className="bg-white border rounded-lg overflow-hidden">
+                    {/* Header do visualizador com botão de abrir externamente */}
+                    <div className="flex items-center justify-between p-3 bg-gray-50 border-b">
+                      <div className="flex items-center gap-2">
+                        <FileText className="h-4 w-4 text-gray-600" />
+                        <span className="text-sm font-medium text-gray-700">Visualizador de PDF</span>
+                      </div>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => window.open(`/${selectedPDF}`, '_blank')}
+                        className="border-yellow-500 text-yellow-700 hover:bg-yellow-50 flex items-center gap-2"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        Abrir Externa
+                      </Button>
+                    </div>
+                    {/* Iframe do PDF */}
                     <iframe
                       src={`/${selectedPDF}`}
                       title={`Manual - ${selectedPDF}`}
-                      className="w-full h-96 border-0"
-                      style={{ minHeight: '400px' }}
+                      className="w-full border-0"
+                      style={{ height: '400px' }}
                     />
                   </div>
                 </CardContent>
