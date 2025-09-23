@@ -468,60 +468,82 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
       {/* Desktop Sidebar */}
-      <div className="hidden lg:flex w-64 bg-white shadow-xl">
-        <div className="flex flex-col h-full w-full">
-          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-yellow-500 to-yellow-400">
-            <h2 className="text-xl font-bold text-black">Guide Prosegur</h2>
-            <p className="text-sm text-black opacity-80 mt-1">Sistema de Gestão</p>
+      <div className="hidden lg:flex fixed left-6 top-6 bottom-6 w-72 z-10">
+        <div className="flex flex-col h-full w-full bg-white/80 backdrop-blur-lg shadow-2xl rounded-3xl border border-white/50">
+          {/* Header da Sidebar */}
+          <div className="p-8 border-b border-gray-100">
+            <div className="bg-gradient-to-r from-yellow-400 to-amber-500 p-6 rounded-2xl text-center shadow-lg">
+              <h2 className="text-2xl font-bold text-black tracking-tight">Guide Prosegur</h2>
+              <p className="text-sm text-black/80 mt-2 font-medium">Sistema de Gestão</p>
+            </div>
           </div>
           
-          <nav className="flex-1 px-4 py-6 space-y-2">
+          {/* Navegação */}
+          <nav className="flex-1 p-6 space-y-3">
             {navigation.map((item) => {
               const Icon = item.icon;
               return (
                 <button
                   key={item.id}
                   onClick={() => setActiveSection(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-all duration-200 ${
+                  className={`group w-full flex items-center gap-4 px-6 py-4 text-left rounded-2xl transition-all duration-300 transform hover:scale-105 ${
                     activeSection === item.id
-                      ? 'bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'bg-gradient-to-r from-yellow-400 to-amber-500 text-black shadow-lg shadow-yellow-500/25 scale-105'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`}
                 >
-                  <Icon className="h-5 w-5" />
-                  <span className="font-medium">{item.name}</span>
+                  <div className={`p-2 rounded-xl transition-all duration-300 ${
+                    activeSection === item.id 
+                      ? 'bg-black/10' 
+                      : 'bg-gray-100 group-hover:bg-yellow-100'
+                  }`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <span className="font-semibold text-base tracking-wide">{item.name}</span>
                 </button>
               );
             })}
           </nav>
+          
+          {/* Footer da Sidebar */}
+          <div className="p-6 border-t border-gray-100">
+            <div className="bg-gray-50 rounded-2xl p-4 text-center">
+              <p className="text-xs text-gray-500 font-medium">Versão 2.0</p>
+              <p className="text-xs text-gray-400 mt-1">Prosegur © 2025</p>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Mobile menu button */}
-      <div className="lg:hidden fixed top-4 right-4 z-50">
+      <div className="lg:hidden fixed top-6 right-6 z-50">
         <Button
           variant="outline"
           size="icon"
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="bg-white shadow-md"
+          className="bg-white/90 backdrop-blur-lg shadow-xl border-white/50 rounded-2xl h-12 w-12"
         >
-          {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </Button>
       </div>
 
       {/* Mobile Sidebar */}
-      <div className={`lg:hidden fixed inset-y-0 right-0 z-40 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out ${
+      <div className={`lg:hidden fixed inset-y-0 right-0 z-40 w-80 transform transition-transform duration-300 ease-in-out ${
         sidebarOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
-        <div className="flex flex-col h-full">
-          <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-yellow-500 to-yellow-400">
-            <h2 className="text-xl font-bold text-black">Guide Prosegur</h2>
-            <p className="text-sm text-black opacity-80 mt-1">Sistema de Gestão</p>
+        <div className="flex flex-col h-full m-4 bg-white/90 backdrop-blur-lg shadow-2xl rounded-3xl border border-white/50">
+          {/* Header Mobile */}
+          <div className="p-6 border-b border-gray-100">
+            <div className="bg-gradient-to-r from-yellow-400 to-amber-500 p-6 rounded-2xl text-center shadow-lg">
+              <h2 className="text-xl font-bold text-black tracking-tight">Guide Prosegur</h2>
+              <p className="text-sm text-black/80 mt-1 font-medium">Sistema de Gestão</p>
+            </div>
           </div>
           
-          <nav className="flex-1 px-4 py-6 space-y-2">
+          {/* Navegação Mobile */}
+          <nav className="flex-1 p-6 space-y-3">
             {navigation.map((item) => {
               const Icon = item.icon;
               return (
@@ -531,14 +553,20 @@ const Dashboard = () => {
                     setActiveSection(item.id);
                     setSidebarOpen(false);
                   }}
-                  className={`w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg transition-all duration-200 ${
+                  className={`group w-full flex items-center gap-4 px-6 py-4 text-left rounded-2xl transition-all duration-300 ${
                     activeSection === item.id
-                      ? 'bg-yellow-50 text-yellow-700 border-r-2 border-yellow-500'
-                      : 'text-gray-700 hover:bg-gray-100'
+                      ? 'bg-gradient-to-r from-yellow-400 to-amber-500 text-black shadow-lg shadow-yellow-500/25'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`}
                 >
-                  <Icon className="h-5 w-5" />
-                  <span className="font-medium">{item.name}</span>
+                  <div className={`p-2 rounded-xl transition-all duration-300 ${
+                    activeSection === item.id 
+                      ? 'bg-black/10' 
+                      : 'bg-gray-100 group-hover:bg-yellow-100'
+                  }`}>
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <span className="font-semibold text-base tracking-wide">{item.name}</span>
                 </button>
               );
             })}
@@ -549,15 +577,17 @@ const Dashboard = () => {
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+          className="lg:hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-30 rounded-3xl"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <main className="flex-1 overflow-auto p-6 lg:p-8">
-          {renderContent()}
+      <div className="lg:ml-80 flex flex-col">
+        <main className="p-8 lg:p-12">
+          <div className="bg-white/70 backdrop-blur-lg rounded-3xl shadow-xl border border-white/50 p-8 lg:p-12">
+            {renderContent()}
+          </div>
         </main>
       </div>
     </div>
