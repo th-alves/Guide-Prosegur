@@ -130,10 +130,24 @@ const Dashboard = () => {
     });
 
     if (results.length > 0) {
-      toast({
-        title: "Resultados encontrados",
-        description: `Cidade encontrada em: ${results.join(', ')}`,
-      });
+      // Abre a primeira planilha encontrada com a cidade
+      const firstResult = results[0];
+      const link = planilhaLinks[firstResult];
+      
+      if (link) {
+        // Abre a planilha em nova aba
+        window.open(link, '_blank');
+        
+        toast({
+          title: "Cidade encontrada!",
+          description: `${searchQuery} encontrada em ${firstResult}. Abrindo planilha...`,
+        });
+      } else {
+        toast({
+          title: "Resultados encontrados",
+          description: `Cidade encontrada em: ${results.join(', ')} - Link não configurado`,
+        });
+      }
     } else {
       toast({
         title: "Não encontrado",
