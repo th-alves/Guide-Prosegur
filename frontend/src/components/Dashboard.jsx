@@ -417,6 +417,10 @@ const Dashboard = () => {
 
             <div>
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Planilhas de Apoio</h2>
+              {/* 
+                IMPORTANTE: Para atualizar os links das planilhas, edite o objeto 'planilhaLinks' no início do componente.
+                Você pode usar links do Google Sheets, OneDrive, ou qualquer plataforma de planilhas online.
+              */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {['Apoio Filial_16', 'Técnico_66', 'Técnico_06'].map((sheet, index) => (
                   <Card key={index} className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-yellow-500 cursor-pointer" onClick={() => handleExcelDownload(sheet)}>
@@ -425,7 +429,7 @@ const Dashboard = () => {
                         <FileSpreadsheet className="h-8 w-8 text-yellow-600" />
                       </div>
                       <CardTitle className="text-lg">{sheet}</CardTitle>
-                      <CardDescription>Planilha Excel</CardDescription>
+                      <CardDescription>Planilha Online</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <Button variant="outline" className="w-full border-yellow-500 text-yellow-700 hover:bg-yellow-50" onClick={(e) => {e.stopPropagation(); handleExcelDownload(sheet);}}>
