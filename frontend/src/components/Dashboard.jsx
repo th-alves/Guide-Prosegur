@@ -41,6 +41,13 @@ const Dashboard = () => {
     'Técnico_06': ['Recife', 'Manaus', 'Belém', 'Goiânia']
   };
 
+  // Links das planilhas - você pode alterar estes links quando atualizar as planilhas
+  const planilhaLinks = {
+    'Apoio Filial_16': 'https://docs.google.com/spreadsheets/d/1exemplo_apoio_filial_16/edit#gid=0',
+    'Técnico_66': 'https://docs.google.com/spreadsheets/d/1exemplo_tecnico_66/edit#gid=0',
+    'Técnico_06': 'https://docs.google.com/spreadsheets/d/1exemplo_tecnico_06/edit#gid=0'
+  };
+
   const mockManuals = [
     {
       id: 'Manual_25',
