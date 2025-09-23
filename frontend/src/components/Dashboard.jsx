@@ -144,13 +144,23 @@ const Dashboard = () => {
   };
 
   const handleExcelDownload = (fileName) => {
-    toast({
-      title: "Download iniciado",
-      description: `Abrindo planilha ${fileName}...`,
-    });
-    setTimeout(() => {
-      window.open('#', '_blank');
-    }, 500);
+    const link = planilhaLinks[fileName];
+    
+    if (link) {
+      // Abre a planilha em nova aba
+      window.open(link, '_blank');
+      
+      toast({
+        title: "Planilha aberta",
+        description: `Abrindo planilha ${fileName} em nova aba...`,
+      });
+    } else {
+      toast({
+        title: "Erro",
+        description: "Link da planilha não encontrado",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleCopyText = async (text, type) => {
