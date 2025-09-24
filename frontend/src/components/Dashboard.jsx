@@ -284,10 +284,7 @@ const Dashboard = () => {
     handleCopyText(value, fieldName);
   };
 
-  const handleCopyManualInfo = () => {
-    const textToCopy = `Nome: \nCNPJ:** \nTelefone: \nMotivo: `;
-    handleCopyText(textToCopy, 'Template do Manual');
-  };
+
 
   const handleViewManual = (cofreModel) => {
     // Extrai o número do cofre do modelo (ex: "Cofre 1" -> "1")
