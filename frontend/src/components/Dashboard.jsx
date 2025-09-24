@@ -32,7 +32,7 @@ const Dashboard = () => {
     { id: 'manuais', name: 'Manuais', icon: BookOpen },
     { id: 'script', name: 'Script', icon: MessageCircle },
     { id: 'faq', name: 'FAQ', icon: HelpCircle },
-    { id: 'treinamentos', name: 'Treinamentos', icon: GraduationCap },
+    { id: 'cadastro', name: 'Cadastro', icon: GraduationCap },
   ];
 
   const mockCities = {
