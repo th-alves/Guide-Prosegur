@@ -565,7 +565,7 @@ const Dashboard = () => {
       </div>
 
       {/* Mobile Sidebar */}
-      <div className={`lg:hidden fixed inset-y-0 right-0 z-40 w-80 transform transition-transform duration-300 ease-in-out ${
+      <div className={`lg:hidden fixed inset-y-0 right-0 z-40 w-96 transform transition-transform duration-300 ease-in-out ${
         sidebarOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
         <div className="flex flex-col h-full m-4 bg-white/90 backdrop-blur-lg shadow-2xl rounded-3xl border border-white/50">
