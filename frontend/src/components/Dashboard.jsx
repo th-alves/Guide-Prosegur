@@ -27,6 +27,21 @@ const Dashboard = () => {
   const [selectedPDF, setSelectedPDF] = useState(null);
   const { toast } = useToast();
 
+  // Estados para os manuais
+  const [manuais, setManuais] = useState([
+    { id: 'Manual_25', nome: '', cnpj: '', telefone: '', motivo: '' },
+    { id: 'Manual_30', nome: '', cnpj: '', telefone: '', motivo: '' },
+    { id: 'Manual_15', nome: '', cnpj: '', telefone: '', motivo: '' },
+    { id: 'Manual_40', nome: '', cnpj: '', telefone: '', motivo: '' },
+    { id: 'Manual_12', nome: '', cnpj: '', telefone: '', motivo: '' },
+    { id: 'Manual_35', nome: '', cnpj: '', telefone: '', motivo: '' }
+  ]);
+
+  // Estados para cadastros
+  const [cadastros, setCadastros] = useState([
+    { id: 1, nome: '', sobrenome: '', matricula: '', perfil: 'Depositante', comSenha: 'sim' }
+  ]);
+
   const navigation = [
     { id: 'cofres', name: 'Cofres', icon: Vault },
     { id: 'manuais', name: 'Manuais', icon: BookOpen },
