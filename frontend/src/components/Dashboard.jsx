@@ -619,8 +619,8 @@ const Dashboard = () => {
 
       {/* Main content */}
       <div className="lg:ml-80 flex flex-col">
-        <main className="p-8 lg:p-12">
-          <div className="bg-white/70 backdrop-blur-lg rounded-3xl shadow-xl border border-white/50 p-8 lg:p-12">
+        <main className="p-4 sm:p-6 lg:p-12">
+          <div className="bg-white/70 backdrop-blur-lg rounded-3xl shadow-xl border border-white/50 p-4 sm:p-6 lg:p-12">
             {renderContent()}
           </div>
         </main>
