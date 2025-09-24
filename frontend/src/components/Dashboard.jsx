@@ -222,6 +222,68 @@ const Dashboard = () => {
     }
   };
 
+  // Funções para manuais
+  const updateManual = (index, field, value) => {
+    const newManuais = [...manuais];
+    newManuais[index][field] = value;
+    setManuais(newManuais);
+  };
+
+  const copyManualField = (value, fieldName) => {
+    if (!value.trim()) {
+      toast({
+        title: "Campo vazio",
+        description: "Não há conteúdo para copiar",
+        variant: "destructive"
+      });
+      return;
+    }
+    handleCopyText(value, fieldName);
+  };
+
+  // Funções para cadastros
+  const updateCadastro = (index, field, value) => {
+    const newCadastros = [...cadastros];
+    newCadastros[index][field] = value;
+    setCadastros(newCadastros);
+  };
+
+  const addCadastro = () => {
+    const newId = Math.max(...cadastros.map(c => c.id)) + 1;
+    setCadastros([...cadastros, { 
+      id: newId, 
+      nome: '', 
+      sobrenome: '', 
+      matricula: '', 
+      perfil: 'Depositante', 
+      comSenha: 'sim' 
+    }]);
+  };
+
+  const removeCadastro = (index) => {
+    if (cadastros.length > 1) {
+      const newCadastros = cadastros.filter((_, i) => i !== index);
+      setCadastros(newCadastros);
+    }
+  };
+
+  const copyCadastroCompleto = (cadastro) => {
+    const texto = `${cadastro.nome} ${cadastro.sobrenome} - Matrícula: ${cadastro.matricula} - ${cadastro.perfil} - ${cadastro.comSenha === 'sim' ? 'Com senha' : 'Sem senha'}`;
+    handleCopyText(texto, 'Cadastro completo');
+  };
+
+  const copyCadastroField = (value, fieldName) => {
+    if (!value.trim()) {
+      toast({
+        title: "Campo vazio",
+        description: "Não há conteúdo para copiar",
+        variant: "destructive"
+      });
+      return;
+    }
+    handleCopyText(value, fieldName);
+  };
+
   const handleCopyManualInfo = () => {
     const textToCopy = `Nome: \nCNPJ:** \nTelefone: \nMotivo: `;
     handleCopyText(textToCopy, 'Template do Manual');
