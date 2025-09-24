@@ -599,35 +599,168 @@ const Dashboard = () => {
           </div>
         );
 
-      case 'treinamentos':
+      case 'cadastro':
         return (
           <div className="space-y-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Treinamentos</h1>
-              <p className="text-gray-600">Cursos e materiais de capacitação</p>
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Cadastro</h1>
+                <p className="text-gray-600">Cadastro de usuários do sistema</p>
+              </div>
+              <Button 
+                onClick={addCadastro}
+                className="bg-gradient-to-r from-yellow-400 to-amber-500 text-black hover:from-yellow-500 hover:to-amber-600 shadow-lg"
+              >
+                <span className="text-lg font-bold mr-2">+</span>
+                Adicionar Cadastro
+              </Button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {['Segurança Corporativa', 'Atendimento ao Cliente', 'Sistemas Internos', 'Compliance', 'Liderança', 'Técnico Avançado'].map((training, index) => (
-                <Card key={index} className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-yellow-500">
+            
+            <div className="space-y-6">
+              {cadastros.map((cadastro, index) => (
+                <Card key={cadastro.id} className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-yellow-500">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <GraduationCap className="h-5 w-5 text-yellow-600" />
-                      {training}
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <GraduationCap className="h-5 w-5 text-yellow-600" />
+                        Cadastro {index + 1}
+                      </div>
+                      {cadastros.length > 1 && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeCadastro(index)}
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
                     </CardTitle>
-                    <CardDescription>Duração: 2-4 horas</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Progresso:</span>
-                      <Badge variant="secondary">{Math.floor(Math.random() * 100)}%</Badge>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* Nome */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm font-medium text-gray-600">Nome:</label>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyCadastroField(cadastro.nome, 'Nome')}
+                            className="h-6 w-6 p-0 hover:bg-yellow-50"
+                          >
+                            <Copy className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        <Input
+                          value={cadastro.nome}
+                          onChange={(e) => updateCadastro(index, 'nome', e.target.value)}
+                          placeholder="Digite o nome"
+                          className="text-sm"
+                        />
+                      </div>
+
+                      {/* Sobrenome */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm font-medium text-gray-600">Sobrenome:</label>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyCadastroField(cadastro.sobrenome, 'Sobrenome')}
+                            className="h-6 w-6 p-0 hover:bg-yellow-50"
+                          >
+                            <Copy className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        <Input
+                          value={cadastro.sobrenome}
+                          onChange={(e) => updateCadastro(index, 'sobrenome', e.target.value)}
+                          placeholder="Digite o sobrenome"
+                          className="text-sm"
+                        />
+                      </div>
+
+                      {/* Matrícula */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="text-sm font-medium text-gray-600">Matrícula:</label>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => copyCadastroField(cadastro.matricula, 'Matrícula')}
+                            className="h-6 w-6 p-0 hover:bg-yellow-50"
+                          >
+                            <Copy className="h-3 w-3" />
+                          </Button>
+                        </div>
+                        <Input
+                          value={cadastro.matricula}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            if (value.length <= 9) {
+                              updateCadastro(index, 'matricula', value);
+                            }
+                          }}
+                          placeholder="Digite a matrícula (máx 9 chars)"
+                          maxLength={9}
+                          className="text-sm"
+                        />
+                        <p className="text-xs text-gray-500">{cadastro.matricula.length}/9 caracteres</p>
+                      </div>
+
+                      {/* Perfil */}
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium text-gray-600">Perfil:</label>
+                        <select
+                          value={cadastro.perfil}
+                          onChange={(e) => updateCadastro(index, 'perfil', e.target.value)}
+                          className="w-full px-3 py-2 border rounded-md text-sm"
+                        >
+                          <option value="Depositante">Depositante</option>
+                          <option value="Supervisor">Supervisor</option>
+                        </select>
+                      </div>
+
+                      {/* Com senha */}
+                      <div className="space-y-2 md:col-span-2">
+                        <label className="text-sm font-medium text-gray-600">Com senha?</label>
+                        <div className="flex gap-4">
+                          <label className="flex items-center gap-2">
+                            <input
+                              type="radio"
+                              value="sim"
+                              checked={cadastro.comSenha === 'sim'}
+                              onChange={(e) => updateCadastro(index, 'comSenha', e.target.value)}
+                              className="text-yellow-500"
+                            />
+                            <span className="text-sm">Sim</span>
+                          </label>
+                          <label className="flex items-center gap-2">
+                            <input
+                              type="radio"
+                              value="nao"
+                              checked={cadastro.comSenha === 'nao'}
+                              onChange={(e) => updateCadastro(index, 'comSenha', e.target.value)}
+                              className="text-yellow-500"
+                            />
+                            <span className="text-sm">Não</span>
+                          </label>
+                        </div>
+                      </div>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className="bg-yellow-500 h-2 rounded-full" style={{width: `${Math.floor(Math.random() * 100)}%`}}></div>
+
+                    {/* Botão copiar tudo */}
+                    <div className="pt-4 border-t">
+                      <Button 
+                        variant="outline" 
+                        className="w-full border-yellow-500 text-yellow-700 hover:bg-yellow-50"
+                        onClick={() => copyCadastroCompleto(cadastro)}
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copiar Cadastro Completo
+                      </Button>
                     </div>
-                    <Button variant="outline" className="w-full border-yellow-500 text-yellow-700 hover:bg-yellow-50">
-                      <GraduationCap className="h-4 w-4 mr-2" />
-                      Continuar Treinamento
-                    </Button>
                   </CardContent>
                 </Card>
               ))}
