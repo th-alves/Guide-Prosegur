@@ -395,7 +395,7 @@ const Dashboard = () => {
               <p className="text-gray-600">Documentação e informações técnicas</p>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {mockManuals.map((manual, index) => (
+              {manuais.map((manual, index) => (
                 <Card key={index} className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-red-800">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -403,33 +403,94 @@ const Dashboard = () => {
                       {manual.id}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <div className="text-gray-600 font-medium">Nome:</div>
-                        <div className="text-gray-900">{manual.nome}</div>
+                  <CardContent className="space-y-4">
+                    {/* Nome */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-gray-600">Nome:</label>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyManualField(manual.nome, 'Nome')}
+                          className="h-6 w-6 p-0 hover:bg-yellow-50"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
                       </div>
-                      <div className="flex justify-between">
-                        <div className="text-gray-600 font-medium">CNPJ:**</div>
-                        <div className="text-gray-900">{manual.cnpj}</div>
+                      <Input
+                        value={manual.nome}
+                        onChange={(e) => updateManual(index, 'nome', e.target.value)}
+                        placeholder="Digite o nome"
+                        className="text-sm"
+                      />
+                    </div>
+
+                    {/* CNPJ */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-gray-600">CNPJ:**</label>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyManualField(`**${manual.cnpj}**`, 'CNPJ')}
+                          className="h-6 w-6 p-0 hover:bg-yellow-50"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
                       </div>
-                      <div className="flex justify-between">
-                        <div className="text-gray-600 font-medium">Telefone:</div>
-                        <div className="text-gray-900">{manual.telefone}</div>
-                      </div>
-                      <div className="mt-3">
-                        <div className="text-gray-600 font-medium">Motivo:</div>
-                        <p className="text-sm text-gray-900 mt-1">{manual.motivo}</p>
+                      <div className="flex items-center border rounded-md px-3 py-2 text-sm">
+                        <span>**</span>
+                        <input
+                          value={manual.cnpj}
+                          onChange={(e) => updateManual(index, 'cnpj', e.target.value)}
+                          placeholder="Digite o CNPJ"
+                          className="flex-1 border-0 outline-0 mx-1 bg-transparent"
+                        />
+                        <span>**</span>
                       </div>
                     </div>
-                    <Button 
-                      variant="outline" 
-                      className="w-full border-red-600 text-red-800 hover:bg-yellow-50"
-                      onClick={handleCopyManualInfo}
-                    >
-                      <Copy className="h-4 w-4 mr-2" />
-                      Copiar
-                    </Button>
+
+                    {/* Telefone */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-gray-600">Telefone:</label>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyManualField(manual.telefone, 'Telefone')}
+                          className="h-6 w-6 p-0 hover:bg-yellow-50"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                      <Input
+                        value={manual.telefone}
+                        onChange={(e) => updateManual(index, 'telefone', e.target.value)}
+                        placeholder="Digite o telefone"
+                        className="text-sm"
+                      />
+                    </div>
+
+                    {/* Motivo */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="text-sm font-medium text-gray-600">Motivo:</label>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => copyManualField(manual.motivo, 'Motivo')}
+                          className="h-6 w-6 p-0 hover:bg-yellow-50"
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                      <textarea
+                        value={manual.motivo}
+                        onChange={(e) => updateManual(index, 'motivo', e.target.value)}
+                        placeholder="Digite o motivo"
+                        className="w-full px-3 py-2 border rounded-md text-sm resize-none h-16"
+                      />
+                    </div>
                   </CardContent>
                 </Card>
               ))}
