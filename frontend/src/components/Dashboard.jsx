@@ -815,6 +815,24 @@ const Dashboard = () => {
                   </CardContent>
                 </Card>
               ))}
+              
+              {/* Botão para copiar todos os cadastros - só aparece quando há mais de um */}
+              {cadastros.length > 1 && (
+                <Card className="border-2 border-dashed border-yellow-400 bg-yellow-50/50">
+                  <CardContent className="p-6 text-center">
+                    <Button 
+                      onClick={copyTodosCadastros}
+                      className="bg-gradient-to-r from-yellow-500 to-amber-600 text-black hover:from-yellow-600 hover:to-amber-700 shadow-lg px-8"
+                    >
+                      <Copy className="h-4 w-4 mr-2" />
+                      Copiar Todos os Cadastros ({cadastros.length})
+                    </Button>
+                    <p className="text-xs text-gray-600 mt-2">
+                      Copia todos os cadastros formatados, um abaixo do outro
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         );
