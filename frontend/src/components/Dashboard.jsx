@@ -790,46 +790,46 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
       {/* Desktop Sidebar */}
-      <div className="hidden lg:flex fixed left-6 top-6 bottom-6 w-72 z-10">
+      <div className="hidden lg:flex fixed left-6 top-6 bottom-6 w-64 xl:w-72 z-10">
         <div className="flex flex-col h-full w-full bg-white/80 backdrop-blur-lg shadow-2xl rounded-3xl border border-white/50">
           {/* Header da Sidebar */}
-          <div className="p-8 border-b border-gray-100">
-            <div className="bg-gradient-to-r from-yellow-400 to-amber-500 p-6 rounded-2xl text-center shadow-lg">
-              <h2 className="text-2xl font-bold text-black tracking-tight">Guide Prosegur</h2>
-              <p className="text-sm text-black/80 mt-2 font-medium">Sistema de Gestão</p>
+          <div className="p-6 xl:p-8 border-b border-gray-100">
+            <div className="bg-gradient-to-r from-yellow-400 to-amber-500 p-4 xl:p-6 rounded-2xl text-center shadow-lg">
+              <h2 className="text-xl xl:text-2xl font-bold text-black tracking-tight">Guide Prosegur</h2>
+              <p className="text-xs xl:text-sm text-black/80 mt-1 xl:mt-2 font-medium">Sistema de Gestão</p>
             </div>
           </div>
           
           {/* Navegação */}
-          <nav className="flex-1 p-6 space-y-3">
+          <nav className="flex-1 p-4 xl:p-6 space-y-2 xl:space-y-3">
             {navigation.map((item) => {
               const Icon = item.icon;
               return (
                 <button
                   key={item.id}
                   onClick={() => setActiveSection(item.id)}
-                  className={`group w-full flex items-center gap-4 px-6 py-4 text-left rounded-2xl transition-all duration-300 transform hover:scale-105 ${
+                  className={`group w-full flex items-center gap-3 xl:gap-4 px-4 xl:px-6 py-3 xl:py-4 text-left rounded-2xl transition-all duration-300 transform hover:scale-105 ${
                     activeSection === item.id
                       ? 'bg-gradient-to-r from-yellow-400 to-amber-500 text-black shadow-lg shadow-yellow-500/25 scale-105'
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`}
                 >
-                  <div className={`p-2 rounded-xl transition-all duration-300 ${
+                  <div className={`p-1.5 xl:p-2 rounded-xl transition-all duration-300 ${
                     activeSection === item.id 
                       ? 'bg-black/10' 
                       : 'bg-gray-100 group-hover:bg-yellow-100'
                   }`}>
-                    <Icon className="h-5 w-5" />
+                    <Icon className="h-4 w-4 xl:h-5 xl:w-5" />
                   </div>
-                  <span className="font-semibold text-base tracking-wide">{item.name}</span>
+                  <span className="font-semibold text-sm xl:text-base tracking-wide">{item.name}</span>
                 </button>
               );
             })}
           </nav>
           
           {/* Footer da Sidebar */}
-          <div className="p-6 border-t border-gray-100">
-            <div className="bg-gray-50 rounded-2xl p-4 text-center">
+          <div className="p-4 xl:p-6 border-t border-gray-100">
+            <div className="bg-gray-50 rounded-2xl p-3 xl:p-4 text-center">
               <p className="text-xs text-gray-500 font-medium">Versão 2.0</p>
               <p className="text-xs text-gray-400 mt-1">Prosegur © 2025</p>
             </div>
@@ -903,9 +903,9 @@ const Dashboard = () => {
       )}
 
       {/* Main content */}
-      <div className="lg:ml-80 flex flex-col">
-        <main className="p-4 sm:p-6 lg:p-12">
-          <div className="bg-white/70 backdrop-blur-lg rounded-3xl shadow-xl border border-white/50 p-4 sm:p-6 lg:p-12">
+      <div className="lg:ml-72 xl:ml-80 flex flex-col">
+        <main className="p-4 sm:p-6 lg:p-8 xl:p-12">
+          <div className="bg-white/70 backdrop-blur-lg rounded-3xl shadow-xl border border-white/50 p-4 sm:p-6 lg:p-8 xl:p-12">
             {renderContent()}
           </div>
         </main>
