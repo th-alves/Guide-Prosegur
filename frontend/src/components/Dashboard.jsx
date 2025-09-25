@@ -791,16 +791,26 @@ const Dashboard = () => {
                       </div>
                     </div>
 
-                    {/* Botão copiar tudo */}
-                    <div className="pt-4 border-t">
-                      <Button 
-                        variant="outline" 
-                        className="w-full border-yellow-500 text-yellow-700 hover:bg-yellow-50"
-                        onClick={() => copyCadastroCompleto(cadastro)}
-                      >
-                        <Copy className="h-4 w-4 mr-2" />
-                        Copiar Cadastro Completo
-                      </Button>
+                    {/* Botões de ação */}
+                    <div className="pt-4 border-t space-y-3">
+                      <div className="flex gap-3">
+                        <Button 
+                          variant="outline" 
+                          className="flex-1 border-yellow-500 text-yellow-700 hover:bg-yellow-50"
+                          onClick={() => copyCadastroCompleto(cadastro)}
+                        >
+                          <Copy className="h-4 w-4 mr-2" />
+                          Copiar Cadastro
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          className="flex-1 border-gray-400 text-gray-600 hover:bg-gray-50"
+                          onClick={() => limparCadastro(index)}
+                        >
+                          <X className="h-4 w-4 mr-2" />
+                          Limpar
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
