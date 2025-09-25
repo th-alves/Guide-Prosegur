@@ -289,6 +289,33 @@ const Dashboard = () => {
     handleCopyText(texto, 'Manual completo');
   };
 
+  const limparCadastro = (index) => {
+    const newCadastros = [...cadastros];
+    newCadastros[index] = {
+      ...newCadastros[index],
+      nome: '',
+      sobrenome: '',
+      matricula: '',
+      perfil: 'Depositante',
+      comSenha: 'sim'
+    };
+    setCadastros(newCadastros);
+    
+    toast({
+      title: "Campos limpos",
+      description: "Todos os campos do cadastro foram limpos",
+    });
+  };
+
+  const copyTodosCadastros = () => {
+    const textos = cadastros.map((cadastro, index) => {
+      return `${cadastro.nome} ${cadastro.sobrenome} - Matrícula: ${cadastro.matricula} - ${cadastro.perfil} - ${cadastro.comSenha === 'sim' ? 'Com senha' : 'Sem senha'}`;
+    });
+    
+    const textoCompleto = textos.join('\n');
+    handleCopyText(textoCompleto, 'Todos os cadastros');
+  };
+
 
 
   const handleViewManual = (cofreModel) => {
