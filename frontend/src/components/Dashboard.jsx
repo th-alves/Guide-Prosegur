@@ -284,6 +284,11 @@ const Dashboard = () => {
     handleCopyText(value, fieldName);
   };
 
+  const copyManualCompleto = (manual) => {
+    const texto = `Nome: ${manual.nome}\nCNPJ: **${manual.cnpj}**\nTelefone: ${manual.telefone}\nMotivo: ${manual.motivo}`;
+    handleCopyText(texto, 'Manual completo');
+  };
+
 
 
   const handleViewManual = (cofreModel) => {
