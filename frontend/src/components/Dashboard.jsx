@@ -493,6 +493,18 @@ const Dashboard = () => {
                         className="w-full px-3 py-2 border rounded-md text-sm resize-none h-16"
                       />
                     </div>
+
+                    {/* Botão copiar manual completo */}
+                    <div className="pt-4 border-t">
+                      <Button 
+                        variant="outline" 
+                        className="w-full border-red-600 text-red-800 hover:bg-yellow-50"
+                        onClick={() => copyManualCompleto(manual)}
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copiar Manual Completo
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
