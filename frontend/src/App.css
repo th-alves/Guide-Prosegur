@@ -12,6 +12,10 @@ code {
         monospace;
 }
 
+.all {
+    background: url(./image/bg-prosegur.jpg);
+}
+
 .App {
     min-height: 100vh;
 }
