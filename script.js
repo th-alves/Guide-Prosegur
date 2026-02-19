@@ -241,6 +241,17 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Campos limpos!');
     };
 
+    window.copyCnpj25 = function (btn) {
+        const card = btn.closest('.manual-card');
+        const cnpj = card.querySelector('[data-mfield="cnpj"]').value.trim();
+        if (cnpj) {
+            copyToClipboard(`*${cnpj}*`);
+            showToast('CNPJ copiado!');
+        } else {
+            showToast('Preencha o CNPJ primeiro!', true);
+        }
+    };
+
     window.copyManual = function (btn) {
         const card = btn.closest('.manual-card');
         const manualId = card.dataset.manual;

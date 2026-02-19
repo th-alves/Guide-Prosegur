@@ -347,6 +347,22 @@ body {
     border-color: var(--prosegur-yellow);
 }
 
+.input-with-btn {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.input-with-btn .input-field {
+    flex: 1;
+}
+
+.label-with-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .form-badge {
     background: var(--grad-accent);
     color: #1A1F36;
