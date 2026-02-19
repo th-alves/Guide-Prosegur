@@ -44,7 +44,7 @@
 }
 
 body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
     background: var(--prosegur-dark);
     color: var(--prosegur-text);
     min-height: 100vh;
@@ -329,6 +329,22 @@ body {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1rem;
+}
+
+.btn-icon {
+    background: none;
+    border: 1px solid var(--prosegur-border-muted);
+    color: var(--prosegur-text-muted);
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: var(--transition);
+}
+
+.btn-icon:hover {
+    color: var(--prosegur-yellow);
+    border-color: var(--prosegur-yellow);
 }
 
 .form-badge {

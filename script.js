@@ -22,9 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainNav = document.getElementById('mainNav');
 
     const heroData = {
-        cadastro: { title: 'Cadastro de Usuário', desc: 'Gerencie cadastros de forma rápida e eficiente' },
-        manuais: { title: 'Manuais', desc: 'Gere manuais formatados em instantes' },
-        scripts: { title: 'Scripts WhatsApp', desc: 'Mensagens prontas para copiar e enviar' }
+        cadastro: { title: 'Cadastro de Usuário' },
+        manuais: { title: 'Manuais' },
+        scripts: { title: 'Scripts WhatsApp' }
     };
 
     // ---- NAVIGATION ----
@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
             tabs.forEach(t => t.classList.remove('active'));
             document.getElementById(`tab-${tab}`).classList.add('active');
             heroTitle.textContent = heroData[tab].title;
-            heroDesc.textContent = heroData[tab].desc;
             mainNav.classList.remove('open');
         });
     });
@@ -61,6 +60,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     senhaField.classList.add('hidden');
                 } else {
                     senhaField.classList.remove('hidden');
+                }
+            }
+
+            // Handle Supervisor: always force com senha
+            if (e.target.dataset.field === 'funcao') {
+                const form = e.target.closest('.user-form');
+                if (e.target.dataset.value === 'Supervisor(a)') {
+                    const senhaGroup = form.querySelectorAll('[data-field="senha"]');
+                    senhaGroup.forEach(b => b.classList.remove('active'));
+                    const comBtn = form.querySelector('[data-field="senha"][data-value="com"]');
+                    if (comBtn) comBtn.classList.add('active');
+                    form.querySelector('.senha-field').classList.remove('hidden');
                 }
             }
 
@@ -158,6 +169,21 @@ document.addEventListener('DOMContentLoaded', () => {
         userFormCount = forms.length;
     }
 
+    window.clearCadastroForm = function (btn) {
+        const form = btn.closest('.user-form');
+        form.querySelectorAll('input.input-field').forEach(f => f.value = '');
+        // Reset toggles to defaults
+        form.querySelectorAll('.toggle-group').forEach(group => {
+            const btns = group.querySelectorAll('.toggle-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            if (btns[0]) btns[0].classList.add('active');
+        });
+        // Show senha field by default (since "Com Senha" is first)
+        const senhaField = form.querySelector('.senha-field');
+        if (senhaField) senhaField.classList.remove('hidden');
+        showToast('Campos limpos!');
+    };
+
     // ---- COPY CADASTROS ----
     btnCopyCadastro.addEventListener('click', () => {
         const forms = formsContainer.querySelectorAll('.user-form');
@@ -182,9 +208,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const senhaValue = form.querySelector('[data-field="senhaValue"]')?.value.trim() || '';
 
-            let line = `${nome} ${sobrenome} - Matrícula ${matricula} - ${funcao} ${comSenha ? 'com senha' : 'sem senha'}`;
-            if (comSenha && senhaValue) {
-                line += ` - Senha: ${senhaValue}`;
+            let line;
+            if (funcao === 'Supervisor(a)') {
+                line = `${nome} ${sobrenome} - Matrícula ${matricula} - Supervisor(a) - Senha: ${senhaValue}`;
+            } else {
+                line = `${nome} ${sobrenome} - Matrícula ${matricula} - ${funcao} ${comSenha ? 'com senha' : 'sem senha'}`;
+                if (comSenha && senhaValue) {
+                    line += ` - Senha: ${senhaValue}`;
+                }
             }
 
             lines.push(line);
@@ -200,6 +231,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.toggleManual = function (headerEl) {
         const card = headerEl.closest('.manual-card');
         card.classList.toggle('open');
+    };
+
+    window.clearManual = function (btn) {
+        const card = btn.closest('.manual-card');
+        card.querySelectorAll('input.input-field, textarea.input-field').forEach(field => {
+            field.value = field.defaultValue;
+        });
+        showToast('Campos limpos!');
     };
 
     window.copyManual = function (btn) {
