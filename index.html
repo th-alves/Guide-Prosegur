@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Prosegur - Portal de Cadastro, Manuais e Scripts">
+    <title>Caixa Fácil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="logo-brand">GUIDE PROSEGUR</span>
+                    <span class="logo-sub">Central de Atendimento</span>
+                </div>
+            </div>
+            <nav class="nav" id="mainNav">
+                <button class="nav-btn active" data-tab="cadastro" id="nav-cadastro">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Cadastro</span>
+                </button>
+                <button class="nav-btn" data-tab="manuais" id="nav-manuais">
+                    <i class="fas fa-book"></i>
+                    <span>Manuais</span>
+                </button>
+                <button class="nav-btn" data-tab="scripts" id="nav-scripts">
+                    <i class="fab fa-whatsapp"></i>
+                    <span>Scripts WhatsApp</span>
+                </button>
+            </nav>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMsg">Copiado com sucesso!</span>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+        <div class="hero-content">
+            <h1 id="heroTitle">Cadastro de Usuário</h1>
+            <p id="heroDesc">Gerencie cadastros de forma rápida e eficiente</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- CADASTRO TAB -->
+        <section class="tab-content active" id="tab-cadastro">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-users"></i> Formulário de Cadastro</h2>
+                    <p class="card-subtitle">Preencha os dados abaixo para gerar o cadastro formatado</p>
+                </div>
+                <div id="formsContainer">
+                    <div class="user-form" data-index="0">
+                        <div class="form-header-row">
+                            <span class="form-badge">Usuário 1</span>
+                        </div>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> Nome</label>
+                                <input type="text" class="input-field" placeholder="Digite o nome" data-field="nome">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> Sobrenome</label>
+                                <input type="text" class="input-field" placeholder="Digite o sobrenome" data-field="sobrenome">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-id-card"></i> Matrícula</label>
+                                <input type="text" class="input-field" placeholder="2 a 8 dígitos" data-field="matricula" maxlength="8">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-lock"></i> Senha</label>
+                                <div class="toggle-group">
+                                    <button class="toggle-btn active" data-value="com" data-field="senha">Com Senha</button>
+                                    <button class="toggle-btn" data-value="sem" data-field="senha">Sem Senha</button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-user-tag"></i> Função</label>
+                                <div class="toggle-group">
+                                    <button class="toggle-btn active" data-value="Depositante" data-field="funcao">Depositante</button>
+                                    <button class="toggle-btn" data-value="Supervisor(a)" data-field="funcao">Supervisor(a)</button>
+                                </div>
+                            </div>
+                            <div class="form-group senha-field">
+                                <label><i class="fas fa-key"></i> Definir Senha</label>
+                                <input type="text" class="input-field" placeholder="Senha do usuário" data-field="senhaValue">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-secondary" id="btnAddUser">
+                        <i class="fas fa-plus-circle"></i> Adicionar Usuário
+                    </button>
+                    <button class="btn btn-primary" id="btnCopyCadastro">
+                        <i class="fas fa-copy"></i> Copiar Cadastros
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- MANUAIS TAB -->
+        <section class="tab-content" id="tab-manuais">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fas fa-book-open"></i> Manuais</h2>
+                    <p class="card-subtitle">Preencha os campos do manual desejado e copie o texto formatado</p>
+                </div>
+                <div class="manuais-list">
+
+                    <!-- MANUAL 16 -->
+                    <div class="manual-card" data-manual="manual_16">
+                        <div class="manual-card-header" onclick="toggleManual(this)">
+                            <div class="manual-title-row">
+                                <span class="form-badge">Manual_16</span>
+                                <span class="manual-label">Equipamento Inoperante</span>
+                            </div>
+                            <i class="fas fa-chevron-down manual-chevron"></i>
+                        </div>
+                        <div class="manual-card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Nome</label>
+                                    <input type="text" class="input-field" data-mfield="nome" placeholder="Nome do cliente">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Contato</label>
+                                    <input type="text" class="input-field" data-mfield="contato" placeholder="(XX) XXXXX-XXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-building"></i> CNPJ/Protocolo</label>
+                                    <input type="text" class="input-field" data-mfield="cnpj" placeholder="Valor entre asteriscos">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-align-left"></i> Motivo</label>
+                                    <textarea class="input-field textarea" data-mfield="motivo" placeholder="Motivo" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-envelope"></i> E-mail</label>
+                                    <input type="text" class="input-field" data-mfield="email" placeholder="E-mail">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-info-circle"></i> Status</label>
+                                    <input type="text" class="input-field" data-mfield="status" value="Inoperante">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-headset"></i> Canal de Atendimento</label>
+                                    <input type="text" class="input-field" data-mfield="canal" value="Telefone">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-directions"></i> Direcionado para</label>
+                                    <input type="text" class="input-field" data-mfield="direcionado" value="Apoio Operacional">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary btn-copy-manual" onclick="copyManual(this)">
+                                    <i class="fas fa-copy"></i> Copiar Manual
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MANUAL 18 -->
+                    <div class="manual-card" data-manual="manual_18">
+                        <div class="manual-card-header" onclick="toggleManual(this)">
+                            <div class="manual-title-row">
+                                <span class="form-badge">Manual_18</span>
+                                <span class="manual-label">Direcionamento Geral</span>
+                            </div>
+                            <i class="fas fa-chevron-down manual-chevron"></i>
+                        </div>
+                        <div class="manual-card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Nome</label>
+                                    <input type="text" class="input-field" data-mfield="nome" placeholder="Nome do cliente">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Contato</label>
+                                    <input type="text" class="input-field" data-mfield="contato" placeholder="(XX) XXXXX-XXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-align-left"></i> Motivo do contato</label>
+                                    <textarea class="input-field textarea" data-mfield="motivo" placeholder="Motivo do contato" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-directions"></i> Direcionado para</label>
+                                    <input type="text" class="input-field" data-mfield="direcionado" placeholder="Direcionado para">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary btn-copy-manual" onclick="copyManual(this)">
+                                    <i class="fas fa-copy"></i> Copiar Manual
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MANUAL 66 -->
+                    <div class="manual-card" data-manual="manual_66">
+                        <div class="manual-card-header" onclick="toggleManual(this)">
+                            <div class="manual-title-row">
+                                <span class="form-badge">Manual_66</span>
+                                <span class="manual-label">Técnico Interno</span>
+                            </div>
+                            <i class="fas fa-chevron-down manual-chevron"></i>
+                        </div>
+                        <div class="manual-card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Nome</label>
+                                    <input type="text" class="input-field" data-mfield="nome" placeholder="Nome do cliente">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Contato</label>
+                                    <input type="text" class="input-field" data-mfield="contato" placeholder="(XX) XXXXX-XXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-building"></i> CNPJ/Protocolo</label>
+                                    <input type="text" class="input-field" data-mfield="cnpj" placeholder="Valor entre asteriscos">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-envelope"></i> E-mail liberação</label>
+                                    <input type="text" class="input-field" data-mfield="emailLiberacao" placeholder="E-mail liberação">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-align-left"></i> Motivo</label>
+                                    <textarea class="input-field textarea" data-mfield="motivo" placeholder="Motivo" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-info-circle"></i> Status</label>
+                                    <input type="text" class="input-field" data-mfield="status" placeholder="Status">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-directions"></i> Direcionado para</label>
+                                    <input type="text" class="input-field" data-mfield="direcionado" value="Técnico interno">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary btn-copy-manual" onclick="copyManual(this)">
+                                    <i class="fas fa-copy"></i> Copiar Manual
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MANUAL 06 -->
+                    <div class="manual-card" data-manual="manual_06">
+                        <div class="manual-card-header" onclick="toggleManual(this)">
+                            <div class="manual-title-row">
+                                <span class="form-badge">MANUAL_06</span>
+                                <span class="manual-label">Técnico Externo</span>
+                            </div>
+                            <i class="fas fa-chevron-down manual-chevron"></i>
+                        </div>
+                        <div class="manual-card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Nome</label>
+                                    <input type="text" class="input-field" data-mfield="nome" placeholder="Nome do cliente">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Contato</label>
+                                    <input type="text" class="input-field" data-mfield="contato" placeholder="(XX) XXXXX-XXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-envelope"></i> E-mail liberação</label>
+                                    <input type="text" class="input-field" data-mfield="emailLiberacao" placeholder="E-mail liberação">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-align-left"></i> Motivo</label>
+                                    <textarea class="input-field textarea" data-mfield="motivo" placeholder="Motivo" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-info-circle"></i> Status</label>
+                                    <input type="text" class="input-field" data-mfield="status" value="Operacional">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-headset"></i> Canal de Atendimento</label>
+                                    <input type="text" class="input-field" data-mfield="canal" value="Telefone">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-directions"></i> Direcionado Para</label>
+                                    <input type="text" class="input-field" data-mfield="direcionado" value="Técnico Externo">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary btn-copy-manual" onclick="copyManual(this)">
+                                    <i class="fas fa-copy"></i> Copiar Manual
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MANUAL 24 -->
+                    <div class="manual-card" data-manual="manual_24">
+                        <div class="manual-card-header" onclick="toggleManual(this)">
+                            <div class="manual-title-row">
+                                <span class="form-badge">Manual_24</span>
+                                <span class="manual-label">Criação de Usuários</span>
+                            </div>
+                            <i class="fas fa-chevron-down manual-chevron"></i>
+                        </div>
+                        <div class="manual-card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-clock"></i> Usuários chegaram ao cofre às</label>
+                                    <input type="text" class="input-field" data-mfield="horarioCofre" placeholder="HH:MM">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Nome</label>
+                                    <input type="text" class="input-field" data-mfield="nome" placeholder="Nome do cliente">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Contato</label>
+                                    <input type="text" class="input-field" data-mfield="contato" placeholder="(XX) XXXXX-XXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-building"></i> CNPJ/Protocolo</label>
+                                    <input type="text" class="input-field" data-mfield="cnpj" placeholder="Valor entre asteriscos">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-id-badge"></i> Nome no Mi Prosegur</label>
+                                    <input type="text" class="input-field" data-mfield="nomeMi" placeholder="Nome no Mi Prosegur">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-map-marker-alt"></i> Localizado no Mi</label>
+                                    <input type="text" class="input-field" data-mfield="localizadoMi" placeholder="Localizado no Mi">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label><i class="fas fa-users"></i> Usuários criados</label>
+                                    <input type="text" class="input-field" data-mfield="usuariosCriados" placeholder="Usuários criados">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary btn-copy-manual" onclick="copyManual(this)">
+                                    <i class="fas fa-copy"></i> Copiar Manual
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MANUAL 15 -->
+                    <div class="manual-card" data-manual="manual_15">
+                        <div class="manual-card-header" onclick="toggleManual(this)">
+                            <div class="manual-title-row">
+                                <span class="form-badge">Manual_15</span>
+                                <span class="manual-label">Material</span>
+                            </div>
+                            <i class="fas fa-chevron-down manual-chevron"></i>
+                        </div>
+                        <div class="manual-card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Nome</label>
+                                    <input type="text" class="input-field" data-mfield="nome" placeholder="Nome do cliente">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Contato</label>
+                                    <input type="text" class="input-field" data-mfield="contato" placeholder="(XX) XXXXX-XXXX">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label><i class="fas fa-box"></i> Material</label>
+                                    <input type="text" class="input-field" data-mfield="material" placeholder="Material">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary btn-copy-manual" onclick="copyManual(this)">
+                                    <i class="fas fa-copy"></i> Copiar Manual
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MANUAL 03 -->
+                    <div class="manual-card" data-manual="manual_03">
+                        <div class="manual-card-header" onclick="toggleManual(this)">
+                            <div class="manual-title-row">
+                                <span class="form-badge">Manual_03</span>
+                                <span class="manual-label">Diferença de Valores</span>
+                            </div>
+                            <i class="fas fa-chevron-down manual-chevron"></i>
+                        </div>
+                        <div class="manual-card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Nome</label>
+                                    <input type="text" class="input-field" data-mfield="nome" placeholder="Nome do cliente">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Contato</label>
+                                    <input type="text" class="input-field" data-mfield="contato" placeholder="(XX) XXXXX-XXXX">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label><i class="fas fa-envelope"></i> E-mail</label>
+                                    <input type="text" class="input-field" data-mfield="email" placeholder="E-mail">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-dollar-sign"></i> Valor Depositado</label>
+                                    <input type="text" class="input-field" data-mfield="valorDepositado" placeholder="R$ 0,00">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-calculator"></i> Valor Contabilizado</label>
+                                    <input type="text" class="input-field" data-mfield="valorContabilizado" placeholder="R$ 0,00">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-exclamation-triangle"></i> Valor da Diferença</label>
+                                    <input type="text" class="input-field" data-mfield="valorDiferenca" placeholder="R$ 0,00">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-calendar-alt"></i> Data/Hora do Depósito</label>
+                                    <input type="text" class="input-field" data-mfield="dataHora" placeholder="DD/MM/AAAA HH:MM">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-id-card"></i> Usuário/Matrícula que depositou</label>
+                                    <input type="text" class="input-field" data-mfield="usuarioMatricula" placeholder="Usuário/Matrícula">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label><i class="fas fa-hashtag"></i> ID da solicitação</label>
+                                    <input type="text" class="input-field" data-mfield="idSolicitacao" placeholder="ID da solicitação">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary btn-copy-manual" onclick="copyManual(this)">
+                                    <i class="fas fa-copy"></i> Copiar Manual
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 31 TROCA DE NOBREAK -->
+                    <div class="manual-card" data-manual="31_nobreak">
+                        <div class="manual-card-header" onclick="toggleManual(this)">
+                            <div class="manual-title-row">
+                                <span class="form-badge">31</span>
+                                <span class="manual-label">Troca de Nobreak (aberto)</span>
+                            </div>
+                            <i class="fas fa-chevron-down manual-chevron"></i>
+                        </div>
+                        <div class="manual-card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Nome</label>
+                                    <input type="text" class="input-field" data-mfield="nome" placeholder="Nome do cliente">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Contato</label>
+                                    <input type="text" class="input-field" data-mfield="contato" placeholder="(XX) XXXXX-XXXX">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label><i class="fas fa-align-left"></i> Motivo</label>
+                                    <textarea class="input-field textarea" data-mfield="motivo" placeholder="Motivo" rows="3"></textarea>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary btn-copy-manual" onclick="copyManual(this)">
+                                    <i class="fas fa-copy"></i> Copiar Manual
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MANUAL 25 -->
+                    <div class="manual-card" data-manual="manual_25">
+                        <div class="manual-card-header" onclick="toggleManual(this)">
+                            <div class="manual-title-row">
+                                <span class="form-badge">Manual_25</span>
+                                <span class="manual-label">Atendimento Geral</span>
+                            </div>
+                            <i class="fas fa-chevron-down manual-chevron"></i>
+                        </div>
+                        <div class="manual-card-body">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label><i class="fas fa-user"></i> Nome</label>
+                                    <input type="text" class="input-field" data-mfield="nome" placeholder="Nome do cliente">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-phone"></i> Contato</label>
+                                    <input type="text" class="input-field" data-mfield="contato" placeholder="(XX) XXXXX-XXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-building"></i> CNPJ</label>
+                                    <input type="text" class="input-field" data-mfield="cnpj" placeholder="XX.XXX.XXX/XXXX-XX">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-align-left"></i> Motivo</label>
+                                    <textarea class="input-field textarea" data-mfield="motivo" placeholder="Motivo" rows="3"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-info-circle"></i> Status</label>
+                                    <input type="text" class="input-field" data-mfield="status" placeholder="Status">
+                                </div>
+                                <div class="form-group">
+                                    <label><i class="fas fa-headset"></i> Canal de Atendimento</label>
+                                    <div class="toggle-group">
+                                        <button class="toggle-btn" data-value="WhatsApp" data-mfield="canal25">WhatsApp</button>
+                                        <button class="toggle-btn active" data-value="Telefone" data-mfield="canal25">Telefone</button>
+                                    </div>
+                                </div>
+                                <div class="form-group protocolo-field-25 hidden">
+                                    <label><i class="fas fa-ticket"></i> Protocolo WhatsApp</label>
+                                    <input type="text" class="input-field" data-mfield="protocolo" placeholder="Nº do protocolo">
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button class="btn btn-primary btn-copy-manual" onclick="copyManual(this)">
+                                    <i class="fas fa-copy"></i> Copiar Manual
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SCRIPTS WHATSAPP TAB -->
+        <section class="tab-content" id="tab-scripts">
+            <div class="card">
+                <div class="card-header">
+                    <h2><i class="fab fa-whatsapp"></i> Scripts WhatsApp</h2>
+                    <p class="card-subtitle">Modelos de mensagens prontas para copiar e enviar</p>
+                </div>
+                <div class="scripts-grid">
+
+                    <div class="script-card">
+                        <div class="script-icon"><i class="fas fa-handshake"></i></div>
+                        <h3>Saudação Inicial</h3>
+                        <div class="script-body">
+                            <p>Olá! Bom dia/Boa tarde! 😊</p>
+                            <p>Meu nome é _______, sou da equipe Prosegur.</p>
+                            <p>Como posso ajudá-lo(a) hoje?</p>
+                        </div>
+                        <button class="btn btn-copy" data-script="saudacao">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+
+                    <div class="script-card">
+                        <div class="script-icon"><i class="fas fa-user-check"></i></div>
+                        <h3>Confirmação de Cadastro</h3>
+                        <div class="script-body">
+                            <p>Olá! Tudo bem? 😊</p>
+                            <p>Informamos que o cadastro foi realizado com sucesso!</p>
+                            <p>Segue abaixo os dados de acesso:</p>
+                            <p>Usuário: ________</p>
+                            <p>Senha: ________</p>
+                            <p>Em caso de dúvidas, estamos à disposição.</p>
+                        </div>
+                        <button class="btn btn-copy" data-script="confirmacao">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+
+                    <div class="script-card">
+                        <div class="script-icon"><i class="fas fa-clock"></i></div>
+                        <h3>Aguardando Informações</h3>
+                        <div class="script-body">
+                            <p>Olá! 😊</p>
+                            <p>Para darmos continuidade ao seu atendimento, precisamos das seguintes informações:</p>
+                            <p>📌 Nome completo</p>
+                            <p>📌 Matrícula</p>
+                            <p>📌 Motivo da solicitação</p>
+                            <p>Aguardamos seu retorno!</p>
+                        </div>
+                        <button class="btn btn-copy" data-script="aguardando">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+
+                    <div class="script-card">
+                        <div class="script-icon"><i class="fas fa-tools"></i></div>
+                        <h3>Suporte Técnico</h3>
+                        <div class="script-body">
+                            <p>Olá! 😊</p>
+                            <p>Identificamos a sua solicitação e já estamos trabalhando para resolver.</p>
+                            <p>Caso precise de algo mais, é só nos chamar!</p>
+                            <p>Att, Equipe Prosegur 🔒</p>
+                        </div>
+                        <button class="btn btn-copy" data-script="suporte">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+
+                    <div class="script-card">
+                        <div class="script-icon"><i class="fas fa-check-double"></i></div>
+                        <h3>Finalização de Atendimento</h3>
+                        <div class="script-body">
+                            <p>Olá! 😊</p>
+                            <p>Seu atendimento foi finalizado com sucesso! ✅</p>
+                            <p>Caso tenha alguma dúvida no futuro, não hesite em nos contatar.</p>
+                            <p>Agradecemos pela confiança!</p>
+                            <p>Att, Equipe Prosegur 🔒</p>
+                        </div>
+                        <button class="btn btn-copy" data-script="finalizacao">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+
+                    <div class="script-card">
+                        <div class="script-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <h3>Problema Identificado</h3>
+                        <div class="script-body">
+                            <p>Olá! 😊</p>
+                            <p>Identificamos um problema referente à sua solicitação.</p>
+                            <p>Detalhes: _______________</p>
+                            <p>Nossa equipe já está atuando para resolução.</p>
+                            <p>Prazo estimado: ___________</p>
+                            <p>Att, Equipe Prosegur 🔒</p>
+                        </div>
+                        <button class="btn btn-copy" data-script="problema">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-shield-halved"></i>
+                <span>PROSEGUR</span>
+            </div>
+            <p>&copy; 2026 Prosegur - Portal Interno. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

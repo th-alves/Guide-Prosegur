@@ -1,0 +1,829 @@
+/* ============================
+   PROSEGUR PORTAL - STYLES
+   ============================ */
+
+:root {
+    /* Prosegur brand colors - Yellow/Gold */
+    --prosegur-yellow: #EDAA00;
+    --prosegur-yellow-dark: #C48E00;
+    --prosegur-yellow-light: #FFD54F;
+    --prosegur-navy: #1A1F36;
+    --prosegur-navy-light: #252B45;
+    --prosegur-dark: #0D0F1A;
+    --prosegur-gray: #2A2F4A;
+    --prosegur-gray-light: #3D4260;
+    --prosegur-text: #E8E9EF;
+    --prosegur-text-muted: #9DA1B5;
+    --prosegur-white: #FFFFFF;
+    --prosegur-gold: #EDAA00;
+    --prosegur-green: #2ECC71;
+
+    /* Gradients */
+    --grad-accent: linear-gradient(135deg, #EDAA00, #FFD54F);
+    --grad-dark: linear-gradient(180deg, #1A1F36, #0D0F1A);
+    --grad-card: linear-gradient(145deg, rgba(42, 47, 74, 0.6), rgba(26, 31, 54, 0.8));
+    --grad-hero: linear-gradient(135deg, #1A1F36 0%, #3A2A00 50%, #EDAA00 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.4);
+    --shadow-accent: 0 4px 20px rgba(237, 170, 0, 0.3);
+
+    /* Spacing */
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-lg: 16px;
+    --transition: all 0.15s ease-out;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--prosegur-dark);
+    color: var(--prosegur-text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* ============================
+   HEADER & NAVIGATION
+   ============================ */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(13, 15, 26, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(237, 170, 0, 0.2);
+    padding: 0 2rem;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-icon {
+    width: 42px;
+    height: 42px;
+    background: var(--grad-accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #1A1F36;
+    box-shadow: var(--shadow-accent);
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-brand {
+    font-size: 1.2rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--prosegur-white);
+}
+
+.logo-sub {
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: var(--prosegur-text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.nav {
+    display: flex;
+    gap: 6px;
+}
+
+.nav-btn {
+    background: transparent;
+    border: none;
+    color: var(--prosegur-text-muted);
+    padding: 10px 18px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+    position: relative;
+}
+
+.nav-btn:hover {
+    color: var(--prosegur-white);
+    background: rgba(237, 170, 0, 0.1);
+}
+
+.nav-btn.active {
+    color: var(--prosegur-yellow-light);
+    background: rgba(237, 170, 0, 0.15);
+}
+
+.nav-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 3px;
+    background: var(--prosegur-yellow);
+    border-radius: 3px;
+}
+
+.mobile-menu-btn {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--prosegur-text);
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 8px;
+}
+
+/* ============================
+   HERO SECTION
+   ============================ */
+.hero {
+    margin-top: 70px;
+    padding: 3rem 2rem;
+    position: relative;
+    overflow: hidden;
+    background: var(--grad-hero);
+    text-align: center;
+}
+
+.hero-bg-shapes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.08;
+    background: white;
+}
+
+.shape-1 {
+    width: 300px;
+    height: 300px;
+    top: -100px;
+    right: -50px;
+    animation: float 12s linear infinite;
+}
+
+.shape-2 {
+    width: 200px;
+    height: 200px;
+    bottom: -80px;
+    left: 10%;
+    animation: float 15s linear infinite reverse;
+}
+
+.shape-3 {
+    width: 150px;
+    height: 150px;
+    top: 20%;
+    left: -40px;
+    animation: float 10s linear infinite 1s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-content h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.4rem;
+    color: white;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.hero-content p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.8);
+    font-weight: 300;
+}
+
+/* ============================
+   MAIN CONTENT
+   ============================ */
+.main-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    min-height: 60vh;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeSlideIn 0.2s ease-out;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================
+   CARDS
+   ============================ */
+.card {
+    background: var(--grad-card);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow-md);
+}
+
+.card-header {
+    margin-bottom: 1.5rem;
+}
+
+.card-header h2 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--prosegur-white);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-header h2 i {
+    color: var(--prosegur-yellow);
+}
+
+.card-subtitle {
+    font-size: 0.88rem;
+    color: var(--prosegur-text-muted);
+    margin-top: 4px;
+}
+
+/* ============================
+   FORMS
+   ============================ */
+.user-form {
+    background: rgba(26, 31, 54, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: var(--transition);
+    position: relative;
+}
+
+.user-form:hover {
+    border-color: rgba(237, 170, 0, 0.25);
+}
+
+.form-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.form-badge {
+    background: var(--grad-accent);
+    color: #1A1F36;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+}
+
+.btn-remove-user {
+    background: transparent;
+    border: 1px solid rgba(255, 80, 80, 0.3);
+    color: #ff5050;
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-family: inherit;
+    font-weight: 500;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-remove-user:hover {
+    background: rgba(255, 80, 80, 0.1);
+    border-color: rgba(255, 80, 80, 0.5);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--prosegur-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.form-group label i {
+    color: var(--prosegur-yellow);
+    font-size: 0.75rem;
+}
+
+.input-field {
+    background: rgba(13, 15, 26, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: var(--prosegur-text);
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.9rem;
+    outline: none;
+    transition: var(--transition);
+}
+
+.input-field::placeholder {
+    color: rgba(157, 161, 181, 0.5);
+}
+
+.input-field:focus {
+    border-color: var(--prosegur-yellow);
+    box-shadow: 0 0 0 3px rgba(237, 170, 0, 0.15);
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Toggle Buttons */
+.toggle-group {
+    display: flex;
+    gap: 0;
+    background: rgba(13, 15, 26, 0.6);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+}
+
+.toggle-btn {
+    flex: 1;
+    padding: 10px 12px;
+    border: none;
+    background: transparent;
+    color: var(--prosegur-text-muted);
+    font-family: inherit;
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.toggle-btn.active {
+    background: var(--prosegur-yellow);
+    color: #1A1F36;
+    font-weight: 600;
+}
+
+.toggle-btn:hover:not(.active) {
+    background: rgba(237, 170, 0, 0.12);
+    color: var(--prosegur-text);
+}
+
+/* Conditional field visibility */
+.senha-field {
+    transition: var(--transition);
+}
+
+.senha-field.hidden,
+.protocolo-field.hidden,
+.protocolo-field-25.hidden {
+    display: none;
+}
+
+/* ============================
+   BUTTONS
+   ============================ */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 1.5rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: var(--transition);
+}
+
+.btn-primary {
+    background: var(--grad-accent);
+    color: #1A1F36;
+    box-shadow: var(--shadow-accent);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(237, 170, 0, 0.45);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--prosegur-text);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(237, 170, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.btn-copy {
+    background: rgba(237, 170, 0, 0.1);
+    color: var(--prosegur-yellow-light);
+    border: 1px solid rgba(237, 170, 0, 0.25);
+    padding: 8px 18px;
+    font-size: 0.82rem;
+}
+
+.btn-copy:hover {
+    background: var(--prosegur-yellow);
+    color: #1A1F36;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-accent);
+}
+
+/* ============================
+   MANUAL CARDS (ACCORDION)
+   ============================ */
+.manuais-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.manual-card {
+    background: rgba(26, 31, 54, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.manual-card:hover {
+    border-color: rgba(237, 170, 0, 0.2);
+}
+
+.manual-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    user-select: none;
+    transition: var(--transition);
+}
+
+.manual-card-header:hover {
+    background: rgba(237, 170, 0, 0.05);
+}
+
+.manual-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.manual-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--prosegur-text);
+}
+
+.manual-chevron {
+    color: var(--prosegur-text-muted);
+    font-size: 0.8rem;
+    transition: transform 0.15s ease-out;
+}
+
+.manual-card.open .manual-chevron {
+    transform: rotate(180deg);
+}
+
+.manual-card-body {
+    display: none;
+    padding: 0 1.5rem 1.5rem;
+    animation: fadeSlideIn 0.15s ease-out;
+}
+
+.manual-card.open .manual-card-body {
+    display: block;
+}
+
+/* ============================
+   SCRIPTS WHATSAPP
+   ============================ */
+.scripts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.2rem;
+}
+
+.script-card {
+    background: rgba(26, 31, 54, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.script-card:hover {
+    border-color: rgba(237, 170, 0, 0.3);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+.script-icon {
+    width: 44px;
+    height: 44px;
+    background: var(--grad-accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #1A1F36;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-accent);
+}
+
+.script-card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--prosegur-white);
+    margin-bottom: 0.8rem;
+}
+
+.script-body {
+    flex: 1;
+    margin-bottom: 1rem;
+}
+
+.script-body p {
+    font-size: 0.82rem;
+    line-height: 1.65;
+    color: var(--prosegur-text-muted);
+    margin-bottom: 2px;
+}
+
+/* ============================
+   TOAST NOTIFICATION
+   ============================ */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--prosegur-green);
+    color: white;
+    padding: 14px 28px;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 30px rgba(46, 204, 113, 0.3);
+    z-index: 2000;
+    transition: transform 0.2s ease-out;
+    pointer-events: none;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ============================
+   FOOTER
+   ============================ */
+.footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 2rem;
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 0.8rem;
+    color: var(--prosegur-yellow);
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 2px;
+}
+
+.footer-logo i {
+    font-size: 1.2rem;
+}
+
+.footer p {
+    font-size: 0.78rem;
+    color: var(--prosegur-text-muted);
+}
+
+/* ============================
+   RESPONSIVE
+   ============================ */
+@media (max-width: 768px) {
+    .header {
+        padding: 0 1rem;
+    }
+
+    .nav {
+        display: none;
+        position: absolute;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: rgba(13, 15, 26, 0.98);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        padding: 1rem;
+        border-bottom: 1px solid rgba(237, 170, 0, 0.2);
+    }
+
+    .nav.open {
+        display: flex;
+    }
+
+    .nav-btn {
+        padding: 14px 18px;
+        justify-content: flex-start;
+    }
+
+    .nav-btn.active::after {
+        display: none;
+    }
+
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    .hero-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .main-content {
+        padding: 1rem;
+    }
+
+    .card {
+        padding: 1.2rem;
+    }
+
+    .form-grid,
+    .manual-form {
+        grid-template-columns: 1fr;
+    }
+
+    .scripts-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding: 2rem 1rem;
+    }
+
+    .hero-content h1 {
+        font-size: 1.3rem;
+    }
+
+    .logo-brand {
+        font-size: 1rem;
+    }
+}
+
+/* ============================
+   SCROLLBAR
+   ============================ */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--prosegur-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--prosegur-gray);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--prosegur-gray-light);
+}
+
+/* ============================
+   SELECTION
+   ============================ */
+::selection {
+    background: rgba(237, 170, 0, 0.4);
+    color: #1A1F36;
+}
