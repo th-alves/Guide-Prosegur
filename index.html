@@ -501,15 +501,15 @@
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fas fa-dollar-sign"></i> Valor Depositado</label>
-                                    <input type="text" class="input-field" data-mfield="valorDepositado" placeholder="R$ 0,00">
+                                    <input type="text" class="input-field" data-mfield="valorDepositado" placeholder="R$0,00">
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fas fa-calculator"></i> Valor Contabilizado</label>
-                                    <input type="text" class="input-field" data-mfield="valorContabilizado" placeholder="R$ 0,00">
+                                    <input type="text" class="input-field" data-mfield="valorContabilizado" placeholder="R$0,00">
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fas fa-exclamation-triangle"></i> Valor da Diferença</label>
-                                    <input type="text" class="input-field" data-mfield="valorDiferenca" placeholder="R$ 0,00">
+                                    <input type="text" class="input-field" data-mfield="valorDiferenca" placeholder="R$0,00">
                                 </div>
                                 <div class="form-group">
                                     <label><i class="fas fa-calendar-alt"></i> Data/Hora do Depósito</label>
@@ -527,6 +527,9 @@
                             <div class="form-actions">
                                 <button class="btn btn-primary btn-copy-manual" onclick="copyManual(this)">
                                     <i class="fas fa-copy"></i> Copiar Manual
+                                </button>
+                                <button class="btn btn-secondary" onclick="copyValores03(this)">
+                                    <i class="fas fa-dollar-sign"></i> Copiar Valores
                                 </button>
                                 <button class="btn btn-secondary" onclick="clearManual(this)">
                                     <i class="fas fa-eraser"></i> Limpar

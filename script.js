@@ -331,9 +331,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 `Contato: ${f('contato')}`,
                 `E-mail: ${f('email')}`,
                 '-',
-                `Valor Depositado: ${f('valorDepositado')}`,
-                `Valor Contabilizado: ${f('valorContabilizado')}`,
-                `Valor da Diferença: ${f('valorDiferenca')}`,
+                `Valor Depositado: ${formatCurrency(f('valorDepositado'))}`,
+                `Valor Contabilizado: ${formatCurrency(f('valorContabilizado'))}`,
+                `Valor da Diferença: ${formatCurrency(f('valorDiferenca'))}`,
                 `Data/Hora do Deposito: ${f('dataHora')}`,
                 `Usuário/Matricula que depositou: ${f('usuarioMatricula')}`,
                 `ID da solicitação: ${f('idSolicitacao')}`
@@ -383,7 +383,50 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // ---- COPIAR VALORES (MANUAL 03) ----
+    window.copyValores03 = function (btn) {
+        const card = btn.closest('.manual-card');
+        const fv = (name) => {
+            const el = card.querySelector(`[data-mfield="${name}"]`);
+            return el ? el.value.trim() : '';
+        };
+
+        const lines = [
+            `Valor Depositado: ${formatCurrency(fv('valorDepositado'))}`,
+            `Valor Contabilizado: ${formatCurrency(fv('valorContabilizado'))}`,
+            `Valor da Diferença: ${formatCurrency(fv('valorDiferenca'))}`,
+            `Data/Hora do Deposito: ${fv('dataHora')}`,
+            `Usuário/Matricula que depositou: ${fv('usuarioMatricula')}`
+        ];
+
+        copyToClipboard(lines.join('\n'));
+        showToast('Valores copiados com sucesso!');
+    };
+
     // ---- UTILITIES ----
+    function formatCurrency(value) {
+        if (!value) return 'R$0,00';
+        // Remove tudo que não for número, vírgula ou ponto
+        let cleaned = value.replace(/[^\d.,]/g, '');
+        // Se já tem vírgula como decimal, converte pra número
+        // Trata formatos: 1234.56, 1234,56, 1.234,56, 1234
+        let num;
+        if (cleaned.includes(',') && cleaned.includes('.')) {
+            // Formato 1.234,56 -> remove pontos, troca vírgula por ponto
+            cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+            num = parseFloat(cleaned);
+        } else if (cleaned.includes(',')) {
+            // Formato 1234,56 -> troca vírgula por ponto
+            cleaned = cleaned.replace(',', '.');
+            num = parseFloat(cleaned);
+        } else {
+            num = parseFloat(cleaned);
+        }
+        if (isNaN(num)) return 'R$0,00';
+        // Formata como moeda brasileira
+        return num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).replace('R$\u00a0', 'R$').replace('R$ ', 'R$');
+    }
+
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text).catch(() => {
             // Fallback
