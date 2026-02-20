@@ -238,6 +238,9 @@ document.addEventListener('DOMContentLoaded', () => {
         card.querySelectorAll('input.input-field, textarea.input-field').forEach(field => {
             field.value = field.defaultValue;
         });
+        card.querySelectorAll('select.input-field').forEach(sel => {
+            sel.selectedIndex = 0;
+        });
         showToast('Campos limpos!');
     };
 

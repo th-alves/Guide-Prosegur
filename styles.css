@@ -445,6 +445,45 @@ body {
     box-shadow: 0 0 0 3px rgba(237, 170, 0, 0.15);
 }
 
+/* Select Dropdown Styling */
+select.input-field {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23EDAA00' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 14px;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+select.input-field:hover {
+    border-color: rgba(237, 170, 0, 0.4);
+    background-color: rgba(20, 23, 40, 0.8);
+}
+
+select.input-field:focus {
+    border-color: var(--prosegur-yellow);
+    box-shadow: 0 0 0 3px rgba(237, 170, 0, 0.15);
+}
+
+select.input-field option {
+    background: #1A1F36;
+    color: var(--prosegur-text);
+    padding: 10px 14px;
+    font-family: inherit;
+}
+
+select.input-field option:checked {
+    background: rgba(237, 170, 0, 0.2);
+    color: var(--prosegur-yellow-light);
+}
+
+select.input-field option:disabled {
+    color: rgba(157, 161, 181, 0.5);
+}
+
 .textarea {
     resize: vertical;
     min-height: 80px;
