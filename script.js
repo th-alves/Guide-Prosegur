@@ -88,6 +88,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // ---- CNPJ AUTO-FORMATTING ----
+    function formatCnpj(value) {
+        // Remove tudo que não for número
+        const digits = value.replace(/\D/g, '').substring(0, 14);
+        let formatted = digits;
+        if (digits.length > 2) formatted = digits.substring(0, 2) + '.' + digits.substring(2);
+        if (digits.length > 5) formatted = digits.substring(0, 2) + '.' + digits.substring(2, 5) + '.' + digits.substring(5);
+        if (digits.length > 8) formatted = digits.substring(0, 2) + '.' + digits.substring(2, 5) + '.' + digits.substring(5, 8) + '/' + digits.substring(8);
+        if (digits.length > 12) formatted = digits.substring(0, 2) + '.' + digits.substring(2, 5) + '.' + digits.substring(5, 8) + '/' + digits.substring(8, 12) + '-' + digits.substring(12);
+        return formatted;
+    }
+
+    document.addEventListener('input', (e) => {
+        if (e.target.classList.contains('cnpj-input')) {
+            const cursorPos = e.target.selectionStart;
+            const oldValue = e.target.value;
+            const formatted = formatCnpj(oldValue);
+            e.target.value = formatted;
+            // Ajustar posição do cursor
+            const diff = formatted.length - oldValue.length;
+            e.target.setSelectionRange(cursorPos + diff, cursorPos + diff);
+        }
+    });
+
     // ---- ADD USER FORM ----
     btnAddUser.addEventListener('click', () => {
         userFormCount++;
