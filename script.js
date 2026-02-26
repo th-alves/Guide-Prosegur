@@ -335,22 +335,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 `Direcionado Para: ${f('direcionado')}`
             ],
             manual_24: () => [
-                '-',
                 `Usuários chegaram ao cofre às: ${f('horarioCofre')}`,
-                '-',
-                `Nome: ${f('nome')}`,
-                `Contato: ${f('contato')}`,
-                `CNPJ/Protocolo: *${f('cnpj')}*`,
                 '-',
                 `Nome no Mi Prosegur: ${f('nomeMi')}`,
                 `Localizado no Mi: ${f('localizadoMi')}`,
                 `Usuários criados: ${f('usuariosCriados')}`
-            ],
-            manual_15: () => [
-                '-',
-                `Nome: ${f('nome')}`,
-                `Contato: ${f('contato')}`,
-                `Material: ${f('material')}`
             ],
             manual_03: () => [
                 '-',
