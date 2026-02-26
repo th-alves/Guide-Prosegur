@@ -399,16 +399,78 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Manual copiado com sucesso!');
     };
 
-    // ---- SCRIPTS WHATSAPP COPY ----
-    document.querySelectorAll('.btn-copy[data-script]').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const card = btn.closest('.script-card');
-            const body = card.querySelector('.script-body');
-            const text = Array.from(body.querySelectorAll('p')).map(p => p.textContent).join('\n');
-            copyToClipboard(text);
-            showToast('Script copiado com sucesso!');
-        });
+    // ---- ATENDIMENTOS PANEL ----
+    const TOTAL_STEPS = 5;
+
+    // Initialize each atendimento card
+    document.querySelectorAll('.atendimento-card').forEach(card => {
+        card._currentStep = 0;
+        updateAtendimentoUI(card);
     });
+
+    // Event delegation for atendimento buttons
+    document.addEventListener('click', (e) => {
+        const nextBtn = e.target.closest('.atendimento-next');
+        const prevBtn = e.target.closest('.atendimento-prev');
+        const copyBtn = e.target.closest('.atendimento-copy-btn');
+
+        if (nextBtn) {
+            const card = nextBtn.closest('.atendimento-card');
+            if (card._currentStep < TOTAL_STEPS - 1) {
+                card._currentStep++;
+                updateAtendimentoUI(card);
+            }
+        }
+
+        if (prevBtn) {
+            const card = prevBtn.closest('.atendimento-card');
+            if (card._currentStep > 0) {
+                card._currentStep--;
+                updateAtendimentoUI(card);
+            }
+        }
+
+        if (copyBtn) {
+            const card = copyBtn.closest('.atendimento-card');
+            const steps = card.querySelectorAll('.atendimento-step');
+            const currentStep = steps[card._currentStep];
+            if (currentStep) {
+                const text = currentStep.querySelector('.step-text').textContent.trim();
+                copyToClipboard(text);
+                showToast('Script copiado com sucesso!');
+            }
+        }
+    });
+
+    function updateAtendimentoUI(card) {
+        const step = card._currentStep;
+        const slider = card.querySelector('.atendimento-slider');
+        const progressBar = card.querySelector('.atendimento-progress-bar');
+        const stepIndicator = card.querySelector('.step-current');
+        const prevBtn = card.querySelector('.atendimento-prev');
+        const nextBtn = card.querySelector('.atendimento-next');
+        const dots = card.querySelectorAll('.progress-dot');
+
+        // Slide
+        slider.style.transform = `translateX(-${step * 100}%)`;
+
+        // Progress bar
+        progressBar.style.width = `${((step + 1) / TOTAL_STEPS) * 100}%`;
+
+        // Step indicator
+        stepIndicator.textContent = step + 1;
+
+        // Dots
+        dots.forEach((dot, i) => {
+            dot.classList.remove('active', 'completed');
+            if (i < step) dot.classList.add('completed');
+            if (i === step) dot.classList.add('active');
+        });
+
+        // Button states
+        prevBtn.disabled = step === 0;
+        nextBtn.disabled = step === TOTAL_STEPS - 1;
+    }
 
     // ---- COPIAR VALORES (MANUAL 03) ----
     window.copyValores03 = function (btn) {

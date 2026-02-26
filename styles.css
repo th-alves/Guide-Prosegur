@@ -669,62 +669,213 @@ select.input-field option:disabled {
 }
 
 /* ============================
-   SCRIPTS WHATSAPP
+   ATENDIMENTOS PANEL
    ============================ */
-.scripts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+.atendimentos-container {
+    display: flex;
+    flex-direction: column;
     gap: 1.2rem;
 }
 
-.script-card {
-    background: rgba(26, 31, 54, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: var(--radius);
+.atendimento-card {
+    background: var(--grad-card);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
     padding: 1.5rem;
-    transition: var(--transition);
-    display: flex;
-    flex-direction: column;
-}
-
-.script-card:hover {
-    border-color: rgba(237, 170, 0, 0.3);
-    transform: translateY(-3px);
+    backdrop-filter: blur(10px);
     box-shadow: var(--shadow-md);
+    transition: var(--transition);
 }
 
-.script-icon {
-    width: 44px;
-    height: 44px;
+.atendimento-card:hover {
+    border-color: rgba(237, 170, 0, 0.15);
+}
+
+/* Header */
+.atendimento-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.atendimento-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.atendimento-badge {
     background: var(--grad-accent);
-    border-radius: 10px;
+    color: #1A1F36;
+    font-size: 0.7rem;
+    font-weight: 800;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
-    color: #1A1F36;
-    margin-bottom: 1rem;
     box-shadow: var(--shadow-accent);
+    letter-spacing: 1px;
 }
 
-.script-card h3 {
+.atendimento-title h3 {
     font-size: 1rem;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--prosegur-white);
-    margin-bottom: 0.8rem;
 }
 
-.script-body {
-    flex: 1;
+.atendimento-step-indicator {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--prosegur-text-muted);
+    background: rgba(26, 31, 54, 0.8);
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.atendimento-step-indicator .step-current {
+    color: var(--prosegur-yellow-light);
+    font-weight: 700;
+}
+
+/* Progress Bar */
+.atendimento-progress {
+    position: relative;
+    background: rgba(13, 15, 26, 0.6);
+    border-radius: 10px;
+    height: 6px;
+    margin-bottom: 1.2rem;
+    overflow: visible;
+}
+
+.atendimento-progress-bar {
+    height: 100%;
+    background: var(--grad-accent);
+    border-radius: 10px;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 12px rgba(237, 170, 0, 0.3);
+}
+
+.atendimento-progress-labels {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 1px;
+}
+
+.progress-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(26, 31, 54, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.12);
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.progress-dot.active {
+    background: var(--prosegur-yellow);
+    border-color: var(--prosegur-yellow);
+    box-shadow: 0 0 8px rgba(237, 170, 0, 0.5);
+}
+
+.progress-dot.completed {
+    background: var(--prosegur-yellow);
+    border-color: var(--prosegur-yellow);
+}
+
+/* Slider */
+.atendimento-slider-container {
+    overflow: hidden;
+    border-radius: var(--radius);
     margin-bottom: 1rem;
 }
 
-.script-body p {
-    font-size: 0.82rem;
-    line-height: 1.65;
-    color: var(--prosegur-text-muted);
-    margin-bottom: 2px;
+.atendimento-slider {
+    display: flex;
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
 }
+
+.atendimento-step {
+    min-width: 100%;
+    flex-shrink: 0;
+    padding: 0 2px;
+}
+
+.step-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--prosegur-yellow-light);
+    margin-bottom: 0.8rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid rgba(237, 170, 0, 0.15);
+}
+
+.step-label i {
+    font-size: 0.9rem;
+    color: var(--prosegur-yellow);
+}
+
+.step-text {
+    background: rgba(26, 31, 54, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.4rem;
+    min-height: 80px;
+}
+
+.step-text p {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--prosegur-text);
+    margin: 0;
+}
+
+/* Footer / Navigation */
+.atendimento-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.atendimento-nav-btn {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--prosegur-text);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    font-size: 0.82rem;
+}
+
+.atendimento-nav-btn:hover:not(:disabled) {
+    background: rgba(237, 170, 0, 0.12);
+    border-color: rgba(237, 170, 0, 0.3);
+    color: var(--prosegur-yellow-light);
+    transform: translateY(-2px);
+}
+
+.atendimento-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.atendimento-copy-btn {
+    padding: 10px 22px;
+    font-size: 0.82rem;
+}
+
 
 /* ============================
    TOAST NOTIFICATION
@@ -853,8 +1004,8 @@ a {
         grid-template-columns: 1fr;
     }
 
-    .scripts-grid {
-        grid-template-columns: 1fr;
+    .script-tabs-nav {
+        gap: 6px;
     }
 
     .form-actions {

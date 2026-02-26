@@ -607,93 +607,258 @@
 
         <!-- SCRIPTS WHATSAPP TAB -->
         <section class="tab-content" id="tab-scripts">
-            <div class="card">
-                <div class="card-header">
-                    <h2><i class="fab fa-whatsapp"></i> Scripts WhatsApp</h2>
-                    <p class="card-subtitle">Modelos de mensagens prontas para copiar e enviar</p>
+            <div class="atendimentos-container">
+
+                <!-- Atendimento 1 -->
+                <div class="atendimento-card" data-atendimento="0">
+                    <div class="atendimento-header">
+                        <div class="atendimento-title">
+                            <span class="atendimento-badge">01</span>
+                            <h3>Atendimento 1</h3>
+                        </div>
+                        <span class="atendimento-step-indicator">Etapa <span class="step-current">1</span>/5</span>
+                    </div>
+                    <div class="atendimento-progress">
+                        <div class="atendimento-progress-bar" style="width: 20%;"></div>
+                        <div class="atendimento-progress-labels">
+                            <span class="progress-dot active" data-step="0"></span>
+                            <span class="progress-dot" data-step="1"></span>
+                            <span class="progress-dot" data-step="2"></span>
+                            <span class="progress-dot" data-step="3"></span>
+                            <span class="progress-dot" data-step="4"></span>
+                        </div>
+                    </div>
+                    <div class="atendimento-slider-container">
+                        <div class="atendimento-slider">
+                            <div class="atendimento-step" data-step="0">
+                                <div class="step-label"><i class="fas fa-handshake"></i> Saudação</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="1">
+                                <div class="step-label"><i class="fas fa-id-card"></i> Identificação</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="2">
+                                <div class="step-label"><i class="fas fa-comment-dots"></i> Motivo do contato</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="3">
+                                <div class="step-label"><i class="fas fa-cogs"></i> Procedimento</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="4">
+                                <div class="step-label"><i class="fas fa-check-circle"></i> Encerramento</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sunt in culpa qui officia deserunt mollit anim.</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="atendimento-footer">
+                        <button class="btn atendimento-nav-btn atendimento-prev" disabled><i class="fas fa-arrow-left"></i> Voltar</button>
+                        <button class="btn btn-copy atendimento-copy-btn"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn atendimento-nav-btn atendimento-next">Próxima <i class="fas fa-arrow-right"></i></button>
+                    </div>
                 </div>
-                <div class="scripts-grid">
 
-                    <div class="script-card">
-                        <div class="script-icon"><i class="fas fa-handshake"></i></div>
-                        <h3>Saudação Inicial</h3>
-                        <div class="script-body">
-                            <p>Olá! Seja bem-vindo(a) à nossa Central de Atendimento Prosegur! Me chamo Thiago, como posso ajudá-lo(a) hoje?</p>
+                <!-- Atendimento 2 -->
+                <div class="atendimento-card" data-atendimento="1">
+                    <div class="atendimento-header">
+                        <div class="atendimento-title">
+                            <span class="atendimento-badge">02</span>
+                            <h3>Atendimento 2</h3>
                         </div>
-                        <button class="btn btn-copy" data-script="saudacao">
-                            <i class="fas fa-copy"></i> Copiar
-                        </button>
+                        <span class="atendimento-step-indicator">Etapa <span class="step-current">1</span>/5</span>
                     </div>
-
-                    <div class="script-card">
-                        <div class="script-icon"><i class="fas fa-user-check"></i></div>
-                        <h3>Confirmação de Cadastro</h3>
-                        <div class="script-body">
-                            <p>Obrigado por ter aguardado. Os cadastros foram realizados com sucesso! Realize um teste para verificarmos se estão funcionando corretamente: </p>
+                    <div class="atendimento-progress">
+                        <div class="atendimento-progress-bar" style="width: 20%;"></div>
+                        <div class="atendimento-progress-labels">
+                            <span class="progress-dot active" data-step="0"></span>
+                            <span class="progress-dot" data-step="1"></span>
+                            <span class="progress-dot" data-step="2"></span>
+                            <span class="progress-dot" data-step="3"></span>
+                            <span class="progress-dot" data-step="4"></span>
                         </div>
-                        <button class="btn btn-copy" data-script="confirmacao">
-                            <i class="fas fa-copy"></i> Copiar
-                        </button>
                     </div>
-
-                    <div class="script-card">
-                        <div class="script-icon"><i class="fas fa-clock"></i></div>
-                        <h3>Aguardando Informações</h3>
-                        <div class="script-body">
-                            <p>Olá! 😊</p>
-                            <p>Para darmos continuidade ao seu atendimento, precisamos das seguintes informações:</p>
-                            <p>📌 Nome completo</p>
-                            <p>📌 Matrícula</p>
-                            <p>📌 Motivo da solicitação</p>
-                            <p>Aguardamos seu retorno!</p>
+                    <div class="atendimento-slider-container">
+                        <div class="atendimento-slider">
+                            <div class="atendimento-step" data-step="0">
+                                <div class="step-label"><i class="fas fa-handshake"></i> Saudação</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="1">
+                                <div class="step-label"><i class="fas fa-id-card"></i> Identificação</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="2">
+                                <div class="step-label"><i class="fas fa-comment-dots"></i> Motivo do contato</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="3">
+                                <div class="step-label"><i class="fas fa-cogs"></i> Procedimento</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="4">
+                                <div class="step-label"><i class="fas fa-check-circle"></i> Encerramento</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sunt in culpa qui officia deserunt mollit anim.</p></div>
+                            </div>
                         </div>
-                        <button class="btn btn-copy" data-script="aguardando">
-                            <i class="fas fa-copy"></i> Copiar
-                        </button>
                     </div>
-
-                    <div class="script-card">
-                        <div class="script-icon"><i class="fas fa-tools"></i></div>
-                        <h3>Suporte Técnico</h3>
-                        <div class="script-body">
-                            <p>Olá! 😊</p>
-                            <p>Identificamos a sua solicitação e já estamos trabalhando para resolver.</p>
-                            <p>Caso precise de algo mais, é só nos chamar!</p>
-                            <p>Att, Equipe Prosegur 🔒</p>
-                        </div>
-                        <button class="btn btn-copy" data-script="suporte">
-                            <i class="fas fa-copy"></i> Copiar
-                        </button>
+                    <div class="atendimento-footer">
+                        <button class="btn atendimento-nav-btn atendimento-prev" disabled><i class="fas fa-arrow-left"></i> Voltar</button>
+                        <button class="btn btn-copy atendimento-copy-btn"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn atendimento-nav-btn atendimento-next">Próxima <i class="fas fa-arrow-right"></i></button>
                     </div>
-
-                    <div class="script-card">
-                        <div class="script-icon"><i class="fas fa-check-double"></i></div>
-                        <h3>Finalização de Atendimento</h3>
-                        <div class="script-body">
-                            <p>Foi um prazer te atender, prosegur agradece seu contato tenha um ótimo dia!</p>
-                        </div>
-                        <button class="btn btn-copy" data-script="finalizacao">
-                            <i class="fas fa-copy"></i> Copiar
-                        </button>
-                    </div>
-
-                    <div class="script-card">
-                        <div class="script-icon"><i class="fas fa-exclamation-triangle"></i></div>
-                        <h3>Problema Identificado</h3>
-                        <div class="script-body">
-                            <p>Olá! 😊</p>
-                            <p>Identificamos um problema referente à sua solicitação.</p>
-                            <p>Detalhes: _______________</p>
-                            <p>Nossa equipe já está atuando para resolução.</p>
-                            <p>Prazo estimado: ___________</p>
-                            <p>Att, Equipe Prosegur 🔒</p>
-                        </div>
-                        <button class="btn btn-copy" data-script="problema">
-                            <i class="fas fa-copy"></i> Copiar
-                        </button>
-                    </div>
-
                 </div>
+
+                <!-- Atendimento 3 -->
+                <div class="atendimento-card" data-atendimento="2">
+                    <div class="atendimento-header">
+                        <div class="atendimento-title">
+                            <span class="atendimento-badge">03</span>
+                            <h3>Atendimento 3</h3>
+                        </div>
+                        <span class="atendimento-step-indicator">Etapa <span class="step-current">1</span>/5</span>
+                    </div>
+                    <div class="atendimento-progress">
+                        <div class="atendimento-progress-bar" style="width: 20%;"></div>
+                        <div class="atendimento-progress-labels">
+                            <span class="progress-dot active" data-step="0"></span>
+                            <span class="progress-dot" data-step="1"></span>
+                            <span class="progress-dot" data-step="2"></span>
+                            <span class="progress-dot" data-step="3"></span>
+                            <span class="progress-dot" data-step="4"></span>
+                        </div>
+                    </div>
+                    <div class="atendimento-slider-container">
+                        <div class="atendimento-slider">
+                            <div class="atendimento-step" data-step="0">
+                                <div class="step-label"><i class="fas fa-handshake"></i> Saudação</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="1">
+                                <div class="step-label"><i class="fas fa-id-card"></i> Identificação</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="2">
+                                <div class="step-label"><i class="fas fa-comment-dots"></i> Motivo do contato</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="3">
+                                <div class="step-label"><i class="fas fa-cogs"></i> Procedimento</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="4">
+                                <div class="step-label"><i class="fas fa-check-circle"></i> Encerramento</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sunt in culpa qui officia deserunt mollit anim.</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="atendimento-footer">
+                        <button class="btn atendimento-nav-btn atendimento-prev" disabled><i class="fas fa-arrow-left"></i> Voltar</button>
+                        <button class="btn btn-copy atendimento-copy-btn"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn atendimento-nav-btn atendimento-next">Próxima <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Atendimento 4 -->
+                <div class="atendimento-card" data-atendimento="3">
+                    <div class="atendimento-header">
+                        <div class="atendimento-title">
+                            <span class="atendimento-badge">04</span>
+                            <h3>Atendimento 4</h3>
+                        </div>
+                        <span class="atendimento-step-indicator">Etapa <span class="step-current">1</span>/5</span>
+                    </div>
+                    <div class="atendimento-progress">
+                        <div class="atendimento-progress-bar" style="width: 20%;"></div>
+                        <div class="atendimento-progress-labels">
+                            <span class="progress-dot active" data-step="0"></span>
+                            <span class="progress-dot" data-step="1"></span>
+                            <span class="progress-dot" data-step="2"></span>
+                            <span class="progress-dot" data-step="3"></span>
+                            <span class="progress-dot" data-step="4"></span>
+                        </div>
+                    </div>
+                    <div class="atendimento-slider-container">
+                        <div class="atendimento-slider">
+                            <div class="atendimento-step" data-step="0">
+                                <div class="step-label"><i class="fas fa-handshake"></i> Saudação</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="1">
+                                <div class="step-label"><i class="fas fa-id-card"></i> Identificação</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="2">
+                                <div class="step-label"><i class="fas fa-comment-dots"></i> Motivo do contato</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="3">
+                                <div class="step-label"><i class="fas fa-cogs"></i> Procedimento</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="4">
+                                <div class="step-label"><i class="fas fa-check-circle"></i> Encerramento</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sunt in culpa qui officia deserunt mollit anim.</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="atendimento-footer">
+                        <button class="btn atendimento-nav-btn atendimento-prev" disabled><i class="fas fa-arrow-left"></i> Voltar</button>
+                        <button class="btn btn-copy atendimento-copy-btn"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn atendimento-nav-btn atendimento-next">Próxima <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- Atendimento 5 -->
+                <div class="atendimento-card" data-atendimento="4">
+                    <div class="atendimento-header">
+                        <div class="atendimento-title">
+                            <span class="atendimento-badge">05</span>
+                            <h3>Atendimento 5</h3>
+                        </div>
+                        <span class="atendimento-step-indicator">Etapa <span class="step-current">1</span>/5</span>
+                    </div>
+                    <div class="atendimento-progress">
+                        <div class="atendimento-progress-bar" style="width: 20%;"></div>
+                        <div class="atendimento-progress-labels">
+                            <span class="progress-dot active" data-step="0"></span>
+                            <span class="progress-dot" data-step="1"></span>
+                            <span class="progress-dot" data-step="2"></span>
+                            <span class="progress-dot" data-step="3"></span>
+                            <span class="progress-dot" data-step="4"></span>
+                        </div>
+                    </div>
+                    <div class="atendimento-slider-container">
+                        <div class="atendimento-slider">
+                            <div class="atendimento-step" data-step="0">
+                                <div class="step-label"><i class="fas fa-handshake"></i> Saudação</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="1">
+                                <div class="step-label"><i class="fas fa-id-card"></i> Identificação</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="2">
+                                <div class="step-label"><i class="fas fa-comment-dots"></i> Motivo do contato</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="3">
+                                <div class="step-label"><i class="fas fa-cogs"></i> Procedimento</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident.</p></div>
+                            </div>
+                            <div class="atendimento-step" data-step="4">
+                                <div class="step-label"><i class="fas fa-check-circle"></i> Encerramento</div>
+                                <div class="step-text"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sunt in culpa qui officia deserunt mollit anim.</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="atendimento-footer">
+                        <button class="btn atendimento-nav-btn atendimento-prev" disabled><i class="fas fa-arrow-left"></i> Voltar</button>
+                        <button class="btn btn-copy atendimento-copy-btn"><i class="fas fa-copy"></i> Copiar</button>
+                        <button class="btn atendimento-nav-btn atendimento-next">Próxima <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -707,7 +872,7 @@
                 <span>PROSEGUR ONE</span>
             </div>
             <p>&copy; 2026 <a href="https://www.instagram.com/dev.thigas" target="_blank">Thiago</a> & <a href="https://www.instagram.com/yrdsniel" target="_blank">Daniel</a> - Portal Interno. Todos os direitos reservados.</p>
-            <p class="version">Versão v3.2.14</p>
+            <p class="version">Versão v3.2.16</p>
         </div>
     </footer>
 
