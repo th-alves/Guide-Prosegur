@@ -88,6 +88,38 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // ---- AUTO-CALC DIFERENÇA (MANUAL 03) ----
+    function parseCurrencyValue(value) {
+        if (!value) return 0;
+        let cleaned = value.replace(/[^\d.,]/g, '');
+        if (cleaned.includes(',') && cleaned.includes('.')) {
+            cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+        } else if (cleaned.includes(',')) {
+            cleaned = cleaned.replace(',', '.');
+        }
+        const num = parseFloat(cleaned);
+        return isNaN(num) ? 0 : num;
+    }
+
+    function calcularDiferenca(card) {
+        const depositado = parseCurrencyValue(card.querySelector('[data-mfield="valorDepositado"]')?.value || '');
+        const contabilizado = parseCurrencyValue(card.querySelector('[data-mfield="valorContabilizado"]')?.value || '');
+        const diferenca = depositado - contabilizado;
+        const diferencaField = card.querySelector('[data-mfield="valorDiferenca"]');
+        if (diferencaField) {
+            diferencaField.value = diferenca !== 0 ? diferenca.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).replace('R$\u00a0', 'R$').replace('R$ ', 'R$') : '';
+        }
+    }
+
+    document.addEventListener('input', (e) => {
+        if (e.target.dataset.mfield === 'valorDepositado' || e.target.dataset.mfield === 'valorContabilizado') {
+            const card = e.target.closest('.manual-card');
+            if (card && card.dataset.manual === 'manual_03') {
+                calcularDiferenca(card);
+            }
+        }
+    });
+
     // ---- CNPJ AUTO-FORMATTING ----
     function formatCnpj(value) {
         // Remove tudo que não for número
