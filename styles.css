@@ -1321,6 +1321,159 @@ select.input-field option:disabled {
 
 
 
+/* --- Cadastro Sub-Flow Styles --- */
+.flow-state-badge {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--prosegur-yellow-light);
+    background: rgba(237, 170, 0, 0.1);
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid rgba(237, 170, 0, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.flow-state-badge i {
+    font-size: 0.75rem;
+    color: var(--prosegur-yellow);
+}
+
+.flow-content {
+    animation: fadeSlideIn 0.25s ease-out;
+}
+
+.flow-script-block {
+    background: rgba(13, 15, 26, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius);
+    padding: 0;
+    margin-bottom: 1.2rem;
+    overflow: hidden;
+}
+
+.flow-script-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: rgba(237, 170, 0, 0.06);
+    border-bottom: 1px solid rgba(237, 170, 0, 0.1);
+}
+
+.flow-script-tag {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--prosegur-yellow-light);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.flow-script-tag i {
+    color: var(--prosegur-yellow);
+    font-size: 0.8rem;
+}
+
+.flow-copy-btn {
+    padding: 6px 16px !important;
+    font-size: 0.78rem !important;
+    border-radius: 20px !important;
+}
+
+.flow-script-text {
+    padding: 1.2rem 1.4rem;
+    font-size: 0.88rem;
+    line-height: 1.8;
+    color: var(--prosegur-text);
+    white-space: pre-wrap;
+}
+
+.flow-decision {
+    background: rgba(26, 31, 54, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.4rem;
+    animation: fadeSlideIn 0.2s ease-out;
+}
+
+.flow-decision-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--prosegur-white);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flow-decision-label i {
+    color: var(--prosegur-yellow);
+    font-size: 1rem;
+}
+
+.flow-decision-btns {
+    display: flex;
+    gap: 12px;
+}
+
+.flow-btn {
+    flex: 1;
+    padding: 12px 24px !important;
+    font-size: 0.88rem !important;
+    font-weight: 600 !important;
+    border-radius: var(--radius) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.flow-btn-yes {
+    background: rgba(46, 204, 113, 0.1) !important;
+    border: 1px solid rgba(46, 204, 113, 0.25) !important;
+    color: #2ECC71 !important;
+}
+
+.flow-btn-yes:hover {
+    background: rgba(46, 204, 113, 0.2) !important;
+    border-color: rgba(46, 204, 113, 0.5) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(46, 204, 113, 0.15);
+}
+
+.flow-btn-no {
+    background: rgba(231, 76, 60, 0.1) !important;
+    border: 1px solid rgba(231, 76, 60, 0.25) !important;
+    color: #E74C3C !important;
+}
+
+.flow-btn-no:hover {
+    background: rgba(231, 76, 60, 0.2) !important;
+    border-color: rgba(231, 76, 60, 0.5) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.15);
+}
+
+.flow-final-msg {
+    text-align: center;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2ECC71;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 0;
+}
+
+.flow-final-msg i {
+    font-size: 1.1rem;
+}
+
 /* ============================
    TOAST NOTIFICATION
    ============================ */

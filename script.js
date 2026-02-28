@@ -463,13 +463,51 @@ document.addEventListener('DOMContentLoaded', () => {
         { icon: 'fa-check-circle', label: 'Encerramento', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sunt in culpa qui officia deserunt mollit anim.' }
     ];
 
+    // Cadastro sub-flow scripts
+    const cadastroScripts = {
+        cadastro_script: {
+            icon: 'fa-clipboard-list',
+            label: 'Script de Cadastro',
+            text: 'Me informe, por gentileza os dados abaixo para cadastro: \n\nNome: \nSobrenome: \nMatrícula (Não pode começar com zero; mínimo de 2 dígito e máximo de 8 dígitos): \nPerfil do usuário depositante ou supervisor: \nCaso seja depositante, será com senha ou sem senha?',
+            nextQuestion: 'Cadastro realizado?',
+            yesState: 'devolutiva_cadastro',
+            noState: 'cadastro_nao_atualizado'
+        },
+        devolutiva_cadastro: {
+            icon: 'fa-check-double',
+            label: 'Devolutiva Cadastro',
+            text: 'Obrigado por ter aguardado.  \n\nO cadastro do(s) usuário(s) foi realizado com sucesso.  \nPeço por gentileza que realize o teste, segue os dados: ',
+            nextQuestion: 'Atendimento finalizado?',
+            yesState: 'finalizado_script',
+            noState: 'voltar_motivo'
+        },
+        cadastro_nao_atualizado: {
+            icon: 'fa-clock',
+            label: 'Cadastro Não Atualizado',
+            text: 'Obrigado por aguardar, os cadastros foram realizados, porém ainda não subiram para o seu cofre, sendo necessário o teste no período de 24 horas, caso após o prazo permaneça sem funcionar você pode retornar o contato.',
+            nextQuestion: 'Atendimento finalizado?',
+            yesState: 'finalizado_script',
+            noState: 'voltar_motivo'
+        },
+        finalizado_script: {
+            icon: 'fa-flag-checkered',
+            label: 'Encerramento',
+            text: 'Foi um prazer te atender, segue o protocolo do nosso atendimento: . Tenha um ótimo dia!',
+            nextQuestion: null,
+            yesState: null,
+            noState: null
+        }
+    };
+
     function createChat() {
         chatIdCounter++;
         const chat = {
             id: chatIdCounter,
             number: chats.length + 1,
             currentStep: 0,
-            notes: ''
+            notes: '',
+            flowState: null,      // null = normal step flow, string = cadastro sub-flow state
+            motivoContato: null   // stores selected motivo
         };
         chats.push(chat);
         return chat;
@@ -547,6 +585,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const padded = String(chat.number).padStart(2, '0');
         const hasNotes = chat.notes && chat.notes.trim().length > 0;
 
+        // Check if we are in a sub-flow
+        if (chat.flowState && cadastroScripts[chat.flowState]) {
+            renderFlowCard(chat, padded, hasNotes);
+            return;
+        }
+
         let stepsHTML = '';
         stepDefs.forEach((s, i) => {
             const content = s.html ? s.html : `<p>${s.text}</p>`;
@@ -595,6 +639,65 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update dots
         updateCardDots(chat.currentStep);
+    }
+
+    function renderFlowCard(chat, padded, hasNotes) {
+        const flowDef = cadastroScripts[chat.flowState];
+        if (!flowDef) return;
+
+        // Format script text preserving line breaks
+        const formattedText = escapeHTML(flowDef.text).replace(/\n/g, '<br>');
+
+        let decisionHTML = '';
+        if (flowDef.nextQuestion) {
+            decisionHTML = `
+                <div class="flow-decision">
+                    <div class="flow-decision-label"><i class="fas fa-question-circle"></i> ${flowDef.nextQuestion}</div>
+                    <div class="flow-decision-btns">
+                        <button class="btn flow-btn flow-btn-yes" data-flow-action="yes">
+                            <i class="fas fa-check"></i> Sim
+                        </button>
+                        <button class="btn flow-btn flow-btn-no" data-flow-action="no">
+                            <i class="fas fa-times"></i> Não
+                        </button>
+                    </div>
+                </div>`;
+        } else {
+            // Final state — show "Novo atendimento" option
+            decisionHTML = `
+                <div class="flow-decision">
+                    <div class="flow-final-msg"><i class="fas fa-check-circle"></i> Atendimento concluído</div>
+                </div>`;
+        }
+
+        chatMain.innerHTML = `
+            <div class="atendimento-card flow-active" data-chat-id="${chat.id}">
+                <div class="atendimento-header">
+                    <div class="atendimento-title">
+                        <span class="atendimento-badge">${padded}</span>
+                        <h3>Atendimento ${chat.number}</h3>
+                    </div>
+                    <div class="atendimento-header-actions">
+                        <span class="flow-state-badge"><i class="fas ${flowDef.icon}"></i> ${flowDef.label}</span>
+                        <button class="btn-notes-toggle ${hasNotes ? 'has-notes' : ''}" id="btnNotesToggle">
+                            <i class="fas fa-sticky-note"></i> Anotações
+                        </button>
+                    </div>
+                </div>
+                <div class="flow-content">
+                    <div class="flow-script-block">
+                        <div class="flow-script-header">
+                            <span class="flow-script-tag"><i class="fas fa-scroll"></i> Script</span>
+                            <button class="btn btn-copy flow-copy-btn" data-flow-copy>
+                                <i class="fas fa-copy"></i> Copiar
+                            </button>
+                        </div>
+                        <div class="flow-script-text">${formattedText}</div>
+                    </div>
+                    ${decisionHTML}
+                </div>
+            </div>
+        `;
     }
 
     function updateCardDots(step) {
@@ -705,12 +808,69 @@ document.addEventListener('DOMContentLoaded', () => {
         const chat = chats.find(c => c.id === activeChatId);
         if (!chat) return;
 
+        const notesBtn = e.target.closest('#btnNotesToggle');
+        if (notesBtn) {
+            if (chatNotesPanel.classList.contains('open')) {
+                closeNotes();
+            } else {
+                openNotes();
+            }
+            return;
+        }
+
+        // --- Sub-flow handlers ---
+        const flowCopyBtn = e.target.closest('[data-flow-copy]');
+        if (flowCopyBtn && chat.flowState && cadastroScripts[chat.flowState]) {
+            const scriptText = cadastroScripts[chat.flowState].text;
+            copyToClipboard(scriptText);
+            showToast('Script copiado com sucesso!');
+            return;
+        }
+
+        const flowActionBtn = e.target.closest('[data-flow-action]');
+        if (flowActionBtn && chat.flowState) {
+            const action = flowActionBtn.dataset.flowAction;
+            const flowDef = cadastroScripts[chat.flowState];
+            if (!flowDef) return;
+
+            if (action === 'yes') {
+                if (flowDef.yesState === 'finalizado_script') {
+                    chat.flowState = 'finalizado_script';
+                } else {
+                    chat.flowState = flowDef.yesState;
+                }
+            } else if (action === 'no') {
+                if (flowDef.noState === 'voltar_motivo') {
+                    // Reset back to step 2 (motivo do contato)
+                    chat.flowState = null;
+                    chat.motivoContato = null;
+                    chat.currentStep = 1;
+                    renderActiveCard();
+                    return;
+                } else {
+                    chat.flowState = flowDef.noState;
+                }
+            }
+            renderActiveCard();
+            return;
+        }
+
+        // --- Normal step handlers ---
         const nextBtn = e.target.closest('.atendimento-next');
         const prevBtn = e.target.closest('.atendimento-prev');
         const copyBtn = e.target.closest('.atendimento-copy-btn');
-        const notesBtn = e.target.closest('#btnNotesToggle');
 
         if (nextBtn && chat.currentStep < TOTAL_STEPS - 1) {
+            // If on step 2 (motivo do contato), check if Cadastro is selected
+            if (chat.currentStep === 1) {
+                const motivoSelect = chatMain.querySelector('#motivoSelect');
+                if (motivoSelect && motivoSelect.value === 'Cadastro') {
+                    chat.motivoContato = 'Cadastro';
+                    chat.flowState = 'cadastro_script';
+                    renderActiveCard();
+                    return;
+                }
+            }
             chat.currentStep++;
             updateCardUI(chat);
         }
@@ -728,14 +888,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const text = currentStep.querySelector('.step-text').textContent.trim();
                 copyToClipboard(text);
                 showToast('Script copiado com sucesso!');
-            }
-        }
-
-        if (notesBtn) {
-            if (chatNotesPanel.classList.contains('open')) {
-                closeNotes();
-            } else {
-                openNotes();
             }
         }
     });
