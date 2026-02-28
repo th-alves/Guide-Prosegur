@@ -437,9 +437,24 @@ document.addEventListener('DOMContentLoaded', () => {
     notesOverlay.className = 'chat-notes-overlay';
     document.body.appendChild(notesOverlay);
 
+    // Greeting helper based on time of day
+    function getGreeting() {
+        const hour = new Date().getHours();
+        if (hour >= 8 && hour < 12) return 'Bom dia!';
+        if (hour >= 12 && hour < 19) return 'Boa tarde!';
+        return 'Boa noite!';
+    }
+
+    function getGreetingPeriod() {
+        const hour = new Date().getHours();
+        if (hour >= 8 && hour < 12) return 'dia';
+        if (hour >= 12 && hour < 19) return 'tarde';
+        return 'noite';
+    }
+
     // Step definitions
     const stepDefs = [
-        { icon: 'fa-handshake', label: 'Saudação', text: 'Bom dia! Meu nome é Daniel e estou aqui para ajudá-lo(a). Com quem estou falando, por gentileza?' },
+        { icon: 'fa-handshake', label: 'Saudação', get text() { return `${getGreeting()} Meu nome é Daniel e estou aqui para ajudá-lo(a). Com quem estou falando, por gentileza?`; } },
         {
             icon: 'fa-id-card', label: 'Motivo do contato', html: `<div class="step-select-wrapper">
             <label class="step-select-label">Selecione o motivo do contato:</label>
@@ -457,7 +472,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>` },
         { icon: 'fa-comment-dots', label: 'Identificação', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate.' },
         { icon: 'fa-cogs', label: 'Procedimento', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident.' },
-        { icon: 'fa-check-circle', label: 'Encerramento', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sunt in culpa qui officia deserunt mollit anim.' }
+        { icon: 'fa-check-circle', label: 'Encerramento', get text() { return `Foi um prazer te atender, segue o protocolo do nosso atendimento: . Tenha um ótimo ${getGreetingPeriod()}!`; } }
     ];
 
     // Cadastro sub-flow scripts
@@ -489,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
         finalizado_script: {
             icon: 'fa-flag-checkered',
             label: 'Encerramento',
-            text: 'Foi um prazer te atender, segue o protocolo do nosso atendimento: . Tenha um ótimo dia!',
+            get text() { return `Foi um prazer te atender, segue o protocolo do nosso atendimento: . Tenha um ótimo ${getGreetingPeriod()}!`; },
             nextQuestion: null,
             yesState: null,
             noState: null
