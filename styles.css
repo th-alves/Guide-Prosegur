@@ -1592,6 +1592,43 @@ select.input-field option:disabled {
     box-shadow: 0 0 0 3px rgba(237, 170, 0, 0.1);
 }
 
+/* Material Select (Abastecimento flow) */
+.flow-material-select {
+    margin-bottom: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    animation: fadeSlideIn 0.2s ease-out;
+}
+
+.flow-material-select .step-select-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flow-material-select .step-select-label i {
+    color: var(--prosegur-yellow);
+    font-size: 0.85rem;
+}
+
+.flow-material-confirm {
+    align-self: flex-end;
+    padding: 10px 24px !important;
+    font-size: 0.85rem !important;
+    border-radius: var(--radius) !important;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.flow-material-confirm:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
 /* ============================
    TOAST NOTIFICATION
    ============================ */

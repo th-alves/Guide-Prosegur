@@ -511,6 +511,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Abastecimento sub-flow scripts
+    const abastecimentoScripts = {
+        abastecimento_script: {
+            icon: 'fa-boxes-stacking',
+            label: 'Identificação',
+            getText(clientName) {
+                const nome = clientName && clientName.trim() ? clientName.trim() : '[NOME do Atendimento]';
+                return `Entendi ${nome}. Me informa o CNPJ e o nome do estabelecimento por gentileza.`;
+            },
+            hasMaterialSelect: true,
+            nextQuestion: null,
+            yesState: null,
+            noState: null
+        },
+        abastecimento_boca_de_lobo: {
+            icon: 'fa-question-circle',
+            label: 'Tipo de Cofre',
+            text: '',
+            isBocaDeLoboDecision: true,
+            nextQuestion: 'O cofre é Boca de Lobo?',
+            yesState: 'boca_de_lobo_dados',
+            noState: 'abastecimento_devolutiva'
+        },
+        boca_de_lobo_dados: {
+            icon: 'fa-clipboard-list',
+            label: 'Dados Boca de Lobo',
+            text: 'Por gentileza me informe os seguintes dados:\n\nRazão social:\nLoja Filial:\nCNPJ:\nPDV Da Loja:\n\nEndereço completo:',
+            nextQuestion: 'Dados informados?',
+            yesState: 'boca_de_lobo_devolutiva',
+            noState: null
+        },
+        boca_de_lobo_devolutiva: {
+            icon: 'fa-check-double',
+            label: 'Devolutiva Boca de Lobo',
+            text: 'Obrigado pela Informações.\n\nSua solicitação já foi enviada ao setor responsável, nas próximas solicitações pode ser realizada via e-mail para a filial centralspc@prosegur.com ou no 0800 769 0031 opção 5, que cairá diretamente com o setor responsável. A entrega será realizada nas próximas coletas ao local.',
+            nextQuestion: 'Atendimento finalizado?',
+            yesState: 'finalizado_abastecimento',
+            noState: 'voltar_motivo'
+        },
+        abastecimento_devolutiva: {
+            icon: 'fa-check-double',
+            label: 'Devolutiva',
+            text: 'Sua solicitação já foi enviada ao setor responsável através do protocolo: , nas próximas solicitações pode ser realizada via e-mail para a filial centralspc@prosegur.com ou no 0800 769 0031 opção 5 que cairá diretamente com o setor responsável. A entrega será realizada nas próximas coleta ao local.',
+            nextQuestion: 'Atendimento finalizado?',
+            yesState: 'finalizado_abastecimento',
+            noState: 'voltar_motivo'
+        },
+        finalizado_abastecimento: {
+            icon: 'fa-flag-checkered',
+            label: 'Encerramento',
+            get text() { return `Foi um prazer te atender, segue o protocolo do nosso atendimento: . Tenha um ótimo ${getGreetingPeriod()}!`; },
+            nextQuestion: null,
+            yesState: null,
+            noState: null
+        }
+    };
+
     function createChat() {
         chatIdCounter++;
         const chat = {
@@ -523,7 +580,8 @@ document.addEventListener('DOMContentLoaded', () => {
             cadastrosRealizados: '', // stores pasted cadastros for devolutiva
             clientName: '',
             clientCnpj: '',
-            clientPhone: ''
+            clientPhone: '',
+            materialAbastecimento: ''
         };
         chats.push(chat);
         return chat;
@@ -648,6 +706,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // Helper to get the active flow definition for a chat
+    function getFlowDef(chat) {
+        if (!chat.flowState) return null;
+        if (cadastroScripts[chat.flowState]) return cadastroScripts[chat.flowState];
+        if (abastecimentoScripts[chat.flowState]) return abastecimentoScripts[chat.flowState];
+        return null;
+    }
+
     function renderActiveCard() {
         const chat = chats.find(c => c.id === activeChatId);
         if (!chat) {
@@ -659,7 +725,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasNotes = chat.notes && chat.notes.trim().length > 0;
 
         // Check if we are in a sub-flow
-        if (chat.flowState && cadastroScripts[chat.flowState]) {
+        if (chat.flowState && getFlowDef(chat)) {
             renderFlowCard(chat, padded, hasNotes);
             return;
         }
@@ -705,14 +771,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderFlowCard(chat, padded, hasNotes) {
-        const flowDef = cadastroScripts[chat.flowState];
+        const flowDef = getFlowDef(chat);
         if (!flowDef) return;
 
+        // Get script text (some states use getText with clientName)
+        let scriptText = '';
+        if (typeof flowDef.getText === 'function') {
+            scriptText = flowDef.getText(chat.clientName);
+        } else {
+            scriptText = flowDef.text;
+        }
+
         // Format script text preserving line breaks
-        const formattedText = escapeHTML(flowDef.text).replace(/\n/g, '<br>');
+        const formattedText = escapeHTML(scriptText).replace(/\n/g, '<br>');
+
+        // Material select for abastecimento_script state
+        let materialSelectHTML = '';
+        if (flowDef.hasMaterialSelect) {
+            materialSelectHTML = `
+                <div class="flow-material-select">
+                    <label class="step-select-label"><i class="fas fa-box-open"></i> Qual material o cliente solicitou?</label>
+                    <div class="step-select-container">
+                        <select class="step-select" id="materialSelect">
+                            <option value="" disabled ${!chat.materialAbastecimento ? 'selected' : ''}>Escolha o material...</option>
+                            <option value="Bobina Pequena" ${chat.materialAbastecimento === 'Bobina Pequena' ? 'selected' : ''}>Bobina Pequena</option>
+                            <option value="Bobina Grande" ${chat.materialAbastecimento === 'Bobina Grande' ? 'selected' : ''}>Bobina Grande</option>
+                            <option value="Malote Pequeno" ${chat.materialAbastecimento === 'Malote Pequeno' ? 'selected' : ''}>Malote Pequeno</option>
+                            <option value="Malote Médio" ${chat.materialAbastecimento === 'Malote Médio' ? 'selected' : ''}>Malote Médio</option>
+                            <option value="Malote Grande" ${chat.materialAbastecimento === 'Malote Grande' ? 'selected' : ''}>Malote Grande</option>
+                            <option value="Envelope de Transferência" ${chat.materialAbastecimento === 'Envelope de Transferência' ? 'selected' : ''}>Envelope de Transferência</option>
+                            <option value="Bananinha Transparente" ${chat.materialAbastecimento === 'Bananinha Transparente' ? 'selected' : ''}>Bananinha Transparente</option>
+                            <option value="Bananinha Branca" ${chat.materialAbastecimento === 'Bananinha Branca' ? 'selected' : ''}>Bananinha Branca</option>
+                        </select>
+                        <i class="fas fa-chevron-down step-select-icon"></i>
+                    </div>
+                    <button class="btn btn-primary flow-material-confirm" id="btnMaterialConfirm" ${!chat.materialAbastecimento ? 'disabled' : ''}>
+                        <i class="fas fa-arrow-right"></i> Confirmar Material
+                    </button>
+                </div>`;
+        }
 
         let decisionHTML = '';
-        if (flowDef.nextQuestion) {
+        if (flowDef.isBocaDeLoboDecision) {
+            // Special Boca de Lobo yes/no decision (no script text)
             decisionHTML = `
                 <div class="flow-decision">
                     <div class="flow-decision-label"><i class="fas fa-question-circle"></i> ${flowDef.nextQuestion}</div>
@@ -725,18 +826,35 @@ document.addEventListener('DOMContentLoaded', () => {
                         </button>
                     </div>
                 </div>`;
-        } else {
-            // Final state — show "Novo atendimento" option
+        } else if (flowDef.nextQuestion) {
+            decisionHTML = `
+                <div class="flow-decision">
+                    <div class="flow-decision-label"><i class="fas fa-question-circle"></i> ${flowDef.nextQuestion}</div>
+                    <div class="flow-decision-btns">
+                        <button class="btn flow-btn flow-btn-yes" data-flow-action="yes">
+                            <i class="fas fa-check"></i> Sim
+                        </button>
+                        <button class="btn flow-btn flow-btn-no" data-flow-action="no">
+                            <i class="fas fa-times"></i> Não
+                        </button>
+                    </div>
+                </div>`;
+        } else if (!flowDef.hasMaterialSelect) {
+            // Final state — show "Atendimento concluído"
             decisionHTML = `
                 <div class="flow-decision">
                     <div class="flow-final-msg"><i class="fas fa-check-circle"></i> Atendimento concluído</div>
                 </div>`;
         }
 
+        // Hide script block for decision-only states
+        const showScriptBlock = !flowDef.isBocaDeLoboDecision;
+
         chatMain.innerHTML = `
             <div class="atendimento-card flow-active" data-chat-id="${chat.id}">
                 ${buildCardHeader(chat, padded, hasNotes, `<span class="flow-state-badge"><i class="fas ${flowDef.icon}"></i> ${flowDef.label}</span>`)}
                 <div class="flow-content">
+                    ${showScriptBlock ? `
                     <div class="flow-script-block">
                         <div class="flow-script-header">
                             <span class="flow-script-tag"><i class="fas fa-scroll"></i> Script</span>
@@ -745,7 +863,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             </button>
                         </div>
                         <div class="flow-script-text">${formattedText}</div>
-                    </div>
+                    </div>` : ''}
+                    ${materialSelectHTML}
                     ${chat.flowState === 'devolutiva_cadastro' ? `
                     <div class="flow-cadastros-field">
                         <label class="flow-cadastros-label"><i class="fas fa-users"></i> Cadastros realizados</label>
@@ -763,6 +882,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 chat.cadastrosRealizados = cadastrosTextarea.value;
             });
         }
+
+        // Material select listeners
+        const materialSelect = chatMain.querySelector('#materialSelect');
+        const materialConfirmBtn = chatMain.querySelector('#btnMaterialConfirm');
+        if (materialSelect) {
+            materialSelect.addEventListener('change', () => {
+                chat.materialAbastecimento = materialSelect.value;
+                if (materialConfirmBtn) materialConfirmBtn.disabled = !materialSelect.value;
+            });
+        }
+        if (materialConfirmBtn) {
+            materialConfirmBtn.addEventListener('click', () => {
+                if (chat.materialAbastecimento) {
+                    chat.flowState = 'abastecimento_boca_de_lobo';
+                    renderActiveCard();
+                }
+            });
+        }
+
         attachClientFieldListeners(chat);
     }
 
@@ -886,8 +1024,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- Sub-flow handlers ---
         const flowCopyBtn = e.target.closest('[data-flow-copy]');
-        if (flowCopyBtn && chat.flowState && cadastroScripts[chat.flowState]) {
-            let scriptText = cadastroScripts[chat.flowState].text;
+        if (flowCopyBtn && chat.flowState) {
+            const flowDef = getFlowDef(chat);
+            if (!flowDef) return;
+            let scriptText = '';
+            if (typeof flowDef.getText === 'function') {
+                scriptText = flowDef.getText(chat.clientName);
+            } else {
+                scriptText = flowDef.text;
+            }
             // Append cadastros data for devolutiva
             if (chat.flowState === 'devolutiva_cadastro' && chat.cadastrosRealizados.trim()) {
                 scriptText += '\n' + chat.cadastrosRealizados.trim();
@@ -900,20 +1045,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const flowActionBtn = e.target.closest('[data-flow-action]');
         if (flowActionBtn && chat.flowState) {
             const action = flowActionBtn.dataset.flowAction;
-            const flowDef = cadastroScripts[chat.flowState];
+            const flowDef = getFlowDef(chat);
             if (!flowDef) return;
 
             if (action === 'yes') {
-                if (flowDef.yesState === 'finalizado_script') {
-                    chat.flowState = 'finalizado_script';
-                } else {
-                    chat.flowState = flowDef.yesState;
-                }
+                chat.flowState = flowDef.yesState;
             } else if (action === 'no') {
                 if (flowDef.noState === 'voltar_motivo') {
                     // Reset back to step 2 (motivo do contato)
                     chat.flowState = null;
                     chat.motivoContato = null;
+                    chat.materialAbastecimento = '';
                     chat.currentStep = 1;
                     renderActiveCard();
                     return;
@@ -931,12 +1073,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const copyBtn = e.target.closest('.atendimento-copy-btn');
 
         if (nextBtn && chat.currentStep < TOTAL_STEPS - 1) {
-            // If on step 2 (motivo do contato), check if Cadastro is selected
+            // If on step 2 (motivo do contato), check selected value
             if (chat.currentStep === 1) {
                 const motivoSelect = chatMain.querySelector('#motivoSelect');
                 if (motivoSelect && motivoSelect.value === 'Cadastro') {
                     chat.motivoContato = 'Cadastro';
                     chat.flowState = 'cadastro_script';
+                    renderActiveCard();
+                    return;
+                }
+                if (motivoSelect && motivoSelect.value === 'Abastecimento') {
+                    chat.motivoContato = 'Abastecimento';
+                    chat.flowState = 'abastecimento_script';
                     renderActiveCard();
                     return;
                 }
