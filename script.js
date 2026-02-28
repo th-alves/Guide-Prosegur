@@ -420,78 +420,331 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast('Manual copiado com sucesso!');
     };
 
-    // ---- ATENDIMENTOS PANEL ----
+    // ---- ATENDIMENTOS PANEL (Dynamic Chats) ----
     const TOTAL_STEPS = 5;
+    let chatIdCounter = 0;
+    let chats = [];
+    let activeChatId = null;
 
-    // Initialize each atendimento card
-    document.querySelectorAll('.atendimento-card').forEach(card => {
-        card._currentStep = 0;
-        updateAtendimentoUI(card);
+    const chatSidebarList = document.getElementById('chatSidebarList');
+    const chatCountBadge = document.getElementById('chatCountBadge');
+    const chatMain = document.getElementById('chatMain');
+    const chatNotesPanel = document.getElementById('chatNotesPanel');
+    const chatNotesTextarea = document.getElementById('chatNotesTextarea');
+    const btnAddChat = document.getElementById('btnAddChat');
+    const btnCloseNotes = document.getElementById('btnCloseNotes');
+    const btnResetChats = document.getElementById('btnResetChats');
+
+    // Create backdrop overlay for notes
+    const notesOverlay = document.createElement('div');
+    notesOverlay.className = 'chat-notes-overlay';
+    document.body.appendChild(notesOverlay);
+
+    // Step definitions
+    const stepDefs = [
+        { icon: 'fa-handshake', label: 'Saudação', text: 'Bom dia! Meu nome é Daniel e estou aqui para ajudá-lo(a). Com quem estou falando, por gentileza?' },
+        {
+            icon: 'fa-id-card', label: 'Motivo do contato', html: `<div class="step-select-wrapper">
+            <label class="step-select-label">Selecione o motivo do contato:</label>
+            <div class="step-select-container">
+                <select class="step-select" id="motivoSelect">
+                    <option value="" disabled selected>Escolha uma opção...</option>
+                    <option value="Cadastro">Cadastro</option>
+                    <option value="Manutenção">Manutenção</option>
+                    <option value="Diversos">Diversos</option>
+                    <option value="Valores">Valores</option>
+                    <option value="Abastecimento">Abastecimento</option>
+                </select>
+                <i class="fas fa-chevron-down step-select-icon"></i>
+            </div>
+        </div>` },
+        { icon: 'fa-comment-dots', label: 'Identificação', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate.' },
+        { icon: 'fa-cogs', label: 'Procedimento', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident.' },
+        { icon: 'fa-check-circle', label: 'Encerramento', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sunt in culpa qui officia deserunt mollit anim.' }
+    ];
+
+    function createChat() {
+        chatIdCounter++;
+        const chat = {
+            id: chatIdCounter,
+            number: chats.length + 1,
+            currentStep: 0,
+            notes: ''
+        };
+        chats.push(chat);
+        return chat;
+    }
+
+    function removeChat(chatId) {
+        if (chats.length <= 1) return;
+        chats = chats.filter(c => c.id !== chatId);
+        // Renumber
+        chats.forEach((c, i) => c.number = i + 1);
+        if (activeChatId === chatId) {
+            activeChatId = chats[0].id;
+        }
+        renderSidebar();
+        renderActiveCard();
+        closeNotes();
+    }
+
+    function switchToChat(chatId) {
+        // Save current notes
+        saveCurrentNotes();
+        activeChatId = chatId;
+        renderSidebar();
+        renderActiveCard();
+        // Load notes for new chat
+        loadNotesForActiveChat();
+    }
+
+    function saveCurrentNotes() {
+        if (activeChatId === null) return;
+        const chat = chats.find(c => c.id === activeChatId);
+        if (chat) {
+            chat.notes = chatNotesTextarea.value;
+        }
+    }
+
+    function loadNotesForActiveChat() {
+        const chat = chats.find(c => c.id === activeChatId);
+        chatNotesTextarea.value = chat ? chat.notes : '';
+    }
+
+    function renderSidebar() {
+        chatCountBadge.textContent = chats.length;
+        chatSidebarList.innerHTML = '';
+        chats.forEach(chat => {
+            const item = document.createElement('div');
+            item.className = 'chat-sidebar-item' + (chat.id === activeChatId ? ' active' : '');
+            item.dataset.chatId = chat.id;
+            const padded = String(chat.number).padStart(2, '0');
+
+            let removeBtn = '';
+            if (chats.length > 1) {
+                removeBtn = `<button class="chat-sidebar-item-remove" data-remove-chat="${chat.id}" title="Remover chat"><i class="fas fa-times"></i></button>`;
+            }
+
+            item.innerHTML = `
+                <span class="chat-sidebar-item-badge">${padded}</span>
+                <div class="chat-sidebar-item-info">
+                    <div class="chat-sidebar-item-name">Atendimento ${chat.number}</div>
+                    <div class="chat-sidebar-item-step">Etapa ${chat.currentStep + 1}/${TOTAL_STEPS}</div>
+                </div>
+                ${removeBtn}
+            `;
+            chatSidebarList.appendChild(item);
+        });
+    }
+
+    function renderActiveCard() {
+        const chat = chats.find(c => c.id === activeChatId);
+        if (!chat) {
+            chatMain.innerHTML = `<div class="chat-empty-state"><i class="fab fa-whatsapp"></i><p>Nenhum chat ativo</p></div>`;
+            return;
+        }
+
+        const padded = String(chat.number).padStart(2, '0');
+        const hasNotes = chat.notes && chat.notes.trim().length > 0;
+
+        let stepsHTML = '';
+        stepDefs.forEach((s, i) => {
+            const content = s.html ? s.html : `<p>${s.text}</p>`;
+            stepsHTML += `
+                <div class="atendimento-step" data-step="${i}">
+                    <div class="step-label"><i class="fas ${s.icon}"></i> ${s.label}</div>
+                    <div class="step-text">${content}</div>
+                </div>`;
+        });
+
+        let dotsHTML = '';
+        for (let i = 0; i < TOTAL_STEPS; i++) {
+            dotsHTML += `<span class="progress-dot" data-step="${i}"></span>`;
+        }
+
+        chatMain.innerHTML = `
+            <div class="atendimento-card" data-chat-id="${chat.id}">
+                <div class="atendimento-header">
+                    <div class="atendimento-title">
+                        <span class="atendimento-badge">${padded}</span>
+                        <h3>Atendimento ${chat.number}</h3>
+                    </div>
+                    <div class="atendimento-header-actions">
+                        <span class="atendimento-step-indicator">Etapa <span class="step-current">${chat.currentStep + 1}</span>/${TOTAL_STEPS}</span>
+                        <button class="btn-notes-toggle ${hasNotes ? 'has-notes' : ''}" id="btnNotesToggle">
+                            <i class="fas fa-sticky-note"></i> Anotações
+                        </button>
+                    </div>
+                </div>
+                <div class="atendimento-progress">
+                    <div class="atendimento-progress-bar" style="width: ${((chat.currentStep + 1) / TOTAL_STEPS) * 100}%;"></div>
+                    <div class="atendimento-progress-labels">${dotsHTML}</div>
+                </div>
+                <div class="atendimento-slider-container">
+                    <div class="atendimento-slider" style="transform: translateX(-${chat.currentStep * 20}%);">
+                        ${stepsHTML}
+                    </div>
+                </div>
+                <div class="atendimento-footer">
+                    <button class="btn atendimento-nav-btn atendimento-prev" ${chat.currentStep === 0 ? 'disabled' : ''}><i class="fas fa-arrow-left"></i> Voltar</button>
+                    <button class="btn btn-copy atendimento-copy-btn"><i class="fas fa-copy"></i> Copiar</button>
+                    <button class="btn atendimento-nav-btn atendimento-next" ${chat.currentStep === TOTAL_STEPS - 1 ? 'disabled' : ''}>Próxima <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        `;
+
+        // Update dots
+        updateCardDots(chat.currentStep);
+    }
+
+    function updateCardDots(step) {
+        const card = chatMain.querySelector('.atendimento-card');
+        if (!card) return;
+        const dots = card.querySelectorAll('.progress-dot');
+        dots.forEach((dot, i) => {
+            dot.classList.remove('active', 'completed');
+            if (i < step) dot.classList.add('completed');
+            if (i === step) dot.classList.add('active');
+        });
+    }
+
+    function updateCardUI(chat) {
+        const card = chatMain.querySelector('.atendimento-card');
+        if (!card) return;
+
+        const slider = card.querySelector('.atendimento-slider');
+        const progressBar = card.querySelector('.atendimento-progress-bar');
+        const stepIndicator = card.querySelector('.step-current');
+        const prevBtn = card.querySelector('.atendimento-prev');
+        const nextBtn = card.querySelector('.atendimento-next');
+
+        slider.style.transform = `translateX(-${chat.currentStep * 20}%)`;
+        progressBar.style.width = `${((chat.currentStep + 1) / TOTAL_STEPS) * 100}%`;
+        stepIndicator.textContent = chat.currentStep + 1;
+        prevBtn.disabled = chat.currentStep === 0;
+        nextBtn.disabled = chat.currentStep === TOTAL_STEPS - 1;
+        updateCardDots(chat.currentStep);
+
+        // Update sidebar step info
+        const sidebarItem = chatSidebarList.querySelector(`[data-chat-id="${chat.id}"]`);
+        if (sidebarItem) {
+            const stepEl = sidebarItem.querySelector('.chat-sidebar-item-step');
+            if (stepEl) stepEl.textContent = `Etapa ${chat.currentStep + 1}/${TOTAL_STEPS}`;
+        }
+    }
+
+    function openNotes() {
+        loadNotesForActiveChat();
+        chatNotesPanel.classList.add('open');
+        notesOverlay.classList.add('open');
+    }
+
+    function closeNotes() {
+        saveCurrentNotes();
+        chatNotesPanel.classList.remove('open');
+        notesOverlay.classList.remove('open');
+        // Update notes button indicator
+        const notesBtn = chatMain.querySelector('#btnNotesToggle');
+        const chat = chats.find(c => c.id === activeChatId);
+        if (notesBtn && chat) {
+            if (chat.notes && chat.notes.trim().length > 0) {
+                notesBtn.classList.add('has-notes');
+            } else {
+                notesBtn.classList.remove('has-notes');
+            }
+        }
+    }
+
+    // --- Event Listeners ---
+    btnAddChat.addEventListener('click', () => {
+        saveCurrentNotes();
+        const chat = createChat();
+        activeChatId = chat.id;
+        renderSidebar();
+        renderActiveCard();
+        showToast(`Atendimento ${chat.number} criado!`);
     });
 
-    // Event delegation for atendimento buttons
-    document.addEventListener('click', (e) => {
+    btnCloseNotes.addEventListener('click', closeNotes);
+    notesOverlay.addEventListener('click', closeNotes);
+
+    // Reset all chats
+    btnResetChats.addEventListener('click', () => {
+        closeNotes();
+        chats = [];
+        chatIdCounter = 0;
+        activeChatId = null;
+        const firstChat = createChat();
+        activeChatId = firstChat.id;
+        renderSidebar();
+        renderActiveCard();
+        showToast('Chats resetados!');
+    });
+
+    // Sidebar click delegation
+    chatSidebarList.addEventListener('click', (e) => {
+        const removeBtn = e.target.closest('[data-remove-chat]');
+        if (removeBtn) {
+            const chatId = parseInt(removeBtn.dataset.removeChat);
+            removeChat(chatId);
+            showToast('Chat removido!');
+            return;
+        }
+        const item = e.target.closest('.chat-sidebar-item');
+        if (item) {
+            const chatId = parseInt(item.dataset.chatId);
+            if (chatId !== activeChatId) {
+                closeNotes();
+                switchToChat(chatId);
+            }
+        }
+    });
+
+    // Card button delegation (prev/next/copy/notes)
+    chatMain.addEventListener('click', (e) => {
+        const chat = chats.find(c => c.id === activeChatId);
+        if (!chat) return;
+
         const nextBtn = e.target.closest('.atendimento-next');
         const prevBtn = e.target.closest('.atendimento-prev');
         const copyBtn = e.target.closest('.atendimento-copy-btn');
+        const notesBtn = e.target.closest('#btnNotesToggle');
 
-        if (nextBtn) {
-            const card = nextBtn.closest('.atendimento-card');
-            if (card._currentStep < TOTAL_STEPS - 1) {
-                card._currentStep++;
-                updateAtendimentoUI(card);
-            }
+        if (nextBtn && chat.currentStep < TOTAL_STEPS - 1) {
+            chat.currentStep++;
+            updateCardUI(chat);
         }
 
-        if (prevBtn) {
-            const card = prevBtn.closest('.atendimento-card');
-            if (card._currentStep > 0) {
-                card._currentStep--;
-                updateAtendimentoUI(card);
-            }
+        if (prevBtn && chat.currentStep > 0) {
+            chat.currentStep--;
+            updateCardUI(chat);
         }
 
         if (copyBtn) {
-            const card = copyBtn.closest('.atendimento-card');
+            const card = chatMain.querySelector('.atendimento-card');
             const steps = card.querySelectorAll('.atendimento-step');
-            const currentStep = steps[card._currentStep];
+            const currentStep = steps[chat.currentStep];
             if (currentStep) {
                 const text = currentStep.querySelector('.step-text').textContent.trim();
                 copyToClipboard(text);
                 showToast('Script copiado com sucesso!');
             }
         }
+
+        if (notesBtn) {
+            if (chatNotesPanel.classList.contains('open')) {
+                closeNotes();
+            } else {
+                openNotes();
+            }
+        }
     });
 
-    function updateAtendimentoUI(card) {
-        const step = card._currentStep;
-        const slider = card.querySelector('.atendimento-slider');
-        const progressBar = card.querySelector('.atendimento-progress-bar');
-        const stepIndicator = card.querySelector('.step-current');
-        const prevBtn = card.querySelector('.atendimento-prev');
-        const nextBtn = card.querySelector('.atendimento-next');
-        const dots = card.querySelectorAll('.progress-dot');
-
-        // Slide
-        slider.style.transform = `translateX(-${step * 100}%)`;
-
-        // Progress bar
-        progressBar.style.width = `${((step + 1) / TOTAL_STEPS) * 100}%`;
-
-        // Step indicator
-        stepIndicator.textContent = step + 1;
-
-        // Dots
-        dots.forEach((dot, i) => {
-            dot.classList.remove('active', 'completed');
-            if (i < step) dot.classList.add('completed');
-            if (i === step) dot.classList.add('active');
-        });
-
-        // Button states
-        prevBtn.disabled = step === 0;
-        nextBtn.disabled = step === TOTAL_STEPS - 1;
-    }
+    // Initialize with 1 chat
+    const firstChat = createChat();
+    activeChatId = firstChat.id;
+    renderSidebar();
+    renderActiveCard();
 
     // ---- COPIAR VALORES (MANUAL 03) ----
     window.copyValores03 = function (btn) {
