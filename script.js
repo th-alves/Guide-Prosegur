@@ -505,7 +505,10 @@ document.addEventListener('DOMContentLoaded', () => {
             notes: '',
             flowState: null,      // null = normal step flow, string = cadastro sub-flow state
             motivoContato: null,  // stores selected motivo
-            cadastrosRealizados: '' // stores pasted cadastros for devolutiva
+            cadastrosRealizados: '', // stores pasted cadastros for devolutiva
+            clientName: '',
+            clientCnpj: '',
+            clientPhone: ''
         };
         chats.push(chat);
         return chat;
@@ -561,16 +564,73 @@ document.addEventListener('DOMContentLoaded', () => {
                 removeBtn = `<button class="chat-sidebar-item-remove" data-remove-chat="${chat.id}" title="Remover chat"><i class="fas fa-times"></i></button>`;
             }
 
+            const displayName = chat.clientName.trim() || `Atendimento ${chat.number}`;
             item.innerHTML = `
                 <span class="chat-sidebar-item-badge">${padded}</span>
                 <div class="chat-sidebar-item-info">
-                    <div class="chat-sidebar-item-name">Atendimento ${chat.number}</div>
+                    <div class="chat-sidebar-item-name">${escapeHTML(displayName)}</div>
                     <div class="chat-sidebar-item-step">Etapa ${chat.currentStep + 1}/${TOTAL_STEPS}</div>
                 </div>
                 ${removeBtn}
             `;
             chatSidebarList.appendChild(item);
         });
+    }
+
+    // Shared header builder for atendimento cards
+    function buildCardHeader(chat, padded, hasNotes, extraBadge) {
+        const stepOrBadge = extraBadge || `<span class="atendimento-step-indicator">Etapa <span class="step-current">${chat.currentStep + 1}</span>/${TOTAL_STEPS}</span>`;
+        return `
+            <div class="atendimento-header">
+                <div class="atendimento-title">
+                    <span class="atendimento-badge">${padded}</span>
+                    <input type="text" class="client-name-input" id="clientNameInput"
+                        placeholder="Nome do cliente"
+                        value="${escapeHTML(chat.clientName)}" />
+                </div>
+                <div class="atendimento-header-actions">
+                    ${stepOrBadge}
+                    <button class="btn-notes-toggle ${hasNotes ? 'has-notes' : ''}" id="btnNotesToggle" title="Anotações">
+                        <i class="fas fa-sticky-note"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="client-info-row">
+                <div class="client-info-field">
+                    <i class="fas fa-building"></i>
+                    <input type="text" class="client-info-input" id="clientCnpjInput"
+                        placeholder="CNPJ" value="${escapeHTML(chat.clientCnpj)}" />
+                </div>
+                <div class="client-info-field">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" class="client-info-input" id="clientPhoneInput"
+                        placeholder="Telefone" value="${escapeHTML(chat.clientPhone)}" />
+                </div>
+            </div>`;
+    }
+
+    function attachClientFieldListeners(chat) {
+        const nameInput = chatMain.querySelector('#clientNameInput');
+        const cnpjInput = chatMain.querySelector('#clientCnpjInput');
+        const phoneInput = chatMain.querySelector('#clientPhoneInput');
+
+        if (nameInput) {
+            nameInput.addEventListener('input', () => {
+                chat.clientName = nameInput.value;
+                // Update sidebar
+                const sidebarItem = chatSidebarList.querySelector(`[data-chat-id="${chat.id}"]`);
+                if (sidebarItem) {
+                    const nameEl = sidebarItem.querySelector('.chat-sidebar-item-name');
+                    if (nameEl) nameEl.textContent = chat.clientName.trim() || `Atendimento ${chat.number}`;
+                }
+            });
+        }
+        if (cnpjInput) {
+            cnpjInput.addEventListener('input', () => { chat.clientCnpj = cnpjInput.value; });
+        }
+        if (phoneInput) {
+            phoneInput.addEventListener('input', () => { chat.clientPhone = phoneInput.value; });
+        }
     }
 
     function renderActiveCard() {
@@ -606,18 +666,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         chatMain.innerHTML = `
             <div class="atendimento-card" data-chat-id="${chat.id}">
-                <div class="atendimento-header">
-                    <div class="atendimento-title">
-                        <span class="atendimento-badge">${padded}</span>
-                        <h3>Atendimento ${chat.number}</h3>
-                    </div>
-                    <div class="atendimento-header-actions">
-                        <span class="atendimento-step-indicator">Etapa <span class="step-current">${chat.currentStep + 1}</span>/${TOTAL_STEPS}</span>
-                        <button class="btn-notes-toggle ${hasNotes ? 'has-notes' : ''}" id="btnNotesToggle">
-                            <i class="fas fa-sticky-note"></i> Anotações
-                        </button>
-                    </div>
-                </div>
+                ${buildCardHeader(chat, padded, hasNotes)}
                 <div class="atendimento-progress">
                     <div class="atendimento-progress-bar" style="width: ${((chat.currentStep + 1) / TOTAL_STEPS) * 100}%;"></div>
                     <div class="atendimento-progress-labels">${dotsHTML}</div>
@@ -637,6 +686,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update dots
         updateCardDots(chat.currentStep);
+        attachClientFieldListeners(chat);
     }
 
     function renderFlowCard(chat, padded, hasNotes) {
@@ -670,18 +720,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         chatMain.innerHTML = `
             <div class="atendimento-card flow-active" data-chat-id="${chat.id}">
-                <div class="atendimento-header">
-                    <div class="atendimento-title">
-                        <span class="atendimento-badge">${padded}</span>
-                        <h3>Atendimento ${chat.number}</h3>
-                    </div>
-                    <div class="atendimento-header-actions">
-                        <span class="flow-state-badge"><i class="fas ${flowDef.icon}"></i> ${flowDef.label}</span>
-                        <button class="btn-notes-toggle ${hasNotes ? 'has-notes' : ''}" id="btnNotesToggle">
-                            <i class="fas fa-sticky-note"></i> Anotações
-                        </button>
-                    </div>
-                </div>
+                ${buildCardHeader(chat, padded, hasNotes, `<span class="flow-state-badge"><i class="fas ${flowDef.icon}"></i> ${flowDef.label}</span>`)}
                 <div class="flow-content">
                     <div class="flow-script-block">
                         <div class="flow-script-header">
@@ -709,6 +748,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 chat.cadastrosRealizados = cadastrosTextarea.value;
             });
         }
+        attachClientFieldListeners(chat);
     }
 
     function updateCardDots(step) {
