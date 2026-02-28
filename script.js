@@ -268,10 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (funcao === 'Supervisor(a)') {
                 line = `${nome} ${sobrenome} - Matrícula ${matricula} - Supervisor(a) - Senha: ${senhaValue}`;
             } else {
-                line = `${nome} ${sobrenome} - Matrícula ${matricula} - ${funcao} ${comSenha ? 'com senha' : 'sem senha'}`;
-                if (comSenha && senhaValue) {
-                    line += ` - Senha: ${senhaValue}`;
-                }
+                line = `${nome} ${sobrenome} - Matrícula ${matricula} - ${funcao} ${comSenha ? 'com senha' : 'sem senha'} - Senha: ${senhaValue}`;
             }
 
             lines.push(line);
@@ -507,7 +504,8 @@ document.addEventListener('DOMContentLoaded', () => {
             currentStep: 0,
             notes: '',
             flowState: null,      // null = normal step flow, string = cadastro sub-flow state
-            motivoContato: null   // stores selected motivo
+            motivoContato: null,  // stores selected motivo
+            cadastrosRealizados: '' // stores pasted cadastros for devolutiva
         };
         chats.push(chat);
         return chat;
@@ -694,10 +692,23 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <div class="flow-script-text">${formattedText}</div>
                     </div>
+                    ${chat.flowState === 'devolutiva_cadastro' ? `
+                    <div class="flow-cadastros-field">
+                        <label class="flow-cadastros-label"><i class="fas fa-users"></i> Cadastros realizados</label>
+                        <textarea class="flow-cadastros-textarea" id="flowCadastrosTextarea" placeholder="Cole aqui os cadastros realizados..." rows="4">${escapeHTML(chat.cadastrosRealizados)}</textarea>
+                    </div>` : ''}
                     ${decisionHTML}
                 </div>
             </div>
         `;
+
+        // Auto-save cadastros textarea
+        const cadastrosTextarea = chatMain.querySelector('#flowCadastrosTextarea');
+        if (cadastrosTextarea) {
+            cadastrosTextarea.addEventListener('input', () => {
+                chat.cadastrosRealizados = cadastrosTextarea.value;
+            });
+        }
     }
 
     function updateCardDots(step) {
@@ -821,7 +832,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- Sub-flow handlers ---
         const flowCopyBtn = e.target.closest('[data-flow-copy]');
         if (flowCopyBtn && chat.flowState && cadastroScripts[chat.flowState]) {
-            const scriptText = cadastroScripts[chat.flowState].text;
+            let scriptText = cadastroScripts[chat.flowState].text;
+            // Append cadastros data for devolutiva
+            if (chat.flowState === 'devolutiva_cadastro' && chat.cadastrosRealizados.trim()) {
+                scriptText += '\n' + chat.cadastrosRealizados.trim();
+            }
             copyToClipboard(scriptText);
             showToast('Script copiado com sucesso!');
             return;
