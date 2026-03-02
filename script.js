@@ -477,11 +477,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Cadastro sub-flow scripts
     const cadastroScripts = {
+        cadastro_identificacao: {
+            icon: 'fa-id-card',
+            label: 'Identificação',
+            getText(clientName) {
+                const nome = clientName && clientName.trim() ? clientName.trim() : '[NOME do Atendimento]';
+                return `Entendi ${nome}. Me informa o CNPJ e o nome do estabelecimento por gentileza.`;
+            },
+            nextQuestion: 'Prosseguir para cadastro?',
+            yesState: 'cadastro_script',
+            noState: null
+        },
         cadastro_script: {
             icon: 'fa-clipboard-list',
             label: 'Script de Cadastro',
             text: 'Me informe, por gentileza os dados abaixo para cadastro: \n\nNome: \nSobrenome: \nMatrícula (Não pode começar com zero; mínimo de 2 dígito e máximo de 8 dígitos): \nPerfil do usuário depositante ou supervisor: \nCaso seja depositante, será com senha ou sem senha?',
-            nextQuestion: 'Cadastro realizado?',
+            nextQuestion: 'O Cadastro atualizou ou não?',
+            isCustomDecision: true,
+            yesLabel: 'Atualizou',
+            noLabel: 'Não atualizou',
             yesState: 'devolutiva_cadastro',
             noState: 'cadastro_nao_atualizado'
         },
@@ -568,6 +582,65 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Valores sub-flow scripts
+    const valoresScripts = {
+        valores_identificacao: {
+            icon: 'fa-dollar-sign',
+            label: 'Identificação',
+            getText(clientName) {
+                const nome = clientName && clientName.trim() ? clientName.trim() : '[NOME do Atendimento]';
+                return `Entendi ${nome}. Me informa o CNPJ e o nome do estabelecimento por gentileza.`;
+            },
+            hasValoresSelect: true,
+            nextQuestion: null,
+            yesState: null,
+            noState: null
+        },
+        valores_analise_diferenca: {
+            icon: 'fa-question-circle',
+            label: 'Tipo de Cliente',
+            text: '',
+            isCustomDecision: true,
+            nextQuestion: 'Cliente D+0 ou D+1?',
+            yesLabel: 'D+0',
+            noLabel: 'D+1',
+            yesState: 'valores_d0_dados',
+            noState: 'valores_d1_script'
+        },
+        valores_d1_script: {
+            icon: 'fa-clock',
+            label: 'D+1 - Modalidade',
+            text: 'Verifiquei no sistema que vocês são da modalidade D+1, sendo assim, é necessário que vocês aguardem sua próxima coleta e a apuração da Tesouraria, assim que apurado o valor, será creditado em sua conta.',
+            nextQuestion: 'Atendimento finalizado?',
+            yesState: 'finalizado_valores',
+            noState: 'voltar_motivo'
+        },
+        valores_d0_dados: {
+            icon: 'fa-clipboard-list',
+            label: 'D+0 - Dados',
+            text: 'Certo, vou pedir por favor que preencha as informações abaixo:\n\nE-mail (Para a devolutiva da análise):\nValor Depositado:\nValor Contabilizado:\nValor da Diferença:\nData/Hora do Deposito:\nUsuário/Matricula que depositou:',
+            nextQuestion: 'Informações preenchidas?',
+            yesState: 'valores_d0_devolutiva',
+            noState: null
+        },
+        valores_d0_devolutiva: {
+            icon: 'fa-check-double',
+            label: 'Devolutiva D+0',
+            text: 'Sua análise foi direcionada ao setor correspondente por favor aguarde, que em breve (Análise Diferença "Cash Today") retornará com mais detalhes. Segue o protocolo da análise: ',
+            nextQuestion: 'Atendimento finalizado?',
+            yesState: 'finalizado_valores',
+            noState: 'voltar_motivo'
+        },
+        finalizado_valores: {
+            icon: 'fa-flag-checkered',
+            label: 'Encerramento',
+            get text() { return `Foi um prazer te atender, segue o protocolo do nosso atendimento: . Tenha um ótimo ${getGreetingPeriod()}!`; },
+            nextQuestion: null,
+            yesState: null,
+            noState: null
+        }
+    };
+
     function createChat() {
         chatIdCounter++;
         const chat = {
@@ -575,13 +648,14 @@ document.addEventListener('DOMContentLoaded', () => {
             number: chats.length + 1,
             currentStep: 0,
             notes: '',
-            flowState: null,      // null = normal step flow, string = cadastro sub-flow state
-            motivoContato: null,  // stores selected motivo
-            cadastrosRealizados: '', // stores pasted cadastros for devolutiva
+            flowState: null,
+            motivoContato: null,
+            cadastrosRealizados: '',
             clientName: '',
             clientCnpj: '',
             clientPhone: '',
-            materialAbastecimento: ''
+            materialAbastecimento: '',
+            valoresOpcao: ''
         };
         chats.push(chat);
         return chat;
@@ -711,6 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!chat.flowState) return null;
         if (cadastroScripts[chat.flowState]) return cadastroScripts[chat.flowState];
         if (abastecimentoScripts[chat.flowState]) return abastecimentoScripts[chat.flowState];
+        if (valoresScripts[chat.flowState]) return valoresScripts[chat.flowState];
         return null;
     }
 
@@ -785,14 +860,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Format script text preserving line breaks
         const formattedText = escapeHTML(scriptText).replace(/\n/g, '<br>');
 
-        // Material select for abastecimento_script state
-        let materialSelectHTML = '';
+        // Sub-select for flows (material for abastecimento, opção for valores)
+        let subSelectHTML = '';
         if (flowDef.hasMaterialSelect) {
-            materialSelectHTML = `
+            subSelectHTML = `
                 <div class="flow-material-select">
                     <label class="step-select-label"><i class="fas fa-box-open"></i> Qual material o cliente solicitou?</label>
                     <div class="step-select-container">
-                        <select class="step-select" id="materialSelect">
+                        <select class="step-select" id="flowSubSelect">
                             <option value="" disabled ${!chat.materialAbastecimento ? 'selected' : ''}>Escolha o material...</option>
                             <option value="Bobina Pequena" ${chat.materialAbastecimento === 'Bobina Pequena' ? 'selected' : ''}>Bobina Pequena</option>
                             <option value="Bobina Grande" ${chat.materialAbastecimento === 'Bobina Grande' ? 'selected' : ''}>Bobina Grande</option>
@@ -805,24 +880,45 @@ document.addEventListener('DOMContentLoaded', () => {
                         </select>
                         <i class="fas fa-chevron-down step-select-icon"></i>
                     </div>
-                    <button class="btn btn-primary flow-material-confirm" id="btnMaterialConfirm" ${!chat.materialAbastecimento ? 'disabled' : ''}>
+                    <button class="btn btn-primary flow-material-confirm" id="btnFlowSubConfirm" ${!chat.materialAbastecimento ? 'disabled' : ''}>
                         <i class="fas fa-arrow-right"></i> Confirmar Material
+                    </button>
+                </div>`;
+        } else if (flowDef.hasValoresSelect) {
+            subSelectHTML = `
+                <div class="flow-material-select">
+                    <label class="step-select-label"><i class="fas fa-chart-line"></i> Qual a opção desejada?</label>
+                    <div class="step-select-container">
+                        <select class="step-select" id="flowSubSelect">
+                            <option value="" disabled ${!chat.valoresOpcao ? 'selected' : ''}>Escolha uma opção...</option>
+                            <option value="Análise de Diferença" ${chat.valoresOpcao === 'Análise de Diferença' ? 'selected' : ''}>Análise de Diferença</option>
+                            <option value="Análise de Crédito" ${chat.valoresOpcao === 'Análise de Crédito' ? 'selected' : ''}>Análise de Crédito</option>
+                            <option value="Ficheiro" ${chat.valoresOpcao === 'Ficheiro' ? 'selected' : ''}>Ficheiro</option>
+                        </select>
+                        <i class="fas fa-chevron-down step-select-icon"></i>
+                    </div>
+                    <button class="btn btn-primary flow-material-confirm" id="btnFlowSubConfirm" ${!chat.valoresOpcao ? 'disabled' : ''}>
+                        <i class="fas fa-arrow-right"></i> Confirmar Opção
                     </button>
                 </div>`;
         }
 
         let decisionHTML = '';
-        if (flowDef.isBocaDeLoboDecision) {
-            // Special Boca de Lobo yes/no decision (no script text)
+        if (flowDef.isCustomDecision || flowDef.isBocaDeLoboDecision) {
+            // Custom-labeled decision (D+0/D+1, Boca de Lobo, etc.)
+            const yesLabel = flowDef.yesLabel || 'Sim';
+            const noLabel = flowDef.noLabel || 'Não';
+            const yesIcon = flowDef.yesLabel ? '' : '<i class="fas fa-check"></i> ';
+            const noIcon = flowDef.noLabel ? '' : '<i class="fas fa-times"></i> ';
             decisionHTML = `
                 <div class="flow-decision">
                     <div class="flow-decision-label"><i class="fas fa-question-circle"></i> ${flowDef.nextQuestion}</div>
                     <div class="flow-decision-btns">
                         <button class="btn flow-btn flow-btn-yes" data-flow-action="yes">
-                            <i class="fas fa-check"></i> Sim
+                            ${yesIcon}${yesLabel}
                         </button>
                         <button class="btn flow-btn flow-btn-no" data-flow-action="no">
-                            <i class="fas fa-times"></i> Não
+                            ${noIcon}${noLabel}
                         </button>
                     </div>
                 </div>`;
@@ -834,12 +930,12 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="btn flow-btn flow-btn-yes" data-flow-action="yes">
                             <i class="fas fa-check"></i> Sim
                         </button>
-                        <button class="btn flow-btn flow-btn-no" data-flow-action="no">
+                        ${flowDef.noState ? `<button class="btn flow-btn flow-btn-no" data-flow-action="no">
                             <i class="fas fa-times"></i> Não
-                        </button>
+                        </button>` : ''}
                     </div>
                 </div>`;
-        } else if (!flowDef.hasMaterialSelect) {
+        } else if (!flowDef.hasMaterialSelect && !flowDef.hasValoresSelect) {
             // Final state — show "Atendimento concluído"
             decisionHTML = `
                 <div class="flow-decision">
@@ -847,8 +943,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>`;
         }
 
-        // Hide script block for decision-only states
-        const showScriptBlock = !flowDef.isBocaDeLoboDecision;
+        // Hide script block only for states with no actual text content
+        const showScriptBlock = scriptText && scriptText.trim().length > 0;
 
         chatMain.innerHTML = `
             <div class="atendimento-card flow-active" data-chat-id="${chat.id}">
@@ -864,7 +960,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <div class="flow-script-text">${formattedText}</div>
                     </div>` : ''}
-                    ${materialSelectHTML}
+                    ${subSelectHTML}
                     ${chat.flowState === 'devolutiva_cadastro' ? `
                     <div class="flow-cadastros-field">
                         <label class="flow-cadastros-label"><i class="fas fa-users"></i> Cadastros realizados</label>
@@ -883,19 +979,29 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // Material select listeners
-        const materialSelect = chatMain.querySelector('#materialSelect');
-        const materialConfirmBtn = chatMain.querySelector('#btnMaterialConfirm');
-        if (materialSelect) {
-            materialSelect.addEventListener('change', () => {
-                chat.materialAbastecimento = materialSelect.value;
-                if (materialConfirmBtn) materialConfirmBtn.disabled = !materialSelect.value;
+        // Sub-select listeners (material / valores)
+        const flowSubSelect = chatMain.querySelector('#flowSubSelect');
+        const flowSubConfirmBtn = chatMain.querySelector('#btnFlowSubConfirm');
+        if (flowSubSelect) {
+            flowSubSelect.addEventListener('change', () => {
+                if (flowDef.hasMaterialSelect) {
+                    chat.materialAbastecimento = flowSubSelect.value;
+                } else if (flowDef.hasValoresSelect) {
+                    chat.valoresOpcao = flowSubSelect.value;
+                }
+                if (flowSubConfirmBtn) flowSubConfirmBtn.disabled = !flowSubSelect.value;
             });
         }
-        if (materialConfirmBtn) {
-            materialConfirmBtn.addEventListener('click', () => {
-                if (chat.materialAbastecimento) {
+        if (flowSubConfirmBtn) {
+            flowSubConfirmBtn.addEventListener('click', () => {
+                if (flowDef.hasMaterialSelect && chat.materialAbastecimento) {
                     chat.flowState = 'abastecimento_boca_de_lobo';
+                    renderActiveCard();
+                } else if (flowDef.hasValoresSelect && chat.valoresOpcao) {
+                    if (chat.valoresOpcao === 'Análise de Diferença') {
+                        chat.flowState = 'valores_analise_diferenca';
+                    }
+                    // Análise de Crédito and Ficheiro can be extended in the future
                     renderActiveCard();
                 }
             });
@@ -1056,6 +1162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     chat.flowState = null;
                     chat.motivoContato = null;
                     chat.materialAbastecimento = '';
+                    chat.valoresOpcao = '';
                     chat.currentStep = 1;
                     renderActiveCard();
                     return;
@@ -1078,13 +1185,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 const motivoSelect = chatMain.querySelector('#motivoSelect');
                 if (motivoSelect && motivoSelect.value === 'Cadastro') {
                     chat.motivoContato = 'Cadastro';
-                    chat.flowState = 'cadastro_script';
+                    chat.flowState = 'cadastro_identificacao';
                     renderActiveCard();
                     return;
                 }
                 if (motivoSelect && motivoSelect.value === 'Abastecimento') {
                     chat.motivoContato = 'Abastecimento';
                     chat.flowState = 'abastecimento_script';
+                    renderActiveCard();
+                    return;
+                }
+                if (motivoSelect && motivoSelect.value === 'Valores') {
+                    chat.motivoContato = 'Valores';
+                    chat.flowState = 'valores_identificacao';
                     renderActiveCard();
                     return;
                 }
