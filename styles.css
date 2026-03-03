@@ -586,6 +586,19 @@ select.input-field option:disabled {
     transform: translateY(-2px);
 }
 
+.btn-danger {
+    background: rgba(255, 80, 80, 0.08);
+    color: rgba(255, 80, 80, 0.8);
+    border: 1px solid rgba(255, 80, 80, 0.2);
+}
+
+.btn-danger:hover {
+    background: rgba(255, 80, 80, 0.15);
+    border-color: rgba(255, 80, 80, 0.5);
+    color: #ff5050;
+    transform: translateY(-2px);
+}
+
 .btn-copy {
     background: rgba(237, 170, 0, 0.1);
     color: var(--prosegur-yellow-light);

@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const formsContainer = document.getElementById('formsContainer');
     const btnAddUser = document.getElementById('btnAddUser');
     const btnCopyCadastro = document.getElementById('btnCopyCadastro');
+    const btnResetCadastros = document.getElementById('btnResetCadastros');
 
     const toast = document.getElementById('toast');
     const toastMsg = document.getElementById('toastMsg');
@@ -239,6 +240,53 @@ document.addEventListener('DOMContentLoaded', () => {
         if (senhaField) senhaField.classList.remove('hidden');
         showToast('Campos limpos!');
     };
+
+    // ---- RESET ALL CADASTROS ----
+    btnResetCadastros.addEventListener('click', () => {
+        formsContainer.innerHTML = `
+            <div class="user-form" data-index="0">
+                <div class="form-header-row">
+                    <span class="form-badge">Usuário 1</span>
+                    <button class="btn-icon" onclick="clearCadastroForm(this)" title="Limpar campos">
+                        <i class="fas fa-eraser"></i> Limpar
+                    </button>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Nome</label>
+                        <input type="text" class="input-field" placeholder="Digite o nome" data-field="nome">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> Sobrenome</label>
+                        <input type="text" class="input-field" placeholder="Digite o sobrenome" data-field="sobrenome">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-id-card"></i> Matrícula</label>
+                        <input type="text" class="input-field" placeholder="2 a 8 dígitos" data-field="matricula" maxlength="8">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-lock"></i> Senha</label>
+                        <div class="toggle-group">
+                            <button class="toggle-btn active" data-value="com" data-field="senha">Com Senha</button>
+                            <button class="toggle-btn" data-value="sem" data-field="senha">Sem Senha</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-user-tag"></i> Função</label>
+                        <div class="toggle-group">
+                            <button class="toggle-btn active" data-value="Depositante" data-field="funcao">Depositante</button>
+                            <button class="toggle-btn" data-value="Supervisor(a)" data-field="funcao">Supervisor(a)</button>
+                        </div>
+                    </div>
+                    <div class="form-group senha-field">
+                        <label><i class="fas fa-key"></i> Definir Senha</label>
+                        <input type="text" class="input-field" placeholder="Senha do usuário" data-field="senhaValue">
+                    </div>
+                </div>
+            </div>`;
+        userFormCount = 1;
+        showToast('Cadastros resetados!');
+    });
 
     // ---- COPY CADASTROS ----
     btnCopyCadastro.addEventListener('click', () => {
