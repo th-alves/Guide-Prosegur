@@ -145,6 +145,107 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // ---- MATRÍCULA VALIDATION ----
+    const validationModalOverlay = document.getElementById('validationModalOverlay');
+    const validationModalMessage = document.getElementById('validationModalMessage');
+    const validationModalClose = document.getElementById('validationModalClose');
+
+    function showValidationModal(message) {
+        validationModalMessage.textContent = message;
+        validationModalOverlay.classList.add('active');
+    }
+
+    function hideValidationModal() {
+        validationModalOverlay.classList.remove('active');
+    }
+
+    validationModalClose.addEventListener('click', hideValidationModal);
+    validationModalOverlay.addEventListener('click', (e) => {
+        if (e.target === validationModalOverlay) hideValidationModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && validationModalOverlay.classList.contains('active')) {
+            hideValidationModal();
+        }
+    });
+
+    function validateMatricula(input) {
+        const value = input.value;
+        if (!value) {
+            input.classList.remove('input-error');
+            return true;
+        }
+
+        // Check for non-numeric characters
+        if (/[^\d]/.test(value)) {
+            input.classList.add('input-error');
+            showValidationModal('A matrícula contém caracteres inválidos. Use apenas números (0-9), sem pontuação ou letras.');
+            input.value = value.replace(/[^\d]/g, '');
+            return false;
+        }
+
+        // Check if starts with 0
+        if (value.startsWith('0')) {
+            input.classList.add('input-error');
+            showValidationModal('A matrícula não pode começar com zero. O primeiro dígito deve ser de 1 a 9.');
+            return false;
+        }
+
+        // Check length (1-9 digits)
+        if (value.length > 9) {
+            input.classList.add('input-error');
+            showValidationModal('A matrícula pode ter no máximo 9 dígitos.');
+            return false;
+        }
+
+        input.classList.remove('input-error');
+        return true;
+    }
+
+    // Live validation on input (with guard to prevent infinite loop)
+    let _isValidatingMatricula = false;
+    document.addEventListener('input', (e) => {
+        if (e.target.classList.contains('matricula-input')) {
+            // Guard: prevent re-entrant calls when we set value programmatically
+            if (_isValidatingMatricula) return;
+            _isValidatingMatricula = true;
+
+            try {
+                const originalValue = e.target.value;
+                const cleanedValue = originalValue.replace(/[^\d]/g, '');
+
+                // If non-numeric characters were typed, remove them and show modal
+                if (originalValue !== cleanedValue) {
+                    e.target.value = cleanedValue;
+                    e.target.classList.add('input-error');
+                    showValidationModal('A matrícula contém caracteres inválidos. Use apenas números (0-9), sem pontuação ou letras.');
+                    _isValidatingMatricula = false;
+                    return;
+                }
+
+                // Check if starts with 0
+                if (cleanedValue.startsWith('0')) {
+                    e.target.classList.add('input-error');
+                    showValidationModal('A matrícula não pode começar com zero. O primeiro dígito deve ser de 1 a 9.');
+                    e.target.value = '';
+                    _isValidatingMatricula = false;
+                    return;
+                }
+
+                e.target.classList.remove('input-error');
+            } finally {
+                _isValidatingMatricula = false;
+            }
+        }
+    });
+
+    // Remove error state on focus
+    document.addEventListener('focus', (e) => {
+        if (e.target.classList.contains('matricula-input')) {
+            e.target.classList.remove('input-error');
+        }
+    }, true);
+
     // ---- ADD USER FORM ----
     btnAddUser.addEventListener('click', () => {
         userFormCount++;
@@ -181,7 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-id-card"></i> Matrícula</label>
-                    <input type="text" class="input-field" placeholder="2 a 8 dígitos" data-field="matricula" maxlength="8">
+                    <input type="text" class="input-field matricula-input" placeholder="1 a 9 dígitos" data-field="matricula" maxlength="9">
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-lock"></i> Senha</label>
@@ -228,7 +329,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.clearCadastroForm = function (btn) {
         const form = btn.closest('.user-form');
-        form.querySelectorAll('input.input-field').forEach(f => f.value = '');
+        form.querySelectorAll('input.input-field').forEach(f => {
+            f.value = '';
+            f.classList.remove('input-error');
+        });
         // Reset toggles to defaults
         form.querySelectorAll('.toggle-group').forEach(group => {
             const btns = group.querySelectorAll('.toggle-btn');
@@ -262,7 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-id-card"></i> Matrícula</label>
-                        <input type="text" class="input-field" placeholder="2 a 8 dígitos" data-field="matricula" maxlength="8">
+                        <input type="text" class="input-field matricula-input" placeholder="1 a 9 dígitos" data-field="matricula" maxlength="9">
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-lock"></i> Senha</label>
@@ -299,8 +403,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const matricula = form.querySelector('[data-field="matricula"]').value.trim();
 
             // Validate matrícula
-            if (matricula && (matricula.length < 2 || matricula.length > 8 || !/^\d+$/.test(matricula))) {
-                showToast('Matrícula deve ter de 2 a 8 dígitos numéricos!', true);
+            if (matricula && (!/^[1-9]\d{0,8}$/.test(matricula))) {
+                const matriculaInput = form.querySelector('[data-field="matricula"]');
+                if (matriculaInput) matriculaInput.classList.add('input-error');
+                showValidationModal('Verifique a matrícula antes de copiar. Ela deve conter apenas números, não começar com zero e ter de 1 a 9 dígitos.');
                 return;
             }
 
