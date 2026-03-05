@@ -64,27 +64,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Handle Supervisor: always force com senha
+            // Handle Supervisor: always force com senha and hide senha toggle
             if (e.target.dataset.field === 'funcao') {
                 const form = e.target.closest('.user-form');
+                const senhaToggleGroup = form.querySelector('.senha-toggle-group');
+                const senhaField = form.querySelector('.senha-field');
                 if (e.target.dataset.value === 'Supervisor(a)') {
+                    // Force "Com Senha" and hide the toggle since Supervisor always has password
                     const senhaGroup = form.querySelectorAll('[data-field="senha"]');
                     senhaGroup.forEach(b => b.classList.remove('active'));
                     const comBtn = form.querySelector('[data-field="senha"][data-value="com"]');
                     if (comBtn) comBtn.classList.add('active');
-                    form.querySelector('.senha-field').classList.remove('hidden');
+                    senhaToggleGroup.classList.add('hidden');
+                    senhaField.classList.remove('hidden');
+                } else {
+                    // Depositante: show the senha toggle again
+                    senhaToggleGroup.classList.remove('hidden');
                 }
             }
 
             // Handle Manual_25 protocolo visibility
-            if (e.target.dataset.mfield === 'canal25') {
-                const card = e.target.closest('.manual-card');
-                const protocoloField = card.querySelector('.protocolo-field-25');
-                if (e.target.dataset.value === 'WhatsApp') {
-                    protocoloField.classList.remove('hidden');
-                } else {
-                    protocoloField.classList.add('hidden');
-                }
+
+        }
+    });
+
+    // ---- ACCENT REMOVAL (Nome / Sobrenome) ----
+    document.addEventListener('input', (e) => {
+        if (e.target.dataset.field === 'nome' || e.target.dataset.field === 'sobrenome') {
+            const cursorPos = e.target.selectionStart;
+            const stripped = e.target.value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+            if (stripped !== e.target.value) {
+                e.target.value = stripped;
+                e.target.setSelectionRange(cursorPos, cursorPos);
             }
         }
     });
@@ -284,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <label><i class="fas fa-id-card"></i> Matrícula</label>
                     <input type="text" class="input-field matricula-input" placeholder="1 a 9 dígitos" data-field="matricula" maxlength="9">
                 </div>
-                <div class="form-group">
+                <div class="form-group senha-toggle-group">
                     <label><i class="fas fa-lock"></i> Senha</label>
                     <div class="toggle-group">
                         <button class="toggle-btn active" data-value="com" data-field="senha">Com Senha</button>
@@ -368,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <label><i class="fas fa-id-card"></i> Matrícula</label>
                         <input type="text" class="input-field matricula-input" placeholder="1 a 9 dígitos" data-field="matricula" maxlength="9">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group senha-toggle-group">
                         <label><i class="fas fa-lock"></i> Senha</label>
                         <div class="toggle-group">
                             <button class="toggle-btn active" data-value="com" data-field="senha">Com Senha</button>
@@ -474,19 +485,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Template map — each manual has its exact copy format (no title)
         const templates = {
-            manual_16: () => [
-                '-',
-                `Nome: ${f('nome')}`,
-                `Contato: ${f('contato')}`,
-                `CNPJ/Protocolo:*${f('cnpj')}*`,
-                '-',
-                `Motivo: ${f('motivo')}`,
-                `E-mail: ${f('email')}`,
-                '-',
-                `Status: ${f('status')}`,
-                `Canal de atendimento: ${f('canal')}`,
-                `Direcionado para: ${f('direcionado')}`
-            ],
+            manual_16: () => {
+                const canalBtn = card.querySelector('.toggle-group [data-mfield="canal16"].active');
+                const canal = canalBtn ? canalBtn.dataset.value : 'Telefone';
+                return [
+                    '-',
+                    `Nome: ${f('nome')}`,
+                    `Contato: ${f('contato')}`,
+                    `CNPJ/Protocolo:*${f('cnpj')}*`,
+                    '-',
+                    `Motivo: ${f('motivo')}`,
+                    `E-mail: ${f('email')}`,
+                    '-',
+                    `Status: ${f('status')}`,
+                    `Canal de atendimento: ${canal}`,
+                    `Direcionado para: ${f('direcionado')}`
+                ];
+            },
             manual_18: () => [
                 '-',
                 `Nome: ${f('nome')}`,
@@ -506,17 +521,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 `Status: ${f('status')}`,
                 `Direcionado para: ${f('direcionado')}`
             ],
-            manual_06: () => [
-                `Nome: ${f('nome')}`,
-                `Contato: ${f('contato')}`,
-                '-',
-                `E-mail liberação: ${f('emailLiberacao')}`,
-                `Motivo: ${f('motivo')}`,
-                '-',
-                `Status: ${f('status')}`,
-                `Canal de atendimento: ${f('canal')}`,
-                `Direcionado Para: ${f('direcionado')}`
-            ],
+            manual_06: () => {
+                const canalBtn = card.querySelector('.toggle-group [data-mfield="canal06"].active');
+                const canal = canalBtn ? canalBtn.dataset.value : 'Telefone';
+                return [
+                    `Nome: ${f('nome')}`,
+                    `Contato: ${f('contato')}`,
+                    '-',
+                    `E-mail liberação: ${f('emailLiberacao')}`,
+                    `Motivo: ${f('motivo')}`,
+                    '-',
+                    `Status: ${f('status')}`,
+                    `Canal de atendimento: ${canal}`,
+                    `Direcionado Para: ${f('direcionado')}`
+                ];
+            },
             manual_24: () => [
                 `Usuários chegaram ao cofre às: ${f('horarioCofre')}`,
                 '-',
@@ -542,25 +561,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 `Contato: ${f('contato')}`,
                 `Motivo: ${f('motivo')}`
             ],
-            manual_25: () => {
-                const canalBtn = card.querySelector('.toggle-group [data-mfield="canal25"].active');
-                const canal = canalBtn ? canalBtn.dataset.value : 'Telefone';
-                const protocolo = f('protocolo');
-                const lines = [
-                    `Nome: ${f('nome')}`,
-                    `Contato: ${f('contato')}`,
-                    `CNPJ: *${f('cnpj')}*`,
-                    '-',
-                    `Motivo: ${f('motivo')}`,
-                    '-',
-                    `Status: ${f('status')}`,
-                    `Canal de Atendimento: ${canal}`
-                ];
-                if (canal === 'WhatsApp' && protocolo) {
-                    lines.push(`Protocolo WhatsApp: ${protocolo}`);
-                }
-                return lines;
-            }
+            manual_25: () => [
+                `Nome: ${f('nome')}`,
+                `Contato: ${f('contato')}`,
+                `CNPJ: *${f('cnpj')}*`,
+                '-',
+                `Motivo: ${f('motivo')}`,
+                '-',
+                `Status: ${f('status')}`,
+                `Canal de Atendimento: Telefone`
+            ]
         };
 
         const templateFn = templates[manualId];
@@ -624,8 +634,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <i class="fas fa-chevron-down step-select-icon"></i>
             </div>
         </div>` },
-        { icon: 'fa-comment-dots', label: 'Identificação', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aute irure dolor in reprehenderit in voluptate.' },
-        { icon: 'fa-cogs', label: 'Procedimento', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Excepteur sint occaecat cupidatat non proident.' },
+        { icon: 'fa-comment-dots', label: 'Identificação', text: 'Em desenvolvimento...' },
+        { icon: 'fa-cogs', label: 'Procedimento', text: 'Em desenvolvimento...' },
         { icon: 'fa-check-circle', label: 'Encerramento', get text() { return `Foi um prazer te atender, segue o protocolo do nosso atendimento: . Tenha um ótimo ${getGreetingPeriod()}!`; } }
     ];
 
@@ -898,14 +908,14 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="client-info-row">
                 <div class="client-info-field">
-                    <i class="fas fa-building"></i>
-                    <input type="text" class="client-info-input" id="clientCnpjInput"
-                        placeholder="CNPJ" value="${escapeHTML(chat.clientCnpj)}" />
-                </div>
-                <div class="client-info-field">
                     <i class="fas fa-phone"></i>
                     <input type="text" class="client-info-input" id="clientPhoneInput"
                         placeholder="Telefone" value="${escapeHTML(chat.clientPhone)}" />
+                </div>
+                <div class="client-info-field">
+                    <i class="fas fa-building"></i>
+                    <input type="text" class="client-info-input cnpj-input" id="clientCnpjInput"
+                        placeholder="CNPJ" value="${escapeHTML(chat.clientCnpj)}" />
                 </div>
             </div>`;
     }

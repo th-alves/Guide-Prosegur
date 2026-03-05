@@ -530,7 +530,8 @@ select.input-field option:disabled {
 
 .senha-field.hidden,
 .protocolo-field.hidden,
-.protocolo-field-25.hidden {
+.protocolo-field-25.hidden,
+.senha-toggle-group.hidden {
     display: none;
 }
 
