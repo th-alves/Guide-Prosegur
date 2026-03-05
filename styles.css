@@ -7,11 +7,11 @@
     --prosegur-yellow: #EDAA00;
     --prosegur-yellow-dark: #C48E00;
     --prosegur-yellow-light: #FFD54F;
-    --prosegur-navy: #1A1F36;
-    --prosegur-navy-light: #252B45;
-    --prosegur-dark: #0D0F1A;
-    --prosegur-gray: #2A2F4A;
-    --prosegur-gray-light: #3D4260;
+    --prosegur-navy: #232847;
+    --prosegur-navy-light: #2E3458;
+    --prosegur-dark: #171A2C;
+    --prosegur-gray: #333960;
+    --prosegur-gray-light: #474D72;
     --prosegur-text: #E8E9EF;
     --prosegur-text-muted: #9DA1B5;
     --prosegur-white: #FFFFFF;
@@ -20,7 +20,7 @@
 
     /* Gradients */
     --grad-accent: linear-gradient(135deg, #EDAA00, #FFD54F);
-    --grad-dark: linear-gradient(180deg, #1A1F36, #0D0F1A);
+    --grad-dark: linear-gradient(180deg, #232847, #171A2C);
     --grad-card: linear-gradient(145deg, rgba(42, 47, 74, 0.6), rgba(26, 31, 54, 0.8));
     --grad-hero: linear-gradient(135deg, #1A1F36 0%, #3A2A00 50%, #EDAA00 100%);
 
@@ -60,7 +60,7 @@ body {
     left: 0;
     right: 0;
     z-index: 1000;
-    background: rgba(13, 15, 26, 0.85);
+    background: rgba(23, 26, 44, 0.85);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(237, 170, 0, 0.2);
@@ -1953,4 +1953,235 @@ a {
 ::selection {
     background: rgba(237, 170, 0, 0.4);
     color: #1A1F36;
+}
+
+/* ============================
+   THEME TOGGLE BUTTON
+   ============================ */
+.theme-toggle-btn {
+    background: rgba(237, 170, 0, 0.12);
+    border: 1px solid rgba(237, 170, 0, 0.25);
+    color: var(--prosegur-yellow);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.05rem;
+    transition: all 0.3s ease;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--prosegur-yellow);
+    color: #1A1F36;
+    transform: rotate(30deg) scale(1.1);
+    box-shadow: 0 4px 15px rgba(237, 170, 0, 0.4);
+}
+
+/* ============================
+   LIGHT MODE THEME
+   ============================ */
+[data-theme="light"] {
+    --prosegur-navy: #F5F0E6;
+    --prosegur-navy-light: #FFF8EC;
+    --prosegur-dark: #FAFAF7;
+    --prosegur-gray: #EDE6D6;
+    --prosegur-gray-light: #E0D8C8;
+    --prosegur-text: #2C2A25;
+    --prosegur-text-muted: #6B6560;
+    --prosegur-white: #1A1814;
+
+    --grad-dark: linear-gradient(180deg, #F5F0E6, #FAFAF7);
+    --grad-card: linear-gradient(145deg, rgba(255, 238, 194, 0.65), rgba(255, 228, 160, 0.5));
+    --grad-hero: linear-gradient(135deg, #F5F0E6 0%, #FFF0CC 50%, #EDAA00 100%);
+
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .header {
+    background: rgba(250, 250, 247, 0.9);
+    border-bottom-color: rgba(237, 170, 0, 0.3);
+}
+
+[data-theme="light"] .logo-brand {
+    color: #2C2A25;
+}
+
+[data-theme="light"] .nav-btn {
+    color: #2C2A25;
+}
+
+[data-theme="light"] .nav-btn.active {
+    color: #1A1814;
+    background: rgba(237, 170, 0, 0.18);
+}
+
+[data-theme="light"] .hero-content h1 {
+    color: #2C2A25;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .hero-content p {
+    color: rgba(44, 42, 37, 0.7);
+}
+
+[data-theme="light"] .shape {
+    background: var(--prosegur-yellow);
+    opacity: 0.12;
+}
+
+[data-theme="light"] .card {
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .card-header h2 {
+    color: #2C2A25;
+}
+
+[data-theme="light"] .input-field {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(0, 0, 0, 0.1);
+    color: #2C2A25;
+}
+
+[data-theme="light"] .input-field::placeholder {
+    color: rgba(107, 101, 96, 0.6);
+}
+
+[data-theme="light"] .input-field:focus {
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(237, 170, 0, 0.2);
+}
+
+[data-theme="light"] select.input-field option {
+    background: #FFFFFF;
+    color: #2C2A25;
+}
+
+[data-theme="light"] select.input-field option:checked {
+    background: rgba(237, 170, 0, 0.15);
+    color: #C48E00;
+}
+
+[data-theme="light"] select.input-field:hover {
+    background-color: rgba(255, 255, 255, 0.95);
+}
+
+[data-theme="light"] .user-form {
+    background: rgba(255, 235, 180, 0.35);
+    border-color: rgba(237, 170, 0, 0.12);
+}
+
+[data-theme="light"] .user-form:hover {
+    border-color: rgba(237, 170, 0, 0.3);
+}
+
+[data-theme="light"] .manual-card {
+    background: rgba(255, 235, 180, 0.35);
+    border-color: rgba(237, 170, 0, 0.12);
+}
+
+[data-theme="light"] .manual-label {
+    color: #2C2A25;
+}
+
+[data-theme="light"] .btn-secondary {
+    background: rgba(0, 0, 0, 0.04);
+    color: #2C2A25;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .toggle-btn {
+    color: #6B6560;
+}
+
+[data-theme="light"] .toggle-group {
+    background: rgba(255, 255, 255, 0.6);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .chat-sidebar {
+    border-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .chat-sidebar-header {
+    border-bottom-color: rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .chat-sidebar-header h3 {
+    color: #2C2A25;
+}
+
+[data-theme="light"] .chat-sidebar-item:hover {
+    background: rgba(237, 170, 0, 0.08);
+}
+
+[data-theme="light"] .chat-sidebar-item.active {
+    background: rgba(237, 170, 0, 0.12);
+    border-color: rgba(237, 170, 0, 0.35);
+}
+
+[data-theme="light"] .footer {
+    background: linear-gradient(180deg, rgba(245, 240, 230, 0), rgba(237, 170, 0, 0.06));
+    border-top-color: rgba(237, 170, 0, 0.15);
+}
+
+[data-theme="light"] .footer p {
+    color: #6B6560;
+}
+
+[data-theme="light"] .toast {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="light"] .theme-toggle-btn {
+    background: rgba(44, 42, 37, 0.08);
+    border-color: rgba(44, 42, 37, 0.15);
+    color: #6B6560;
+}
+
+[data-theme="light"] .theme-toggle-btn:hover {
+    background: #2C2A25;
+    color: var(--prosegur-yellow);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .validation-modal {
+    background: linear-gradient(145deg, #FFFFFF, #FFF8EC);
+    border-color: rgba(237, 170, 0, 0.2);
+}
+
+[data-theme="light"] .validation-modal-title {
+    color: #2C2A25;
+}
+
+[data-theme="light"] .validation-modal-overlay.active {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] ::selection {
+    color: #FFFFFF;
+}
+
+/* Scrollbar light */
+[data-theme="light"] ::-webkit-scrollbar-track {
+    background: #F5F0E6;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+    background: #D6CFC0;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+    background: #C4BDB0;
 }

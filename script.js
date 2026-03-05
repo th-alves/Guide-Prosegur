@@ -28,6 +28,35 @@ document.addEventListener('DOMContentLoaded', () => {
         scripts: { title: 'Scripts WhatsApp' }
     };
 
+    // ---- THEME TOGGLE ----
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIcon = document.getElementById('themeIcon');
+
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        if (theme === 'light') {
+            themeIcon.classList.remove('fa-sun');
+            themeIcon.classList.add('fa-moon');
+            themeToggleBtn.title = 'Alternar para tema escuro';
+        } else {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+            themeToggleBtn.title = 'Alternar para tema claro';
+        }
+        document.body.style.transition = 'background 0.4s ease, color 0.4s ease';
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('prosegur-theme') || 'dark';
+    applyTheme(savedTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme') || 'dark';
+        const next = current === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        localStorage.setItem('prosegur-theme', next);
+    });
+
     // ---- NAVIGATION ----
     navBtns.forEach(btn => {
         btn.addEventListener('click', () => {
