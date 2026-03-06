@@ -1928,6 +1928,140 @@ a {
 }
 
 /* ============================
+   NAME HINT (single word restriction)
+   ============================ */
+.name-hint {
+    display: block;
+    font-size: 0.73rem;
+    font-weight: 500;
+    color: var(--prosegur-yellow);
+    margin-top: 4px;
+    opacity: 0;
+    transform: translateY(-4px);
+    animation: nameHintIn 0.25s ease forwards;
+}
+
+.name-hint.fade-out {
+    animation: nameHintOut 0.3s ease forwards;
+}
+
+@keyframes nameHintIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes nameHintOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-4px); }
+}
+
+/* ============================
+   CARREFOUR CONFIRM POPOVER
+   ============================ */
+.carrefour-confirm {
+    position: relative;
+    margin-top: 6px;
+    background: linear-gradient(145deg, rgba(26, 31, 54, 0.98), rgba(18, 22, 40, 0.98));
+    border: 1px solid rgba(237, 170, 0, 0.3);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(237, 170, 0, 0.06);
+    animation: popoverIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    transform-origin: top center;
+}
+
+.carrefour-confirm::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    left: 24px;
+    width: 12px;
+    height: 12px;
+    background: rgba(26, 31, 54, 0.98);
+    border-left: 1px solid rgba(237, 170, 0, 0.3);
+    border-top: 1px solid rgba(237, 170, 0, 0.3);
+    transform: rotate(45deg);
+}
+
+.carrefour-confirm.fade-out {
+    animation: popoverOut 0.2s ease forwards;
+}
+
+@keyframes popoverIn {
+    from { opacity: 0; transform: scaleY(0.8) translateY(-6px); }
+    to { opacity: 1; transform: scaleY(1) translateY(0); }
+}
+
+@keyframes popoverOut {
+    from { opacity: 1; transform: scaleY(1) translateY(0); }
+    to { opacity: 0; transform: scaleY(0.8) translateY(-6px); }
+}
+
+.carrefour-confirm-icon {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.carrefour-confirm-icon i {
+    color: var(--prosegur-yellow);
+    font-size: 1rem;
+}
+
+.carrefour-confirm-text {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--prosegur-text);
+    line-height: 1.5;
+}
+
+.carrefour-confirm-btns {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.carrefour-btn {
+    flex: 1;
+    padding: 8px 14px;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.carrefour-btn-yes {
+    background: rgba(46, 204, 113, 0.12);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    color: #2ECC71;
+}
+
+.carrefour-btn-yes:hover {
+    background: rgba(46, 204, 113, 0.22);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.15);
+}
+
+.carrefour-btn-no {
+    background: rgba(231, 76, 60, 0.12);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    color: #E74C3C;
+}
+
+.carrefour-btn-no:hover {
+    background: rgba(231, 76, 60, 0.22);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.15);
+}
+
+/* ============================
    SCROLLBAR
    ============================ */
 ::-webkit-scrollbar {
@@ -1986,196 +2120,502 @@ a {
    LIGHT MODE THEME
    ============================ */
 [data-theme="light"] {
-    --prosegur-navy: #F5F0E6;
-    --prosegur-navy-light: #FFF8EC;
-    --prosegur-dark: #FAFAF7;
-    --prosegur-gray: #EDE6D6;
-    --prosegur-gray-light: #E0D8C8;
-    --prosegur-text: #2C2A25;
-    --prosegur-text-muted: #6B6560;
-    --prosegur-white: #1A1814;
+    --prosegur-navy: #F7F3EA;
+    --prosegur-navy-light: #FFFAF0;
+    --prosegur-dark: #F5F2EB;
+    --prosegur-gray: #E8E0D0;
+    --prosegur-gray-light: #D9D1C2;
+    --prosegur-text: #3A3530;
+    --prosegur-text-muted: #78706A;
+    --prosegur-white: #2C2720;
 
-    --grad-dark: linear-gradient(180deg, #F5F0E6, #FAFAF7);
-    --grad-card: linear-gradient(145deg, rgba(255, 238, 194, 0.65), rgba(255, 228, 160, 0.5));
-    --grad-hero: linear-gradient(135deg, #F5F0E6 0%, #FFF0CC 50%, #EDAA00 100%);
+    --grad-dark: linear-gradient(180deg, #F7F3EA, #F5F2EB);
+    --grad-card: linear-gradient(145deg, #FFFFFF, #FFF9EE);
+    --grad-hero: linear-gradient(135deg, #F7F3EA 0%, #FFE8A0 50%, #EDAA00 100%);
 
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.1);
+    --shadow-sm: 0 2px 8px rgba(180, 150, 80, 0.08);
+    --shadow-md: 0 4px 20px rgba(180, 150, 80, 0.1);
+    --shadow-lg: 0 8px 40px rgba(180, 150, 80, 0.12);
 }
 
+/* --- Header --- */
 [data-theme="light"] .header {
-    background: rgba(250, 250, 247, 0.9);
-    border-bottom-color: rgba(237, 170, 0, 0.3);
+    background: rgba(247, 243, 234, 0.95);
+    border-bottom-color: rgba(237, 170, 0, 0.25);
+    box-shadow: 0 2px 12px rgba(180, 150, 80, 0.08);
 }
 
 [data-theme="light"] .logo-brand {
-    color: #2C2A25;
+    color: #3A3530;
 }
 
 [data-theme="light"] .nav-btn {
-    color: #2C2A25;
+    color: #78706A;
+}
+
+[data-theme="light"] .nav-btn:hover {
+    color: #3A3530;
+    background: rgba(237, 170, 0, 0.08);
 }
 
 [data-theme="light"] .nav-btn.active {
-    color: #1A1814;
-    background: rgba(237, 170, 0, 0.18);
+    color: #3A3530;
+    background: rgba(237, 170, 0, 0.15);
 }
 
+/* --- Hero --- */
 [data-theme="light"] .hero-content h1 {
-    color: #2C2A25;
+    color: #3A3530;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 [data-theme="light"] .hero-content p {
-    color: rgba(44, 42, 37, 0.7);
+    color: rgba(58, 53, 48, 0.7);
 }
 
 [data-theme="light"] .shape {
     background: var(--prosegur-yellow);
-    opacity: 0.12;
+    opacity: 0.1;
 }
 
+/* --- Cards --- */
 [data-theme="light"] .card {
-    border-color: rgba(0, 0, 0, 0.06);
+    background: linear-gradient(145deg, #FFFFFF, #FFFBF2);
+    border-color: rgba(237, 170, 0, 0.2);
+    box-shadow: 0 4px 24px rgba(180, 150, 80, 0.1);
 }
 
 [data-theme="light"] .card-header h2 {
-    color: #2C2A25;
+    color: #3A3530;
 }
 
+[data-theme="light"] .card-subtitle {
+    color: #78706A;
+}
+
+/* --- Inputs --- */
 [data-theme="light"] .input-field {
-    background: rgba(255, 255, 255, 0.8);
-    border-color: rgba(0, 0, 0, 0.1);
-    color: #2C2A25;
+    background: #FFFFFF;
+    border-color: rgba(200, 180, 140, 0.35);
+    color: #3A3530;
 }
 
 [data-theme="light"] .input-field::placeholder {
-    color: rgba(107, 101, 96, 0.6);
+    color: rgba(120, 112, 106, 0.55);
 }
 
 [data-theme="light"] .input-field:focus {
     background: #FFFFFF;
-    box-shadow: 0 0 0 3px rgba(237, 170, 0, 0.2);
+    border-color: var(--prosegur-yellow);
+    box-shadow: 0 0 0 3px rgba(237, 170, 0, 0.15);
 }
 
 [data-theme="light"] select.input-field option {
     background: #FFFFFF;
-    color: #2C2A25;
+    color: #3A3530;
 }
 
 [data-theme="light"] select.input-field option:checked {
     background: rgba(237, 170, 0, 0.15);
-    color: #C48E00;
+    color: #996D00;
 }
 
 [data-theme="light"] select.input-field:hover {
-    background-color: rgba(255, 255, 255, 0.95);
+    border-color: rgba(237, 170, 0, 0.4);
 }
 
+/* --- User Form (Cadastro) --- */
 [data-theme="light"] .user-form {
-    background: rgba(255, 235, 180, 0.35);
-    border-color: rgba(237, 170, 0, 0.12);
+    background: rgba(255, 245, 220, 0.5);
+    border-color: rgba(237, 170, 0, 0.18);
 }
 
 [data-theme="light"] .user-form:hover {
-    border-color: rgba(237, 170, 0, 0.3);
+    border-color: rgba(237, 170, 0, 0.4);
+    box-shadow: 0 2px 12px rgba(237, 170, 0, 0.1);
 }
 
+[data-theme="light"] .form-group label {
+    color: #5A534D;
+}
+
+[data-theme="light"] .form-group label i {
+    color: #B88500;
+}
+
+/* --- Manual Cards (Manuais) --- */
 [data-theme="light"] .manual-card {
-    background: rgba(255, 235, 180, 0.35);
-    border-color: rgba(237, 170, 0, 0.12);
+    background: #FFFFFF;
+    border-color: rgba(237, 170, 0, 0.18);
+}
+
+[data-theme="light"] .manual-card:hover {
+    border-color: rgba(237, 170, 0, 0.35);
+    box-shadow: 0 2px 10px rgba(237, 170, 0, 0.08);
+}
+
+[data-theme="light"] .manual-card.open {
+    box-shadow: 0 4px 16px rgba(237, 170, 0, 0.1);
 }
 
 [data-theme="light"] .manual-label {
-    color: #2C2A25;
+    color: #3A3530;
 }
 
+[data-theme="light"] .manual-card-header {
+    border-bottom-color: rgba(237, 170, 0, 0.1);
+}
+
+[data-theme="light"] .form-badge {
+    background: #B88500;
+    color: #FFFFFF;
+}
+
+/* --- Buttons --- */
 [data-theme="light"] .btn-secondary {
-    background: rgba(0, 0, 0, 0.04);
-    color: #2C2A25;
-    border-color: rgba(0, 0, 0, 0.1);
+    background: rgba(58, 53, 48, 0.05);
+    color: #3A3530;
+    border-color: rgba(58, 53, 48, 0.12);
 }
 
 [data-theme="light"] .btn-secondary:hover {
-    background: rgba(0, 0, 0, 0.08);
+    background: rgba(58, 53, 48, 0.1);
 }
 
+[data-theme="light"] .btn-primary {
+    box-shadow: 0 4px 12px rgba(237, 170, 0, 0.25);
+}
+
+[data-theme="light"] .btn-copy {
+    background: rgba(237, 170, 0, 0.08);
+    color: #996D00;
+    border-color: rgba(237, 170, 0, 0.25);
+}
+
+[data-theme="light"] .btn-copy:hover {
+    background: var(--prosegur-yellow);
+    color: #FFFFFF;
+}
+
+/* --- Toggle Buttons --- */
 [data-theme="light"] .toggle-btn {
-    color: #6B6560;
+    color: #78706A;
 }
 
 [data-theme="light"] .toggle-group {
-    background: rgba(255, 255, 255, 0.6);
-    border-color: rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.8);
+    border-color: rgba(200, 180, 140, 0.3);
 }
 
+/* --- Chat Sidebar (WhatsApp) --- */
 [data-theme="light"] .chat-sidebar {
-    border-color: rgba(0, 0, 0, 0.06);
+    background: #FFFBF2;
+    border-color: rgba(237, 170, 0, 0.15);
 }
 
 [data-theme="light"] .chat-sidebar-header {
-    border-bottom-color: rgba(0, 0, 0, 0.06);
+    border-bottom-color: rgba(237, 170, 0, 0.12);
 }
 
 [data-theme="light"] .chat-sidebar-header h3 {
-    color: #2C2A25;
+    color: #3A3530;
+}
+
+[data-theme="light"] .chat-sidebar-item {
+    border-color: rgba(200, 180, 140, 0.2);
 }
 
 [data-theme="light"] .chat-sidebar-item:hover {
-    background: rgba(237, 170, 0, 0.08);
+    background: rgba(237, 170, 0, 0.06);
 }
 
 [data-theme="light"] .chat-sidebar-item.active {
-    background: rgba(237, 170, 0, 0.12);
+    background: rgba(237, 170, 0, 0.1);
     border-color: rgba(237, 170, 0, 0.35);
 }
 
+[data-theme="light"] .chat-sidebar-item span {
+    color: #3A3530;
+}
+
+[data-theme="light"] .chat-sidebar-item small {
+    color: #78706A;
+}
+
+[data-theme="light"] .btn-add-chat {
+    color: #1E8A3E;
+    border-color: rgba(30, 138, 62, 0.2);
+    background: rgba(30, 138, 62, 0.06);
+}
+
+[data-theme="light"] .btn-add-chat:hover {
+    background: rgba(30, 138, 62, 0.12);
+}
+
+[data-theme="light"] .btn-reset-chats {
+    color: #C0392B;
+    border-color: rgba(192, 57, 43, 0.2);
+    background: rgba(192, 57, 43, 0.04);
+}
+
+[data-theme="light"] .btn-reset-chats:hover {
+    background: rgba(192, 57, 43, 0.1);
+}
+
+/* --- Chat Main Card (WhatsApp) --- */
+[data-theme="light"] .chat-main .card {
+    background: #FFFFFF;
+}
+
+[data-theme="light"] .chat-header-row input.input-field {
+    background: #FFFBF2;
+    border-color: rgba(200, 180, 140, 0.3);
+}
+
+/* --- WhatsApp Flow: Script Blocks --- */
+[data-theme="light"] .flow-script-block {
+    background: #FFFBF2;
+    border-color: rgba(200, 180, 140, 0.25);
+}
+
+[data-theme="light"] .flow-script-header {
+    background: rgba(237, 170, 0, 0.08);
+    border-bottom-color: rgba(237, 170, 0, 0.15);
+}
+
+[data-theme="light"] .flow-script-tag {
+    color: #996D00;
+}
+
+[data-theme="light"] .flow-script-tag i {
+    color: #B88500;
+}
+
+[data-theme="light"] .flow-script-text {
+    color: #3A3530;
+}
+
+/* --- WhatsApp Flow: State Badge --- */
+[data-theme="light"] .flow-state-badge {
+    background: rgba(237, 170, 0, 0.1);
+    border-color: rgba(237, 170, 0, 0.25);
+    color: #996D00;
+}
+
+[data-theme="light"] .flow-state-badge i {
+    color: #B88500;
+}
+
+/* --- WhatsApp Flow: Decisions --- */
+[data-theme="light"] .flow-decision {
+    background: #FFFBF2;
+    border-color: rgba(200, 180, 140, 0.25);
+}
+
+[data-theme="light"] .flow-decision-label {
+    color: #3A3530;
+}
+
+[data-theme="light"] .flow-btn-yes {
+    background: rgba(30, 138, 62, 0.08) !important;
+    border-color: rgba(30, 138, 62, 0.25) !important;
+    color: #1E8A3E !important;
+}
+
+[data-theme="light"] .flow-btn-yes:hover {
+    background: rgba(30, 138, 62, 0.15) !important;
+    border-color: rgba(30, 138, 62, 0.4) !important;
+}
+
+[data-theme="light"] .flow-btn-no {
+    background: rgba(192, 57, 43, 0.06) !important;
+    border-color: rgba(192, 57, 43, 0.2) !important;
+    color: #C0392B !important;
+}
+
+[data-theme="light"] .flow-btn-no:hover {
+    background: rgba(192, 57, 43, 0.12) !important;
+    border-color: rgba(192, 57, 43, 0.4) !important;
+}
+
+[data-theme="light"] .flow-final-msg {
+    color: #1E8A3E;
+}
+
+/* --- WhatsApp Flow: Cadastros textarea --- */
+[data-theme="light"] .flow-cadastros-textarea {
+    background: #FFFFFF;
+    border-color: rgba(200, 180, 140, 0.3);
+    color: #3A3530;
+}
+
+[data-theme="light"] .flow-cadastros-textarea::placeholder {
+    color: rgba(120, 112, 106, 0.5);
+}
+
+[data-theme="light"] .flow-cadastros-textarea:focus {
+    border-color: var(--prosegur-yellow);
+    box-shadow: 0 0 0 3px rgba(237, 170, 0, 0.12);
+}
+
+[data-theme="light"] .flow-cadastros-label {
+    color: #996D00;
+}
+
+/* --- WhatsApp Step Select --- */
+[data-theme="light"] .step-select {
+    background: #FFFFFF;
+    border-color: rgba(200, 180, 140, 0.3);
+    color: #3A3530;
+}
+
+[data-theme="light"] .step-select-label {
+    color: #5A534D;
+}
+
+/* --- WhatsApp Chat Inputs (CNPJ, Telefone) --- */
+[data-theme="light"] .chat-input-row .input-field {
+    background: #FFFFFF;
+    border-color: rgba(200, 180, 140, 0.3);
+}
+
+/* --- WhatsApp Step Progress --- */
+[data-theme="light"] .step-dot {
+    background: rgba(200, 180, 140, 0.4);
+}
+
+[data-theme="light"] .step-dot.active {
+    background: var(--prosegur-yellow);
+}
+
+[data-theme="light"] .step-progress-track {
+    background: rgba(200, 180, 140, 0.25);
+}
+
+[data-theme="light"] .step-progress-fill {
+    background: var(--prosegur-yellow);
+}
+
+/* --- WhatsApp Notes Panel --- */
+[data-theme="light"] .chat-notes-panel {
+    background: #FFFFFF;
+    border-color: rgba(200, 180, 140, 0.2);
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .chat-notes-header {
+    border-bottom-color: rgba(200, 180, 140, 0.2);
+}
+
+[data-theme="light"] .chat-notes-header h3 {
+    color: #3A3530;
+}
+
+[data-theme="light"] .chat-notes-textarea {
+    background: #FFFBF2;
+    border-color: rgba(200, 180, 140, 0.2);
+    color: #3A3530;
+}
+
+/* --- Chat Navigation Buttons --- */
+[data-theme="light"] .step-nav-btn {
+    color: #78706A;
+}
+
+[data-theme="light"] .step-nav-btn:hover {
+    color: #3A3530;
+}
+
+/* --- Etapa Badge --- */
+[data-theme="light"] .chat-etapa-badge {
+    background: rgba(237, 170, 0, 0.1);
+    color: #996D00;
+    border-color: rgba(237, 170, 0, 0.2);
+}
+
+/* --- Footer --- */
 [data-theme="light"] .footer {
-    background: linear-gradient(180deg, rgba(245, 240, 230, 0), rgba(237, 170, 0, 0.06));
-    border-top-color: rgba(237, 170, 0, 0.15);
+    background: linear-gradient(180deg, rgba(247, 243, 234, 0), rgba(237, 170, 0, 0.05));
+    border-top-color: rgba(237, 170, 0, 0.12);
 }
 
 [data-theme="light"] .footer p {
-    color: #6B6560;
+    color: #78706A;
 }
 
+[data-theme="light"] a {
+    color: #996D00;
+}
+
+/* --- Toast --- */
 [data-theme="light"] .toast {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* --- Theme Toggle --- */
 [data-theme="light"] .theme-toggle-btn {
-    background: rgba(44, 42, 37, 0.08);
-    border-color: rgba(44, 42, 37, 0.15);
-    color: #6B6560;
+    background: rgba(58, 53, 48, 0.06);
+    border-color: rgba(58, 53, 48, 0.12);
+    color: #78706A;
 }
 
 [data-theme="light"] .theme-toggle-btn:hover {
-    background: #2C2A25;
+    background: #3A3530;
     color: var(--prosegur-yellow);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
+/* --- Validation Modal --- */
 [data-theme="light"] .validation-modal {
-    background: linear-gradient(145deg, #FFFFFF, #FFF8EC);
+    background: linear-gradient(145deg, #FFFFFF, #FFFBF2);
     border-color: rgba(237, 170, 0, 0.2);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
 }
 
 [data-theme="light"] .validation-modal-title {
-    color: #2C2A25;
+    color: #C0392B;
 }
 
 [data-theme="light"] .validation-modal-overlay.active {
     background: rgba(0, 0, 0, 0.3);
 }
 
+[data-theme="light"] .validation-modal-rules {
+    background: #FFFBF2;
+    border-color: rgba(200, 180, 140, 0.2);
+}
+
+[data-theme="light"] .validation-rule {
+    color: #5A534D;
+}
+
+/* --- Carrefour Confirm --- */
+[data-theme="light"] .carrefour-confirm {
+    background: linear-gradient(145deg, #FFFFFF, #FFFBF2);
+    border-color: rgba(237, 170, 0, 0.3);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08), 0 0 20px rgba(237, 170, 0, 0.06);
+}
+
+[data-theme="light"] .carrefour-confirm::before {
+    background: #FFFFFF;
+    border-left-color: rgba(237, 170, 0, 0.3);
+    border-top-color: rgba(237, 170, 0, 0.3);
+}
+
+/* --- Name Hint --- */
+[data-theme="light"] .name-hint {
+    color: #B88500;
+}
+
+/* --- Selection --- */
 [data-theme="light"] ::selection {
+    background: rgba(237, 170, 0, 0.35);
     color: #FFFFFF;
 }
 
-/* Scrollbar light */
+/* --- Scrollbar --- */
 [data-theme="light"] ::-webkit-scrollbar-track {
-    background: #F5F0E6;
+    background: #F7F3EA;
 }
 
 [data-theme="light"] ::-webkit-scrollbar-thumb {
@@ -2184,4 +2624,170 @@ a {
 
 [data-theme="light"] ::-webkit-scrollbar-thumb:hover {
     background: #C4BDB0;
+}
+
+/* --- Mobile Nav (Light) --- */
+[data-theme="light"] .nav.open {
+    background: rgba(247, 243, 234, 0.98);
+}
+
+/* --- Chat Empty State --- */
+[data-theme="light"] .chat-empty-state {
+    color: #78706A;
+}
+
+[data-theme="light"] .chat-empty-state i {
+    color: rgba(237, 170, 0, 0.3);
+}
+
+/* --- WhatsApp: Script Text Block --- */
+[data-theme="light"] .step-text {
+    background: #FFFBF2;
+    border-color: rgba(200, 180, 140, 0.25);
+}
+
+[data-theme="light"] .step-text p {
+    color: #3A3530;
+}
+
+/* --- WhatsApp: Step Label --- */
+[data-theme="light"] .step-label {
+    color: #996D00;
+    border-bottom-color: rgba(237, 170, 0, 0.2);
+}
+
+[data-theme="light"] .step-label i {
+    color: #B88500;
+}
+
+/* --- WhatsApp: Client Info Fields (Telefone, CNPJ) --- */
+[data-theme="light"] .client-info-field {
+    background: rgba(255, 250, 235, 0.8);
+    border-color: rgba(200, 180, 140, 0.3);
+}
+
+[data-theme="light"] .client-info-field:focus-within {
+    background: #FFFFFF;
+    border-color: rgba(237, 170, 0, 0.4);
+}
+
+[data-theme="light"] .client-info-field i {
+    color: #B88500;
+    opacity: 0.9;
+}
+
+[data-theme="light"] .client-info-input {
+    color: #3A3530;
+}
+
+[data-theme="light"] .client-info-input::placeholder {
+    color: rgba(120, 112, 106, 0.5);
+}
+
+/* --- WhatsApp: Step Indicator Badge --- */
+[data-theme="light"] .atendimento-step-indicator {
+    background: rgba(237, 170, 0, 0.1);
+    border-color: rgba(237, 170, 0, 0.2);
+    color: #78706A;
+}
+
+[data-theme="light"] .atendimento-step-indicator .step-current {
+    color: #996D00;
+}
+
+/* --- WhatsApp: Notes Toggle --- */
+[data-theme="light"] .btn-notes-toggle {
+    background: rgba(237, 170, 0, 0.08);
+    border-color: rgba(237, 170, 0, 0.2);
+    color: #996D00;
+}
+
+[data-theme="light"] .btn-notes-toggle:hover {
+    background: rgba(237, 170, 0, 0.15);
+    border-color: rgba(237, 170, 0, 0.35);
+}
+
+[data-theme="light"] .btn-notes-toggle.has-notes {
+    background: rgba(237, 170, 0, 0.12);
+    border-color: rgba(237, 170, 0, 0.35);
+    color: #B88500;
+}
+
+/* --- WhatsApp: Progress Bar --- */
+[data-theme="light"] .atendimento-progress {
+    background: rgba(200, 180, 140, 0.25);
+}
+
+[data-theme="light"] .atendimento-progress-bar {
+    box-shadow: 0 0 8px rgba(237, 170, 0, 0.2);
+}
+
+[data-theme="light"] .progress-dot {
+    background: #E8E0D0;
+    border-color: rgba(200, 180, 140, 0.5);
+}
+
+[data-theme="light"] .progress-dot.active,
+[data-theme="light"] .progress-dot.completed {
+    background: var(--prosegur-yellow);
+    border-color: var(--prosegur-yellow);
+    box-shadow: 0 0 6px rgba(237, 170, 0, 0.35);
+}
+
+/* --- WhatsApp: Step Select --- */
+[data-theme="light"] .step-select {
+    background: #FFFFFF;
+    border-color: rgba(200, 180, 140, 0.35);
+    color: #3A3530;
+}
+
+[data-theme="light"] .step-select:hover {
+    border-color: rgba(237, 170, 0, 0.4);
+    background: #FFFBF2;
+}
+
+[data-theme="light"] .step-select:focus {
+    border-color: var(--prosegur-yellow);
+}
+
+[data-theme="light"] .step-select option {
+    background: #FFFFFF;
+    color: #3A3530;
+}
+
+[data-theme="light"] .step-select-label {
+    color: #5A534D;
+}
+
+/* --- WhatsApp: Step Nav Buttons --- */
+[data-theme="light"] .step-nav-back {
+    color: #78706A;
+}
+
+[data-theme="light"] .step-nav-back:hover {
+    color: #3A3530;
+}
+
+[data-theme="light"] .step-nav-next {
+    color: #3A3530;
+}
+
+/* --- WhatsApp: Client Name Input --- */
+[data-theme="light"] .client-name-input {
+    color: #3A3530;
+    border-bottom-color: rgba(200, 180, 140, 0.3);
+}
+
+[data-theme="light"] .client-name-input::placeholder {
+    color: rgba(120, 112, 106, 0.5);
+}
+
+[data-theme="light"] .client-name-input:focus {
+    border-bottom-color: var(--prosegur-yellow);
+}
+
+/* --- WhatsApp: Atendimento Number Badge --- */
+[data-theme="light"] .atendimento-num {
+    background: var(--prosegur-yellow);
+    color: #FFFFFF;
 }

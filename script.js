@@ -117,17 +117,62 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // ---- ACCENT REMOVAL (Nome / Sobrenome) ----
-    document.addEventListener('input', (e) => {
+    // ---- NOME / SOBRENOME: ACCENT REMOVAL + SINGLE WORD RESTRICTION ----
+
+    // Block space key when field already has a word (prevent second word)
+    document.addEventListener('keydown', (e) => {
         if (e.target.dataset.field === 'nome' || e.target.dataset.field === 'sobrenome') {
-            const cursorPos = e.target.selectionStart;
-            const stripped = e.target.value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-            if (stripped !== e.target.value) {
-                e.target.value = stripped;
-                e.target.setSelectionRange(cursorPos, cursorPos);
+            if (e.key === ' ' || e.code === 'Space') {
+                const val = e.target.value.trim();
+                if (val.length > 0) {
+                    e.preventDefault();
+                    showNameHint(e.target);
+                }
             }
         }
     });
+
+    // On input: strip accents AND enforce single word (handles paste)
+    document.addEventListener('input', (e) => {
+        if (e.target.dataset.field === 'nome' || e.target.dataset.field === 'sobrenome') {
+            const cursorPos = e.target.selectionStart;
+            let val = e.target.value.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+            // If pasted text has spaces, keep only first word
+            if (val.trim().includes(' ')) {
+                val = val.trim().split(/\s+/)[0];
+                showNameHint(e.target);
+            }
+
+            if (val !== e.target.value) {
+                e.target.value = val;
+                const newPos = Math.min(cursorPos, val.length);
+                e.target.setSelectionRange(newPos, newPos);
+            }
+        }
+    });
+
+    // Show subtle inline hint below the field
+    function showNameHint(input) {
+        const formGroup = input.closest('.form-group');
+        if (!formGroup) return;
+
+        // Don't duplicate if already showing
+        let existing = formGroup.querySelector('.name-hint');
+        if (existing && !existing.classList.contains('fade-out')) return;
+        if (existing) existing.remove();
+
+        const hint = document.createElement('span');
+        hint.className = 'name-hint';
+        hint.innerHTML = '<i class="fas fa-info-circle" style="margin-right:4px;font-size:0.7rem;"></i>Apenas um nome permitido';
+        formGroup.appendChild(hint);
+
+        // Auto-remove after 2.5s
+        setTimeout(() => {
+            hint.classList.add('fade-out');
+            hint.addEventListener('animationend', () => hint.remove());
+        }, 2500);
+    }
 
     // ---- AUTO-CALC DIFERENÇA (MANUAL 03) ----
     function parseCurrencyValue(value) {
@@ -273,11 +318,69 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 e.target.classList.remove('input-error');
+
+                // ---- CARREFOUR 9-DIGIT CHECK ----
+                if (cleanedValue.length === 9) {
+                    showCarrefourConfirm(e.target);
+                } else {
+                    removeCarrefourConfirm(e.target);
+                }
             } finally {
                 _isValidatingMatricula = false;
             }
         }
     });
+
+    // Carrefour confirmation popover
+    function showCarrefourConfirm(input) {
+        const formGroup = input.closest('.form-group');
+        if (!formGroup) return;
+
+        // Don't duplicate
+        if (formGroup.querySelector('.carrefour-confirm')) return;
+
+        const popover = document.createElement('div');
+        popover.className = 'carrefour-confirm';
+        popover.innerHTML = `
+            <div class="carrefour-confirm-icon">
+                <i class="fas fa-store"></i>
+                <span class="carrefour-confirm-text" style="margin-bottom:0;">Matrícula com 9 dígitos</span>
+            </div>
+            <p class="carrefour-confirm-text">Apenas clientes <strong>Carrefour</strong> podem ter matrícula com 9 dígitos. Essa matrícula é de um cliente Carrefour?</p>
+            <div class="carrefour-confirm-btns">
+                <button class="carrefour-btn carrefour-btn-yes" data-action="yes">
+                    <i class="fas fa-check"></i> Sim, é Carrefour
+                </button>
+                <button class="carrefour-btn carrefour-btn-no" data-action="no">
+                    <i class="fas fa-times"></i> Não
+                </button>
+            </div>
+        `;
+        formGroup.appendChild(popover);
+
+        // Handle Yes
+        popover.querySelector('[data-action="yes"]').addEventListener('click', () => {
+            dismissCarrefourPopover(popover);
+        });
+
+        // Handle No — remove 9th digit
+        popover.querySelector('[data-action="no"]').addEventListener('click', () => {
+            input.value = input.value.substring(0, 8);
+            dismissCarrefourPopover(popover);
+        });
+    }
+
+    function removeCarrefourConfirm(input) {
+        const formGroup = input.closest('.form-group');
+        if (!formGroup) return;
+        const existing = formGroup.querySelector('.carrefour-confirm');
+        if (existing) dismissCarrefourPopover(existing);
+    }
+
+    function dismissCarrefourPopover(popover) {
+        popover.classList.add('fade-out');
+        popover.addEventListener('animationend', () => popover.remove());
+    }
 
     // Remove error state on focus
     document.addEventListener('focus', (e) => {
