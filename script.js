@@ -119,20 +119,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ---- NOME / SOBRENOME: ACCENT REMOVAL + SINGLE WORD RESTRICTION ----
 
-    // Block space key when field already has a word (prevent second word)
+    // Block space key entirely in nome/sobrenome fields
     document.addEventListener('keydown', (e) => {
         if (e.target.dataset.field === 'nome' || e.target.dataset.field === 'sobrenome') {
             if (e.key === ' ' || e.code === 'Space') {
-                const val = e.target.value.trim();
-                if (val.length > 0) {
-                    e.preventDefault();
-                    showNameHint(e.target);
-                }
+                e.preventDefault();
             }
         }
     });
 
-    // On input: strip accents AND enforce single word (handles paste)
+    // On input: strip accents, enforce single word, and auto-capitalize first letter
     document.addEventListener('input', (e) => {
         if (e.target.dataset.field === 'nome' || e.target.dataset.field === 'sobrenome') {
             const cursorPos = e.target.selectionStart;
@@ -144,11 +140,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 showNameHint(e.target);
             }
 
+            // Auto-capitalize: first letter uppercase, rest lowercase
+            if (val.length > 0) {
+                val = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
+            }
+
             if (val !== e.target.value) {
                 e.target.value = val;
                 const newPos = Math.min(cursorPos, val.length);
                 e.target.setSelectionRange(newPos, newPos);
             }
+        }
+    });
+
+    // ---- PASTE: TRIM WHITESPACE FROM NOME, SOBRENOME, MATRÍCULA ----
+    document.addEventListener('paste', (e) => {
+        const field = e.target.dataset.field;
+        if (field === 'nome' || field === 'sobrenome' || field === 'matricula') {
+            e.preventDefault();
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            const trimmed = pastedText.trim();
+            // Insert trimmed text at cursor position
+            const start = e.target.selectionStart;
+            const end = e.target.selectionEnd;
+            const currentVal = e.target.value;
+            e.target.value = currentVal.substring(0, start) + trimmed + currentVal.substring(end);
+            const newPos = start + trimmed.length;
+            e.target.setSelectionRange(newPos, newPos);
+            // Trigger input event so other handlers (accent removal, capitalize, validation) still run
+            e.target.dispatchEvent(new Event('input', { bubbles: true }));
         }
     });
 
@@ -694,14 +714,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 `Motivo: ${f('motivo')}`
             ],
             manual_25: () => [
-                `Nome: ${f('nome')}`,
-                `Contato: ${f('contato')}`,
-                `CNPJ: *${f('cnpj')}*`,
-                '-',
                 `Motivo: ${f('motivo')}`,
-                '-',
+                `- `,
                 `Status: ${f('status')}`,
-                `Canal de Atendimento: Telefone`
+                `Canal de Atendimento: ${f('canal')}`
             ]
         };
 
