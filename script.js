@@ -151,6 +151,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 e.target.setSelectionRange(newPos, newPos);
             }
         }
+
+        // Auto-capitalize Nome field in Manuais tab
+        if (e.target.dataset.mfield === 'nome') {
+            const cursorPos = e.target.selectionStart;
+            let val = e.target.value;
+            if (val.length > 0) {
+                val = val.charAt(0).toUpperCase() + val.slice(1);
+            }
+            if (val !== e.target.value) {
+                e.target.value = val;
+                const newPos = Math.min(cursorPos, val.length);
+                e.target.setSelectionRange(newPos, newPos);
+            }
+        }
     });
 
     // ---- PASTE: TRIM WHITESPACE FROM NOME, SOBRENOME, MATRÍCULA ----
@@ -625,6 +639,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    window.copyCRM25 = function (btn) {
+        const card = btn.closest('.manual-card');
+        const motivo = card.querySelector('[data-mfield="motivo"]').value.trim();
+        const status = card.querySelector('[data-mfield="status"]').value;
+        const text = `Motivo: ${motivo}\n-\nStatus: ${status}`;
+        copyToClipboard(text);
+        showToast('Copiado formatação para o CRM');
+    };
+
     window.copyManual = function (btn) {
         const card = btn.closest('.manual-card');
         const manualId = card.dataset.manual;
@@ -714,8 +737,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 `Motivo: ${f('motivo')}`
             ],
             manual_25: () => [
+                '-',
+                `Nome: ${f('nome')}`,
+                `Contato: ${f('contato')}`,
+                `CNPJ: *${f('cnpj')}*`,
+                '-',
                 `Motivo: ${f('motivo')}`,
-                `- `,
+                '-',
                 `Status: ${f('status')}`,
                 `Canal de Atendimento: ${f('canal')}`
             ]
