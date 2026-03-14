@@ -758,7 +758,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // ---- ATENDIMENTOS PANEL (Dynamic Chats) ----
-    const TOTAL_STEPS = 5;
+    const TOTAL_STEPS = 6;
     let chatIdCounter = 0;
     let chats = [];
     let activeChatId = null;
@@ -795,6 +795,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Step definitions
     const stepDefs = [
         { icon: 'fa-handshake', label: 'Saudação', get text() { return `${getGreeting()} Meu nome é Daniel e estou aqui para ajudá-lo(a). Com quem estou falando, por gentileza?`; } },
+        { icon: 'fa-comment-dots', label: 'Saudação Personalizada', isDynamic: true, getText(clientName) { const nome = clientName && clientName.trim() ? clientName.trim() : '[nome]'; return `Tudo bem ${nome}? Como posso te ajudar?`; } },
         {
             icon: 'fa-id-card', label: 'Motivo do contato', html: `<div class="step-select-wrapper">
             <label class="step-select-label">Selecione o motivo do contato:</label>
@@ -822,7 +823,7 @@ document.addEventListener('DOMContentLoaded', () => {
             label: 'Identificação',
             getText(clientName) {
                 const nome = clientName && clientName.trim() ? clientName.trim() : '[NOME do Atendimento]';
-                return `Entendi ${nome}. Me informa o CNPJ e o nome do estabelecimento por gentileza.`;
+                return `Entendi, me informa o CNPJ e nome da loja, por favor?`;
             },
             nextQuestion: 'Prosseguir para cadastro?',
             yesState: 'cadastro_script',
@@ -831,7 +832,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cadastro_script: {
             icon: 'fa-clipboard-list',
             label: 'Script de Cadastro',
-            text: 'Me informe, por gentileza os dados abaixo para cadastro: \n\nNome: \nSobrenome: \nMatrícula (Não pode começar com zero; mínimo de 2 dígito e máximo de 8 dígitos): \nPerfil do usuário depositante ou supervisor: \nCaso seja depositante, será com senha ou sem senha?',
+            text: 'Certo, me informe, por gentileza os dados abaixo para cadastro:\n\nNome:\n\nSobrenome:\n\nMatrícula (Não pode começar com zero; mínimo de 2 dígito e máximo de 8 dígitos):\n\nPerfil do usuário depositante ou supervisor:\n\nCaso seja depositante, será com senha ou sem senha?',
             nextQuestion: 'O Cadastro atualizou ou não?',
             isCustomDecision: true,
             yesLabel: 'Atualizou',
@@ -989,6 +990,7 @@ document.addEventListener('DOMContentLoaded', () => {
             currentStep: 0,
             notes: '',
             flowState: null,
+            flowHistory: [],
             motivoContato: null,
             cadastrosRealizados: '',
             clientName: '',
@@ -1110,6 +1112,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     const nameEl = sidebarItem.querySelector('.chat-sidebar-item-name');
                     if (nameEl) nameEl.textContent = chat.clientName.trim() || `Atendimento ${chat.number}`;
                 }
+                // Update dynamic greeting step text (step index 1 = Saudação Personalizada)
+                const dynamicStep = chatMain.querySelector('.atendimento-step[data-step="1"] .step-text p');
+                if (dynamicStep) {
+                    const nome = chat.clientName.trim() || '[nome]';
+                    dynamicStep.textContent = `Tudo bem ${nome}? Como posso te ajudar?`;
+                }
             });
         }
         if (cnpjInput) {
@@ -1147,7 +1155,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let stepsHTML = '';
         stepDefs.forEach((s, i) => {
-            const content = s.html ? s.html : `<p>${s.text}</p>`;
+            let content;
+            if (s.html) {
+                content = s.html;
+            } else if (s.isDynamic && typeof s.getText === 'function') {
+                content = `<p>${s.getText(chat.clientName)}</p>`;
+            } else {
+                content = `<p>${s.text}</p>`;
+            }
             stepsHTML += `
                 <div class="atendimento-step" data-step="${i}">
                     <div class="step-label"><i class="fas ${s.icon}"></i> ${s.label}</div>
@@ -1168,7 +1183,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="atendimento-progress-labels">${dotsHTML}</div>
                 </div>
                 <div class="atendimento-slider-container">
-                    <div class="atendimento-slider" style="transform: translateX(-${chat.currentStep * 20}%);">
+                    <div class="atendimento-slider" style="transform: translateX(-${chat.currentStep * (100 / TOTAL_STEPS)}%);">
                         ${stepsHTML}
                     </div>
                 </div>
@@ -1286,6 +1301,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hide script block only for states with no actual text content
         const showScriptBlock = scriptText && scriptText.trim().length > 0;
 
+        // Back button HTML (shown when there is history to go back to)
+        const backBtnHTML = chat.flowHistory && chat.flowHistory.length > 0 ? `
+            <button class="btn flow-btn flow-back-btn" data-flow-back>
+                <i class="fas fa-arrow-left"></i> Voltar
+            </button>` : '';
+
         chatMain.innerHTML = `
             <div class="atendimento-card flow-active" data-chat-id="${chat.id}">
                 ${buildCardHeader(chat, padded, hasNotes, `<span class="flow-state-badge"><i class="fas ${flowDef.icon}"></i> ${flowDef.label}</span>`)}
@@ -1307,6 +1328,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         <textarea class="flow-cadastros-textarea" id="flowCadastrosTextarea" placeholder="Cole aqui os cadastros realizados..." rows="4">${escapeHTML(chat.cadastrosRealizados)}</textarea>
                     </div>` : ''}
                     ${decisionHTML}
+                    <div class="flow-back-container">
+                        ${backBtnHTML}
+                    </div>
                 </div>
             </div>
         `;
@@ -1335,9 +1359,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (flowSubConfirmBtn) {
             flowSubConfirmBtn.addEventListener('click', () => {
                 if (flowDef.hasMaterialSelect && chat.materialAbastecimento) {
+                    chat.flowHistory.push(chat.flowState);
                     chat.flowState = 'abastecimento_boca_de_lobo';
                     renderActiveCard();
                 } else if (flowDef.hasValoresSelect && chat.valoresOpcao) {
+                    chat.flowHistory.push(chat.flowState);
                     if (chat.valoresOpcao === 'Análise de Diferença') {
                         chat.flowState = 'valores_analise_diferenca';
                     }
@@ -1371,7 +1397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const prevBtn = card.querySelector('.atendimento-prev');
         const nextBtn = card.querySelector('.atendimento-next');
 
-        slider.style.transform = `translateX(-${chat.currentStep * 20}%)`;
+        slider.style.transform = `translateX(-${chat.currentStep * (100 / TOTAL_STEPS)}%)`;
         progressBar.style.width = `${((chat.currentStep + 1) / TOTAL_STEPS) * 100}%`;
         stepIndicator.textContent = chat.currentStep + 1;
         prevBtn.disabled = chat.currentStep === 0;
@@ -1488,6 +1514,25 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Back button in sub-flows
+        const flowBackBtn = e.target.closest('[data-flow-back]');
+        if (flowBackBtn && chat.flowState && chat.flowHistory && chat.flowHistory.length > 0) {
+            const previousState = chat.flowHistory.pop();
+            if (previousState === '__motivo__') {
+                // Go back to the motivo do contato step
+                chat.flowState = null;
+                chat.motivoContato = null;
+                chat.materialAbastecimento = '';
+                chat.valoresOpcao = '';
+                chat.currentStep = 2;
+                renderActiveCard();
+            } else {
+                chat.flowState = previousState;
+                renderActiveCard();
+            }
+            return;
+        }
+
         const flowActionBtn = e.target.closest('[data-flow-action]');
         if (flowActionBtn && chat.flowState) {
             const action = flowActionBtn.dataset.flowAction;
@@ -1495,6 +1540,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!flowDef) return;
 
             if (action === 'yes') {
+                chat.flowHistory.push(chat.flowState);
                 chat.flowState = flowDef.yesState;
             } else if (action === 'no') {
                 if (flowDef.noState === 'voltar_motivo') {
@@ -1503,10 +1549,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     chat.motivoContato = null;
                     chat.materialAbastecimento = '';
                     chat.valoresOpcao = '';
-                    chat.currentStep = 1;
+                    chat.currentStep = 2;
                     renderActiveCard();
                     return;
                 } else {
+                    chat.flowHistory.push(chat.flowState);
                     chat.flowState = flowDef.noState;
                 }
             }
@@ -1520,23 +1567,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const copyBtn = e.target.closest('.atendimento-copy-btn');
 
         if (nextBtn && chat.currentStep < TOTAL_STEPS - 1) {
-            // If on step 2 (motivo do contato), check selected value
-            if (chat.currentStep === 1) {
+            // If on step 3 (motivo do contato, now index 2), check selected value
+            if (chat.currentStep === 2) {
                 const motivoSelect = chatMain.querySelector('#motivoSelect');
                 if (motivoSelect && motivoSelect.value === 'Cadastro') {
                     chat.motivoContato = 'Cadastro';
+                    chat.flowHistory = ['__motivo__'];
                     chat.flowState = 'cadastro_identificacao';
                     renderActiveCard();
                     return;
                 }
                 if (motivoSelect && motivoSelect.value === 'Abastecimento') {
                     chat.motivoContato = 'Abastecimento';
+                    chat.flowHistory = ['__motivo__'];
                     chat.flowState = 'abastecimento_script';
                     renderActiveCard();
                     return;
                 }
                 if (motivoSelect && motivoSelect.value === 'Valores') {
                     chat.motivoContato = 'Valores';
+                    chat.flowHistory = ['__motivo__'];
                     chat.flowState = 'valores_identificacao';
                     renderActiveCard();
                     return;
