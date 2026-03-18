@@ -832,8 +832,19 @@ document.addEventListener('DOMContentLoaded', () => {
         cadastro_script: {
             icon: 'fa-clipboard-list',
             label: 'Script de Cadastro',
-            text: 'Certo, me informe, por gentileza os dados abaixo para cadastro:\n\nNome:\n\nSobrenome:\n\nMatrícula (Não pode começar com zero; mínimo de 2 dígito e máximo de 8 dígitos):\n\nPerfil do usuário depositante ou supervisor:\n\nCaso seja depositante, será com senha ou sem senha?',
-            nextQuestion: 'O Cadastro atualizou ou não?',
+            text: 'Certo, me informe, por gentileza os dados abaixo para cadastro:\n\nNome:\n\nSobrenome:\n\nMatrícula (Não pode começar com zero; mínimo de 1 dígito e máximo de 9 dígitos):\n\nPerfil do usuário depositante ou supervisor:\n\nCaso seja depositante, será com senha ou sem senha?',
+            hasSecondScript: true,
+            secondScriptText: 'Perfeito, peço gentilmente que aguarde enquanto concluo o cadastro, caso tenha alguma dúvida estou a disposição.',
+            nextQuestion: 'Prosseguir para cadastro?',
+            yesState: 'cadastro_formulario',
+            noState: null
+        },
+        cadastro_formulario: {
+            icon: 'fa-user-plus',
+            label: 'Cadastro de Usuários',
+            text: '',
+            hasCadastroForm: true,
+            nextQuestion: 'Cadastro atualizado?',
             isCustomDecision: true,
             yesLabel: 'Atualizou',
             noLabel: 'Não atualizou',
@@ -851,7 +862,8 @@ document.addEventListener('DOMContentLoaded', () => {
         cadastro_nao_atualizado: {
             icon: 'fa-clock',
             label: 'Cadastro Não Atualizado',
-            text: 'Obrigado por aguardar, os cadastros foram realizados, porém ainda não subiram para o seu cofre, sendo necessário o teste no período de 24 horas, caso após o prazo permaneça sem funcionar você pode retornar o contato.',
+            text: 'Obrigado por ter aguardado, peço desculpas pela demora.\nO cadastro do(s) usuário(s) foi realizado com sucesso, porém, acompanhei durante alguns minutos e as informações não chegaram ao cofre, vou pedir para que realizem testes durante o dia até o prazo de 24 horas\nCaso o usuário não funcione após esse prazo, pode retornar o contato informando o ocorrido.\nSegue o protocolo referente a esse atendimento com todas as informações registradas e os dados do(s) usuário(s) para teste:\n\n[Protocolo: ]\n\n[Usuário(s)]: ',
+            hasNaoAtualizouForm: true,
             nextQuestion: 'Atendimento finalizado?',
             yesState: 'finalizado_script',
             noState: 'voltar_motivo'
@@ -993,11 +1005,15 @@ document.addEventListener('DOMContentLoaded', () => {
             flowHistory: [],
             motivoContato: null,
             cadastrosRealizados: '',
+            cadastroUsers: [{ nome: '', sobrenome: '', matricula: '', senha: 'com', funcao: 'Depositante', senhaValue: '' }],
+            cadastroUserCount: 1,
             clientName: '',
             clientCnpj: '',
             clientPhone: '',
             materialAbastecimento: '',
-            valoresOpcao: ''
+            valoresOpcao: '',
+            naoAtualizouProtocolo: '',
+            naoAtualizouUsuarios: ''
         };
         chats.push(chat);
         return chat;
@@ -1200,6 +1216,323 @@ document.addEventListener('DOMContentLoaded', () => {
         attachClientFieldListeners(chat);
     }
 
+    // ---- EMBEDDED CADASTRO FORM (inside WhatsApp flow) ----
+
+    function buildEmbeddedCadastroHTML(chat) {
+        let usersHTML = '';
+        chat.cadastroUsers.forEach((user, idx) => {
+            const showRemove = chat.cadastroUsers.length > 1;
+            const isSupervisor = user.funcao === 'Supervisor(a)';
+            const senhaHidden = user.senha === 'sem' && !isSupervisor;
+            const senhaToggleHidden = isSupervisor;
+
+            usersHTML += `
+                <div class="flow-cadastro-user" data-user-idx="${idx}">
+                    <div class="flow-cadastro-user-header">
+                        <span class="form-badge">Usuário ${idx + 1}</span>
+                        ${showRemove ? `<button class="btn-remove-user flow-cad-remove" data-remove-idx="${idx}">
+                            <i class="fas fa-trash-alt"></i> Remover
+                        </button>` : `<button class="btn-icon flow-cad-clear" data-clear-idx="${idx}" title="Limpar campos">
+                            <i class="fas fa-eraser"></i> Limpar
+                        </button>`}
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Nome</label>
+                            <input type="text" class="input-field flow-cad-input" placeholder="Digite o nome" data-cad-field="nome" data-user-idx="${idx}" value="${escapeHTML(user.nome)}">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-user"></i> Sobrenome</label>
+                            <input type="text" class="input-field flow-cad-input" placeholder="Digite o sobrenome" data-cad-field="sobrenome" data-user-idx="${idx}" value="${escapeHTML(user.sobrenome)}">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-id-card"></i> Matrícula</label>
+                            <input type="text" class="input-field matricula-input flow-cad-input" placeholder="1 a 9 dígitos" data-cad-field="matricula" data-user-idx="${idx}" maxlength="9" value="${escapeHTML(user.matricula)}">
+                        </div>
+                        <div class="form-group ${senhaToggleHidden ? 'hidden' : ''}" data-cad-senha-toggle="${idx}">
+                            <label><i class="fas fa-lock"></i> Senha</label>
+                            <div class="toggle-group">
+                                <button class="toggle-btn ${user.senha === 'com' ? 'active' : ''}" data-cad-toggle="senha" data-cad-val="com" data-user-idx="${idx}">Com Senha</button>
+                                <button class="toggle-btn ${user.senha === 'sem' ? 'active' : ''}" data-cad-toggle="senha" data-cad-val="sem" data-user-idx="${idx}">Sem Senha</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fas fa-user-tag"></i> Função</label>
+                            <div class="toggle-group">
+                                <button class="toggle-btn ${user.funcao === 'Depositante' ? 'active' : ''}" data-cad-toggle="funcao" data-cad-val="Depositante" data-user-idx="${idx}">Depositante</button>
+                                <button class="toggle-btn ${user.funcao === 'Supervisor(a)' ? 'active' : ''}" data-cad-toggle="funcao" data-cad-val="Supervisor(a)" data-user-idx="${idx}">Supervisor(a)</button>
+                            </div>
+                        </div>
+                        <div class="form-group ${senhaHidden ? 'hidden' : ''}" data-cad-senha-field="${idx}">
+                            <label><i class="fas fa-key"></i> Definir Senha</label>
+                            <input type="text" class="input-field flow-cad-input" placeholder="Senha do usuário" data-cad-field="senhaValue" data-user-idx="${idx}" value="${escapeHTML(user.senhaValue)}">
+                        </div>
+                    </div>
+                </div>`;
+        });
+
+        return `
+            <div class="flow-cadastro-form">
+                <div class="flow-cadastro-form-header">
+                    <h3><i class="fas fa-user-plus"></i> Cadastro de Usuários</h3>
+                    <span class="flow-cadastro-count">${chat.cadastroUsers.length} usuário${chat.cadastroUsers.length > 1 ? 's' : ''}</span>
+                </div>
+                <div class="flow-cadastro-users" id="flowCadastroUsers">
+                    ${usersHTML}
+                </div>
+                <div class="flow-cadastro-actions">
+                    <button class="btn btn-secondary flow-cad-action-btn" id="flowCadAddUser">
+                        <i class="fas fa-plus-circle"></i> Adicionar Usuário
+                    </button>
+                    <button class="btn btn-danger flow-cad-action-btn" id="flowCadResetAll">
+                        <i class="fas fa-redo-alt"></i> Limpar
+                    </button>
+                    <button class="btn btn-primary flow-cad-action-btn" id="flowCadCopy">
+                        <i class="fas fa-copy"></i> Copiar
+                    </button>
+                </div>
+            </div>`;
+    }
+
+    function attachEmbeddedCadastroListeners(chat) {
+        const container = chatMain.querySelector('.flow-cadastro-form');
+        if (!container) return;
+
+        // Input fields — save to chat state
+        container.addEventListener('input', (e) => {
+            const field = e.target.dataset.cadField;
+            const idx = parseInt(e.target.dataset.userIdx);
+            if (field && !isNaN(idx) && chat.cadastroUsers[idx]) {
+                let val = e.target.value;
+
+                // Nome/Sobrenome: strip accents, single word, capitalize
+                if (field === 'nome' || field === 'sobrenome') {
+                    const cursorPos = e.target.selectionStart;
+                    val = val.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    if (val.trim().includes(' ')) {
+                        val = val.trim().split(/\s+/)[0];
+                        showNameHint(e.target);
+                    }
+                    if (val.length > 0) {
+                        val = val.charAt(0).toUpperCase() + val.slice(1).toLowerCase();
+                    }
+                    e.target.value = val;
+                    const newPos = Math.min(cursorPos, val.length);
+                    e.target.setSelectionRange(newPos, newPos);
+                }
+
+                // Matrícula: full validation identical to main Cadastro tab
+                if (field === 'matricula') {
+                    const originalValue = val;
+                    const cleanedValue = originalValue.replace(/[^\d]/g, '');
+
+                    if (originalValue !== cleanedValue) {
+                        e.target.value = cleanedValue;
+                        e.target.classList.add('input-error');
+                        showValidationModal('A matrícula contém caracteres inválidos. Use apenas números (0-9), sem pontuação ou letras.');
+                        chat.cadastroUsers[idx][field] = cleanedValue;
+                        return;
+                    }
+
+                    if (cleanedValue.startsWith('0')) {
+                        e.target.classList.add('input-error');
+                        showValidationModal('A matrícula não pode começar com zero. O primeiro dígito deve ser de 1 a 9.');
+                        e.target.value = '';
+                        chat.cadastroUsers[idx][field] = '';
+                        return;
+                    }
+
+                    e.target.classList.remove('input-error');
+                    val = cleanedValue;
+                    e.target.value = val;
+
+                    // Carrefour 9-digit check
+                    if (cleanedValue.length === 9) {
+                        showCarrefourConfirm(e.target);
+                    } else {
+                        removeCarrefourConfirm(e.target);
+                    }
+                }
+
+                chat.cadastroUsers[idx][field] = val;
+            }
+        });
+
+        // Block space in nome/sobrenome
+        container.addEventListener('keydown', (e) => {
+            const field = e.target.dataset.cadField;
+            if ((field === 'nome' || field === 'sobrenome') && (e.key === ' ' || e.code === 'Space')) {
+                e.preventDefault();
+            }
+        });
+
+        // Paste handler for embedded cadastro fields
+        container.addEventListener('paste', (e) => {
+            const field = e.target.dataset.cadField;
+            if (field === 'nome' || field === 'sobrenome' || field === 'matricula') {
+                e.preventDefault();
+                const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                const trimmed = pastedText.trim();
+                const start = e.target.selectionStart;
+                const end = e.target.selectionEnd;
+                const currentVal = e.target.value;
+                e.target.value = currentVal.substring(0, start) + trimmed + currentVal.substring(end);
+                const newPos = start + trimmed.length;
+                e.target.setSelectionRange(newPos, newPos);
+                e.target.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        });
+
+        // Remove error state on focus
+        container.addEventListener('focus', (e) => {
+            if (e.target.classList.contains('matricula-input')) {
+                e.target.classList.remove('input-error');
+            }
+        }, true);
+
+        // Toggle buttons (senha, funcao)
+        container.addEventListener('click', (e) => {
+            const toggleBtn = e.target.closest('[data-cad-toggle]');
+            if (toggleBtn) {
+                const toggleField = toggleBtn.dataset.cadToggle;
+                const toggleVal = toggleBtn.dataset.cadVal;
+                const idx = parseInt(toggleBtn.dataset.userIdx);
+                if (!isNaN(idx) && chat.cadastroUsers[idx]) {
+                    chat.cadastroUsers[idx][toggleField] = toggleVal;
+
+                    // Update active state in toggle group
+                    const group = toggleBtn.closest('.toggle-group');
+                    group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+                    toggleBtn.classList.add('active');
+
+                    // Handle senha visibility
+                    if (toggleField === 'senha') {
+                        const senhaField = container.querySelector(`[data-cad-senha-field="${idx}"]`);
+                        if (toggleVal === 'sem') {
+                            senhaField.classList.add('hidden');
+                        } else {
+                            senhaField.classList.remove('hidden');
+                        }
+                    }
+
+                    // Handle supervisor: force com senha, hide toggle
+                    if (toggleField === 'funcao') {
+                        const senhaToggle = container.querySelector(`[data-cad-senha-toggle="${idx}"]`);
+                        const senhaField = container.querySelector(`[data-cad-senha-field="${idx}"]`);
+                        if (toggleVal === 'Supervisor(a)') {
+                            chat.cadastroUsers[idx].senha = 'com';
+                            senhaToggle.classList.add('hidden');
+                            senhaField.classList.remove('hidden');
+                            // Update senha toggle buttons visually
+                            const senhaBtns = senhaToggle.querySelectorAll('.toggle-btn');
+                            senhaBtns.forEach(b => b.classList.remove('active'));
+                            senhaBtns[0]?.classList.add('active');
+                        } else {
+                            senhaToggle.classList.remove('hidden');
+                        }
+                    }
+                }
+                return;
+            }
+
+            // Remove user
+            const removeBtn = e.target.closest('.flow-cad-remove');
+            if (removeBtn) {
+                const idx = parseInt(removeBtn.dataset.removeIdx);
+                if (!isNaN(idx) && chat.cadastroUsers.length > 1) {
+                    chat.cadastroUsers.splice(idx, 1);
+                    chat.cadastroUserCount = chat.cadastroUsers.length;
+                    renderActiveCard();
+                    showToast('Usuário removido!');
+                }
+                return;
+            }
+
+            // Clear user
+            const clearBtn = e.target.closest('.flow-cad-clear');
+            if (clearBtn) {
+                const idx = parseInt(clearBtn.dataset.clearIdx);
+                if (!isNaN(idx) && chat.cadastroUsers[idx]) {
+                    chat.cadastroUsers[idx] = { nome: '', sobrenome: '', matricula: '', senha: 'com', funcao: 'Depositante', senhaValue: '' };
+                    renderActiveCard();
+                    showToast('Campos limpos!');
+                }
+                return;
+            }
+        });
+
+        // Add user button
+        const addBtn = container.querySelector('#flowCadAddUser');
+        if (addBtn) {
+            addBtn.addEventListener('click', () => {
+                chat.cadastroUsers.push({ nome: '', sobrenome: '', matricula: '', senha: 'com', funcao: 'Depositante', senhaValue: '' });
+                chat.cadastroUserCount = chat.cadastroUsers.length;
+                renderActiveCard();
+                showToast(`Usuário ${chat.cadastroUsers.length} adicionado!`);
+            });
+        }
+
+        // Reset all
+        const resetBtn = container.querySelector('#flowCadResetAll');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                chat.cadastroUsers = [{ nome: '', sobrenome: '', matricula: '', senha: 'com', funcao: 'Depositante', senhaValue: '' }];
+                chat.cadastroUserCount = 1;
+                renderActiveCard();
+                showToast('Cadastros resetados!');
+            });
+        }
+
+        // Copy cadastros
+        const copyBtn = container.querySelector('#flowCadCopy');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                // Validate all matrículas before copying
+                let hasInvalid = false;
+                chat.cadastroUsers.forEach((user, i) => {
+                    const mat = user.matricula.trim();
+                    if (mat && !/^[1-9]\d{0,8}$/.test(mat)) {
+                        hasInvalid = true;
+                        const matInput = container.querySelector(`[data-cad-field="matricula"][data-user-idx="${i}"]`);
+                        if (matInput) matInput.classList.add('input-error');
+                    }
+                });
+                if (hasInvalid) {
+                    showValidationModal('Verifique a matrícula antes de copiar. Ela deve conter apenas números, não começar com zero e ter de 1 a 9 dígitos.');
+                    return;
+                }
+                const text = generateCadastroText(chat);
+                if (text) {
+                    copyToClipboard(text);
+                    showToast('Cadastros copiados com sucesso!');
+                }
+            });
+        }
+    }
+
+    function generateCadastroText(chat) {
+        const lines = [];
+        chat.cadastroUsers.forEach(user => {
+            const nome = user.nome.trim();
+            const sobrenome = user.sobrenome.trim();
+            const matricula = user.matricula.trim();
+            const comSenha = user.senha === 'com';
+            const funcao = user.funcao;
+            const senhaValue = user.senhaValue.trim();
+
+            if (!nome && !sobrenome && !matricula) return;
+
+            let line;
+            if (funcao === 'Supervisor(a)') {
+                line = `${nome} ${sobrenome} - Matrícula ${matricula} - Supervisor(a) - Senha: ${senhaValue}`;
+            } else {
+                line = `${nome} ${sobrenome} - Matrícula ${matricula} - ${funcao} ${comSenha ? 'com senha' : 'sem senha'} - Senha: ${senhaValue}`;
+            }
+            lines.push(line);
+        });
+        return lines.join('\n');
+    }
+
     function renderFlowCard(chat, padded, hasNotes) {
         const flowDef = getFlowDef(chat);
         if (!flowDef) return;
@@ -1214,6 +1547,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Format script text preserving line breaks
         const formattedText = escapeHTML(scriptText).replace(/\n/g, '<br>');
+
+        // Second script block (e.g. "Perfeito, peço gentilmente...")
+        let secondScriptHTML = '';
+        if (flowDef.hasSecondScript && flowDef.secondScriptText) {
+            const formattedSecond = escapeHTML(flowDef.secondScriptText).replace(/\n/g, '<br>');
+            secondScriptHTML = `
+                <div class="flow-script-block flow-script-secondary">
+                    <div class="flow-script-header">
+                        <span class="flow-script-tag"><i class="fas fa-scroll"></i> Script</span>
+                        <button class="btn btn-copy flow-copy-btn" data-flow-copy-second>
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                    <div class="flow-script-text">${formattedSecond}</div>
+                </div>`;
+        }
+
+        // Embedded Cadastro Form HTML
+        let cadastroFormHTML = '';
+        if (flowDef.hasCadastroForm) {
+            cadastroFormHTML = buildEmbeddedCadastroHTML(chat);
+        }
 
         // Sub-select for flows (material for abastecimento, opção for valores)
         let subSelectHTML = '';
@@ -1260,7 +1615,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let decisionHTML = '';
         if (flowDef.isCustomDecision || flowDef.isBocaDeLoboDecision) {
-            // Custom-labeled decision (D+0/D+1, Boca de Lobo, etc.)
             const yesLabel = flowDef.yesLabel || 'Sim';
             const noLabel = flowDef.noLabel || 'Não';
             const yesIcon = flowDef.yesLabel ? '' : '<i class="fas fa-check"></i> ';
@@ -1291,7 +1645,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>`;
         } else if (!flowDef.hasMaterialSelect && !flowDef.hasValoresSelect) {
-            // Final state — show "Atendimento concluído"
             decisionHTML = `
                 <div class="flow-decision">
                     <div class="flow-final-msg"><i class="fas fa-check-circle"></i> Atendimento concluído</div>
@@ -1307,6 +1660,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 <i class="fas fa-arrow-left"></i> Voltar
             </button>` : '';
 
+        // Devolutiva cadastro: show auto-generated text (read-only)
+        let devolutivaHTML = '';
+        if (chat.flowState === 'devolutiva_cadastro') {
+            devolutivaHTML = `
+                <div class="flow-cadastros-field">
+                    <label class="flow-cadastros-label"><i class="fas fa-users"></i> Cadastros realizados</label>
+                    <div class="flow-cadastros-display">${escapeHTML(chat.cadastrosRealizados).replace(/\n/g, '<br>')}</div>
+                </div>`;
+        }
+
+        // Não atualizado: protocol + users fields with copy
+        let naoAtualizouFormHTML = '';
+        if (flowDef.hasNaoAtualizouForm) {
+            naoAtualizouFormHTML = `
+                <div class="flow-nao-atualizado-form">
+                    <div class="flow-nao-field">
+                        <label class="flow-cadastros-label"><i class="fas fa-file-alt"></i> Protocolo</label>
+                        <input type="text" class="input-field" id="naoAtualizouProtocolo" placeholder="Insira o protocolo do atendimento" value="${escapeHTML(chat.naoAtualizouProtocolo)}">
+                    </div>
+                    <div class="flow-nao-field">
+                        <label class="flow-cadastros-label"><i class="fas fa-users"></i> Usuário(s)</label>
+                        <textarea class="input-field textarea" id="naoAtualizouUsuarios" placeholder="Insira os usuários cadastrados" rows="4">${escapeHTML(chat.naoAtualizouUsuarios)}</textarea>
+                    </div>
+                    <div class="flow-nao-actions">
+                        <button class="btn btn-primary" id="btnNaoAtualizouCopy">
+                            <i class="fas fa-copy"></i> Copiar
+                        </button>
+                    </div>
+                </div>`;
+        }
+
         chatMain.innerHTML = `
             <div class="atendimento-card flow-active" data-chat-id="${chat.id}">
                 ${buildCardHeader(chat, padded, hasNotes, `<span class="flow-state-badge"><i class="fas ${flowDef.icon}"></i> ${flowDef.label}</span>`)}
@@ -1315,18 +1699,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="flow-script-block">
                         <div class="flow-script-header">
                             <span class="flow-script-tag"><i class="fas fa-scroll"></i> Script</span>
-                            <button class="btn btn-copy flow-copy-btn" data-flow-copy>
+                            ${!flowDef.hasNaoAtualizouForm ? `<button class="btn btn-copy flow-copy-btn" data-flow-copy>
                                 <i class="fas fa-copy"></i> Copiar
-                            </button>
+                            </button>` : ''}
                         </div>
                         <div class="flow-script-text">${formattedText}</div>
                     </div>` : ''}
+                    ${secondScriptHTML}
+                    ${cadastroFormHTML}
                     ${subSelectHTML}
-                    ${chat.flowState === 'devolutiva_cadastro' ? `
-                    <div class="flow-cadastros-field">
-                        <label class="flow-cadastros-label"><i class="fas fa-users"></i> Cadastros realizados</label>
-                        <textarea class="flow-cadastros-textarea" id="flowCadastrosTextarea" placeholder="Cole aqui os cadastros realizados..." rows="4">${escapeHTML(chat.cadastrosRealizados)}</textarea>
-                    </div>` : ''}
+                    ${devolutivaHTML}
+                    ${naoAtualizouFormHTML}
                     ${decisionHTML}
                     <div class="flow-back-container">
                         ${backBtnHTML}
@@ -1335,12 +1718,36 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
-        // Auto-save cadastros textarea
-        const cadastrosTextarea = chatMain.querySelector('#flowCadastrosTextarea');
-        if (cadastrosTextarea) {
-            cadastrosTextarea.addEventListener('input', () => {
-                chat.cadastrosRealizados = cadastrosTextarea.value;
-            });
+        // Attach cadastro form listeners if present
+        if (flowDef.hasCadastroForm) {
+            attachEmbeddedCadastroListeners(chat);
+        }
+
+        // Attach nao atualizado form listeners if present
+        if (flowDef.hasNaoAtualizouForm) {
+            const protocoloInput = chatMain.querySelector('#naoAtualizouProtocolo');
+            const usuariosInput = chatMain.querySelector('#naoAtualizouUsuarios');
+            const copyNaoBtn = chatMain.querySelector('#btnNaoAtualizouCopy');
+
+            if (protocoloInput) {
+                protocoloInput.addEventListener('input', () => {
+                    chat.naoAtualizouProtocolo = protocoloInput.value;
+                });
+            }
+            if (usuariosInput) {
+                usuariosInput.addEventListener('input', () => {
+                    chat.naoAtualizouUsuarios = usuariosInput.value;
+                });
+            }
+            if (copyNaoBtn) {
+                copyNaoBtn.addEventListener('click', () => {
+                    const protocolo = chat.naoAtualizouProtocolo.trim() || '___';
+                    const usuarios = chat.naoAtualizouUsuarios.trim() || '___';
+                    const fullText = `Obrigado por ter aguardado, peço desculpas pela demora.\nO cadastro do(s) usuário(s) foi realizado com sucesso, porém, acompanhei durante alguns minutos e as informações não chegaram ao cofre, vou pedir para que realizem testes durante o dia até o prazo de 24 horas\nCaso o usuário não funcione após esse prazo, pode retornar o contato informando o ocorrido.\nSegue o protocolo referente a esse atendimento com todas as informações registradas e os dados do(s) usuário(s) para teste:\n\n[Protocolo: ${protocolo}]\n\n[Usuário(s): ${usuarios}]`;
+                    copyToClipboard(fullText);
+                    showToast('Script copiado com sucesso!');
+                });
+            }
         }
 
         // Sub-select listeners (material / valores)
@@ -1496,7 +1903,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- Sub-flow handlers ---
         const flowCopyBtn = e.target.closest('[data-flow-copy]');
-        if (flowCopyBtn && chat.flowState) {
+        if (flowCopyBtn && !flowCopyBtn.hasAttribute('data-flow-copy-second') && chat.flowState) {
             const flowDef = getFlowDef(chat);
             if (!flowDef) return;
             let scriptText = '';
@@ -1511,6 +1918,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             copyToClipboard(scriptText);
             showToast('Script copiado com sucesso!');
+            return;
+        }
+
+        // Copy second script (e.g. "Perfeito, peço gentilmente...")
+        const flowCopySecondBtn = e.target.closest('[data-flow-copy-second]');
+        if (flowCopySecondBtn && chat.flowState) {
+            const flowDef = getFlowDef(chat);
+            if (flowDef && flowDef.secondScriptText) {
+                copyToClipboard(flowDef.secondScriptText);
+                showToast('Script copiado com sucesso!');
+            }
             return;
         }
 
@@ -1540,6 +1958,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!flowDef) return;
 
             if (action === 'yes') {
+                // Auto-generate cadastros text when transitioning from formulario to devolutiva
+                if (chat.flowState === 'cadastro_formulario' && flowDef.yesState === 'devolutiva_cadastro') {
+                    chat.cadastrosRealizados = generateCadastroText(chat);
+                }
+                // Also auto-generate for nao_atualizado
+                if (chat.flowState === 'cadastro_formulario' && flowDef.noState === 'cadastro_nao_atualizado') {
+                    // Will be used if they go to nao_atualizado later via back
+                }
                 chat.flowHistory.push(chat.flowState);
                 chat.flowState = flowDef.yesState;
             } else if (action === 'no') {
@@ -1553,6 +1979,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     renderActiveCard();
                     return;
                 } else {
+                    // Auto-generate cadastros text when going to nao_atualizado
+                    if (chat.flowState === 'cadastro_formulario' && flowDef.noState === 'cadastro_nao_atualizado') {
+                        chat.cadastrosRealizados = generateCadastroText(chat);
+                        chat.naoAtualizouProtocolo = chat.naoAtualizouProtocolo || '';
+                        chat.naoAtualizouUsuarios = chat.naoAtualizouUsuarios || chat.cadastrosRealizados;
+                    }
                     chat.flowHistory.push(chat.flowState);
                     chat.flowState = flowDef.noState;
                 }

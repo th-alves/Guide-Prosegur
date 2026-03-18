@@ -1632,6 +1632,38 @@ select.input-field option:disabled {
     box-shadow: 0 0 0 3px rgba(237, 170, 0, 0.1);
 }
 
+/* Cadastros display block (devolutiva) */
+.flow-cadastros-display {
+    background: rgba(13, 15, 26, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    padding: 1rem 1.2rem;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--prosegur-text);
+    white-space: pre-wrap;
+}
+
+/* Não Atualizado form */
+.flow-nao-atualizado-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.2rem;
+    animation: fadeSlideIn 0.2s ease-out;
+}
+
+.flow-nao-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.flow-nao-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
 /* Material Select (Abastecimento flow) */
 .flow-material-select {
     margin-bottom: 1.2rem;
@@ -1667,6 +1699,95 @@ select.input-field option:disabled {
     opacity: 0.35;
     cursor: not-allowed;
     transform: none !important;
+}
+
+/* ============================
+   EMBEDDED CADASTRO FORM (WhatsApp flow)
+   Matches the style of the main Cadastro tab
+   ============================ */
+.flow-cadastro-form {
+    background: rgba(34, 39, 65, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    animation: fadeSlideIn 0.25s ease-out;
+}
+
+.flow-cadastro-form-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(237, 170, 0, 0.15);
+}
+
+.flow-cadastro-form-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--prosegur-white);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.flow-cadastro-form-header h3 i {
+    color: var(--prosegur-yellow);
+}
+
+.flow-cadastro-count {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--prosegur-text-muted);
+    background: rgba(237, 170, 0, 0.08);
+    border: 1px solid rgba(237, 170, 0, 0.15);
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.flow-cadastro-users {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.flow-cadastro-user {
+    background: rgba(34, 39, 65, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    transition: var(--transition);
+}
+
+.flow-cadastro-user:hover {
+    border-color: rgba(237, 170, 0, 0.25);
+}
+
+.flow-cadastro-user-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.flow-cadastro-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 1.2rem;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+}
+
+.flow-cad-action-btn {
+    padding: 9px 16px !important;
+    font-size: 0.8rem !important;
+    white-space: nowrap;
+}
+
+/* Hidden fields within embedded cadastro */
+.flow-cadastro-form .hidden {
+    display: none;
 }
 
 /* ============================
@@ -1811,7 +1932,8 @@ a {
         width: 100%;
     }
 
-    .form-actions {
+    .form-actions,
+    .flow-cadastro-actions {
         flex-direction: column;
     }
 
@@ -2666,6 +2788,53 @@ a {
 
 [data-theme="light"] .chat-empty-state i {
     color: rgba(237, 170, 0, 0.3);
+}
+
+/* --- WhatsApp Flow: Embedded Cadastro Form --- */
+[data-theme="light"] .flow-cadastro-form {
+    background: rgba(255, 250, 235, 0.6);
+    border-color: rgba(237, 170, 0, 0.18);
+    box-shadow: 0 2px 12px rgba(140, 110, 40, 0.08);
+}
+
+[data-theme="light"] .flow-cadastro-form-header {
+    border-bottom-color: rgba(237, 170, 0, 0.2);
+}
+
+[data-theme="light"] .flow-cadastro-form-header h3 {
+    color: #3A3530;
+}
+
+[data-theme="light"] .flow-cadastro-form-header h3 i {
+    color: #B88500;
+}
+
+[data-theme="light"] .flow-cadastro-count {
+    color: #996D00;
+    background: rgba(237, 170, 0, 0.1);
+    border-color: rgba(237, 170, 0, 0.2);
+}
+
+[data-theme="light"] .flow-cadastro-user {
+    background: rgba(255, 245, 220, 0.5);
+    border-color: rgba(237, 170, 0, 0.18);
+}
+
+[data-theme="light"] .flow-cadastro-user:hover {
+    border-color: rgba(237, 170, 0, 0.4);
+    box-shadow: 0 2px 12px rgba(237, 170, 0, 0.1);
+}
+
+[data-theme="light"] .flow-cadastros-display {
+    background: #FFFBF2;
+    border-color: rgba(200, 180, 140, 0.25);
+    color: #3A3530;
+}
+
+[data-theme="light"] .flow-nao-atualizado-form .input-field {
+    background: #FFFFFF;
+    border-color: rgba(200, 180, 140, 0.35);
+    color: #3A3530;
 }
 
 /* --- WhatsApp: Script Text Block --- */
